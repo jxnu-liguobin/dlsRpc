@@ -1,0 +1,8 @@
+/target/
+/.apt_generated/
+/.settings/
+/.cache-tests
+/.cache-main
+/.factorypath
+lib_managed/
+.idea/

@@ -20,12 +20,17 @@ Technology
 Test & Use
 ---
 
-- git clone ```url```
+- git clone ```git@github.com:jxnu-liguobin/dlsRpc.git```
 - sbt compile
 - import use IDEA
 - refresh maven module named benchmark 
 
-PS:
+Note
+---
 
-```If you can't find a dependency in benchmark,then according to the prompt  to                                                                                     
- add dependency on module 'dlsRpc'```
+```
+If you can't find a dependency in benchmark,then according to the prompt  to                                                                                     
+ add dependency on module 'dlsRpc'
+```
+
+[@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java)
