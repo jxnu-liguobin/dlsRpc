@@ -1,4 +1,4 @@
-# A Simple RPC Implemented by Scala
+# A simple RPC implemented by Scala
   
 * Java 8
 * Scala 2.12.7
