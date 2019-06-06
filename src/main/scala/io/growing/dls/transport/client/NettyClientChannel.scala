@@ -1,0 +1,43 @@
+package io.growing.dls.transport.client
+
+import java.net.SocketAddress
+
+import com.typesafe.scalalogging.LazyLogging
+import io.growing.dls.Protocol
+import io.growing.dls.client.{ClientChannel, ClientMessageHandler}
+import io.growing.dls.utils.ChannelWriteMessageUtil
+import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.{Channel, EventLoopGroup}
+
+/**
+ * Netty客户端通道
+ *
+ * @author 梦境迷离
+ * @version 1.0, 2019-06-05
+ */
+class NettyClientChannel extends ClientChannel with LazyLogging {
+
+  private[this] var workerGroup: EventLoopGroup = _
+  private[this] var channel: Channel = _
+  private[this] var protocol: Protocol = _
+
+  override def start(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
+    this.protocol = protocol
+    workerGroup = new NioEventLoopGroup
+    channel = ClientChannelBuilder.build(socketAddress, workerGroup, new ClientChannelInitializer(messageHandler))
+  }
+
+  override def sendMsg(msg: Array[Byte]): Unit = {
+    ChannelWriteMessageUtil.sendMsg(channel, msg)
+  }
+
+  override def shutdown(): Unit = {
+    if (channel == null || !channel.isOpen) return
+    try {
+      channel.close
+    } catch {
+      case e: Exception =>
+        logger.warn("Close NettyServerChannel fail : {}", e)
+    } finally workerGroup.shutdownGracefully
+  }
+}

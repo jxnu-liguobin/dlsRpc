@@ -1,0 +1,11 @@
+package io.growing.dls
+
+/**
+ * 顶级协议接口
+ *
+ * @author 梦境迷离
+ * @version 1.0, 2019-06-04
+ */
+trait Protocol {
+
+}
