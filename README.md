@@ -27,6 +27,27 @@ Test & Use
 - import use IDEA
 - refresh maven module named benchmark 
 
+Examples
+---
+- server publish
+```
+in java
+Hello hello = new HelloImpl();
+DlsRpcInvoke.publishService(8889, hello);
+
+in scala
+val hello = new HelloImpl()
+DlsRpcInvoke.publishService(8889, hello)
+```
+- client obtain
+```
+in java
+Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, Hello.class);
+
+in scala
+val hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, classOf[Hello])
+```
+
 Note
 ---
 

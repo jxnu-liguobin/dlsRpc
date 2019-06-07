@@ -18,7 +18,7 @@ final class ServerBuilder(port: Int) {
   //传输协议
   private[this] var protocol: Protocol = _
   //服务端口
-  private[this] var p: Int = port
+  private[this] val p: Int = port
   //需要发布rpc的服务
   private[this] var serviceBean: Any = _
 
@@ -39,7 +39,7 @@ final class ServerBuilder(port: Int) {
     serverChannel = ServiceLoadUtil.getProvider(classOf[ServerChannel])
     serializer = ServiceLoadUtil.getProvider(classOf[Serializer])
     //protocol = ServiceLoadUtil.getProvider(Protocol.class);
-    new Server(serverChannel, serializer, protocol, port, serviceBean)
+    new Server(serverChannel, serializer, protocol, p, serviceBean)
   }
 }
 

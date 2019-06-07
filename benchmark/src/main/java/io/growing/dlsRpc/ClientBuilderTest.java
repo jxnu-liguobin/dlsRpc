@@ -1,18 +1,16 @@
 package io.growing.dlsRpc;
 
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.atomic.AtomicInteger;
+import io.growing.dls.DlsRpcInvoke;
 
-import static io.growing.dls.client.ClientBuilder.builderClass;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientBuilderTest {
 
 
     public static void main(String[] args) {
 
-        InetSocketAddress serviceAddress = InetSocketAddress.createUnresolved("127.0.0.1", 8889);
-        Hello hello = builderClass(Hello.class).forAddress(serviceAddress).build();
+        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, Hello.class);
 
         for (int i = 0; i < 100000; i++) {
             assert (hello.sayHello(i + "dls")).equals(i + "dls-hello!");
