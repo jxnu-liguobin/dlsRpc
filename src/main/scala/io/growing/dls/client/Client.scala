@@ -6,12 +6,11 @@ import java.lang.reflect.{InvocationHandler, Method}
 import java.net.{InetSocketAddress, SocketAddress}
 import java.util.concurrent.atomic.AtomicLong
 
-import com.google.common.base.Preconditions
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.exception.RPCException
 import io.growing.dls.meta.RpcRequest
-import io.growing.dls.utils.ServiceLoadUtil
-import io.growing.dls.{Protocol, Serializer}
+import io.growing.dls.utils.{IsCondition, ServiceLoadUtil}
+import io.growing.dls.{Constants, Protocol, Serializer}
 
 import scala.util.Try
 
@@ -33,7 +32,7 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
   //服务端地址
   private[this] var socketAddress: SocketAddress = _
   //线程安全的自增请求id
-  private[this] lazy val atomicLong: AtomicLong = new AtomicLong(0)
+  private[this] lazy val atomicLong: AtomicLong = new AtomicLong(Constants.REQUEST_START_VALUE)
   //消息处理器
   private[this] lazy val messageHandler: ClientMessageHandler = new ClientMessageHandlerImpl(serializer, clientChannel)
   //调用服务的实现的接口（JDK代理，必须要有实现接口）
@@ -51,8 +50,8 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
   }
 
   def forAddress(host: String, port: Int): Builder = {
-    Preconditions.checkNotNull(host)
-    Preconditions.checkArgument(port > 0, "port is > 0!", null)
+    IsCondition.conditionException(host == null, "host can't be empty")
+    IsCondition.conditionException(port < 1, "port can't less than 1")
     this.socketAddress = InetSocketAddress.createUnresolved(host, port)
     this.asInstanceOf[Builder]
   }
@@ -70,7 +69,7 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
   }
 
   /**
-   * 创建动态代理
+   * 创建动态代理并发送请求，获取服务端的结果。
    *
    * @return 代理对象
    */
@@ -78,7 +77,8 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
 
     val clientInvocationHandler: InvocationHandler = (proxy, method, args) => {
 
-      def foo(proxy: Any, method: Method, args: Array[_ <: Object]) = {
+      //执行方法时被调用
+      def invoke(proxy: Any, method: Method, args: Array[_ <: Object]) = {
         val request = new RpcRequest
         request.setRequestId(atomicLong.incrementAndGet)
         request.setClassName(clientClass.getName)
@@ -89,8 +89,9 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
         result
       }
 
-      foo(proxy, method, args)
+      invoke(proxy, method, args)
     }
+    //根据JDK代理使用反射获得该接口的实现类的对象
     newProxyInstance(classOf[Client[_, _]].getClassLoader, Array[Class[_]](clientClass),
       clientInvocationHandler).asInstanceOf[T]
   }

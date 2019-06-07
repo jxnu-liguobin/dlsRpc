@@ -48,5 +48,13 @@ class NettyServerChannel extends ServerChannel with LazyLogging {
     channel = nettyServerChannelFuture.channel
   }
 
-  override def shutdown(): Unit = ???
+  override def shutdown(): Unit = {
+    if (IsCondition.conditionWarn(channel == null || !channel.isOpen)) return
+    try {
+      channel.close
+    } catch {
+      case e: Exception =>
+        logger.warn("Close NettyServerChannel fail : {}", e)
+    } finally workerGroup.shutdownGracefully
+  }
 }

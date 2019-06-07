@@ -15,7 +15,7 @@ import io.growing.dls.server.ServerBuilder
 object DlsRpcInvoke {
 
   def publishService(port: Int, serviceBean: Any): Unit = {
-    val server = ServerBuilder.forPort(port).publishService(serviceBean).build
+    val server = ServerBuilder.bindingPort(port).publishService(serviceBean).build
     server.start()
     TimeUnit.SECONDS.sleep(1000)
     //防止还没启动就停了

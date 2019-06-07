@@ -8,6 +8,8 @@ import io.growing.dls.exception.RPCException
 import io.growing.dls.utils.ExecutorBuilder
 import io.growing.dls.{Protocol, Serializer}
 
+import scala.util.Try
+
 /**
  * 内部服务器端基本实现
  *
@@ -23,7 +25,7 @@ class Server extends LazyLogging {
   //传输协议
   private[this] var protocol: Protocol = _
   //服务绑定的端口
-  private[this] var port: Int = 0
+  private[this] var port: Int = _
   //需要发布rpc的服务，一条channel可以发布多个服务，但是这里不采用这种方案，一条channel对应一个服务
   private[this] var serviceBean: Any = _
   //服务端消息处理器
@@ -53,6 +55,6 @@ class Server extends LazyLogging {
   }
 
   def shutdown(): Unit = {
-    serverChannel.shutdown()
+    Try(serverChannel.shutdown())
   }
 }

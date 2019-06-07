@@ -37,7 +37,7 @@ class NettyClientChannel extends ClientChannel with LazyLogging {
       channel.close
     } catch {
       case e: Exception =>
-        logger.warn("Close NettyServerChannel fail : {}", e)
+        logger.warn("Close NettyClientChannel fail : {}", e)
     } finally workerGroup.shutdownGracefully
   }
 }

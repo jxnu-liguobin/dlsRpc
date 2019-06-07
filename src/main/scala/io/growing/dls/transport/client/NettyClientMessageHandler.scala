@@ -13,7 +13,7 @@ import io.netty.util.ReferenceCountUtil
  * @author 梦境迷离
  * @version 1.0, 2019-06-05
  */
-class ClientMessageHandlerImpl(messageHandler: ClientMessageHandler)
+class NettyClientMessageHandler(messageHandler: ClientMessageHandler)
   extends ChannelInboundHandlerAdapter with LazyLogging {
 
   private[this] var outboundChannel: Channel = _

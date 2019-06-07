@@ -20,7 +20,7 @@ class ClientChannelInitializer(clientMessageHandler: ClientMessageHandler)
   override protected def initChannel(ch: SocketChannel): Unit = {
     ch.pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
     ch.pipeline.addLast("messageCodec", new MessageCodec)
-    ch.pipeline.addLast("clientMessageHandlerImpl", new ClientMessageHandlerImpl(clientMessageHandler))
+    ch.pipeline.addLast("clientMessageHandlerImpl", new NettyClientMessageHandler(clientMessageHandler))
     logger.info("ClientChannelInitializer  initChannel ... ")
   }
 }

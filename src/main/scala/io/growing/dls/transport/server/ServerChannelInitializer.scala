@@ -20,9 +20,9 @@ class ServerChannelInitializer(executor: Executor, messageHandler: ServerMessage
 
   override def initChannel(c: SocketChannel): Unit = {
     val pipeline: ChannelPipeline = c.pipeline
-    pipeline.addLast("log", new LoggingHandler(LogLevel.DEBUG))
+    pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
     pipeline.addLast("messageCodec", new MessageCodec)
-    pipeline.addLast("server-message-handler", new ServerMessageHandlerImpl(executor, messageHandler))
+    pipeline.addLast("server-message-handler", new NettyServerMessageHandler(executor, messageHandler))
     logger.info("ServerChannelInitializer  initChannel ... ")
   }
 }

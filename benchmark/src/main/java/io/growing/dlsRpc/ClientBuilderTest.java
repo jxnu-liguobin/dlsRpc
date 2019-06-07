@@ -10,7 +10,7 @@ public class ClientBuilderTest {
 
     public static void main(String[] args) {
 
-        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, Hello.class);
+        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8877, Hello.class);
 
         for (int i = 0; i < 100000; i++) {
             assert (hello.sayHello(i + "dls")).equals(i + "dls-hello!");

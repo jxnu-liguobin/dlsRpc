@@ -16,7 +16,7 @@ import io.netty.util.ReferenceCountUtil
  * @author 梦境迷离
  * @version 1.0, 2019-06-05
  */
-class ServerMessageHandlerImpl(executor: Executor, messageHandler: ServerMessageHandler)
+class NettyServerMessageHandler(executor: Executor, messageHandler: ServerMessageHandler)
   extends ChannelInboundHandlerAdapter with SendMessage with LazyLogging {
 
   private[this] var outboundChannel: Channel = _

@@ -45,5 +45,5 @@ final class ServerBuilder(port: Int) {
 
 object ServerBuilder {
   //实例化建造器，直到调用build才会真正绑定
-  def forPort(port: Int) = new ServerBuilder(port)
+  def bindingPort(port: Int) = new ServerBuilder(port)
 }
