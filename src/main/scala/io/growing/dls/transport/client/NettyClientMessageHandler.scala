@@ -34,7 +34,7 @@ class NettyClientMessageHandler(messageHandler: ClientMessageHandler)
         //接收服务端发送的数据
         val writeMsg = msg.asInstanceOf[Array[Byte]]
         //调用io.growing.dls.client.ClientMessageHandler
-        messageHandler.receiveAndProcessor(writeMsg)
+        messageHandler.receiveProcessor(writeMsg)
         ReferenceCountUtil.release(msg)
       }
     }

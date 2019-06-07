@@ -20,7 +20,7 @@ trait ClientChannel extends AbstractChannel {
    * @param socketAddress
    * @param protocol
    */
-  def start(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit
+  def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit
 
 
   /**
@@ -28,5 +28,5 @@ trait ClientChannel extends AbstractChannel {
    *
    * @param msg
    */
-  def sendMsg(msg: Array[Byte]): Unit
+  def sendMessage(msg: Array[Byte]): Unit
 }

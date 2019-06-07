@@ -9,7 +9,7 @@ import io.growing.dls.{Protocol, Serializer}
  * @author 梦境迷离
  * @version 1.0, 2019-06-05
  */
-final class ServerBuilder(port: Int) {
+class ServerBuilder(port: Int) {
 
   //通道
   private[this] var serverChannel: ServerChannel = _
@@ -45,5 +45,5 @@ final class ServerBuilder(port: Int) {
 
 object ServerBuilder {
   //实例化建造器，直到调用build才会真正绑定
-  def bindingPort(port: Int) = new ServerBuilder(port)
+  def buildWithPort(port: Int) = new ServerBuilder(port)
 }

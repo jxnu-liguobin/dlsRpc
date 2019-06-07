@@ -4,9 +4,9 @@ import java.util.concurrent.{BlockingQueue, ConcurrentMap, LinkedBlockingQueue, 
 
 import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dls.{Constants, Serializer}
 import io.growing.dls.meta.{RpcRequest, RpcResponse}
 import io.growing.dls.utils.IsCondition
+import io.growing.dls.{Constants, Serializer}
 
 /**
  * 客户端消息处理器实现
@@ -21,19 +21,18 @@ class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
   //客户端通道
   private[this] var channel: ClientChannel = _
   //超时时间
-  private[this] val TIME_AWAIT: Int = Constants.TIME_AWAIT
+  private[this] final lazy val TIME_AWAIT: Int = Constants.TIME_AWAIT
   //记录请求id和调用返回
-  private[this] var mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = _
+  private[this] final lazy val mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = Maps.newConcurrentMap()
 
   def this(serializer: Serializer, channel: ClientChannel) {
     this()
     this.serializer = serializer
     this.channel = channel
-    mapCallBack = Maps.newConcurrentMap()
   }
 
   @throws[Exception]
-  override def receiveAndProcessor(request: Array[Byte]): Unit = {
+  override def receiveProcessor(request: Array[Byte]): Unit = {
     //反序列化收到的消息
     val rpcResponse = this.serializer.deserializer(request, classOf[RpcResponse])
     IsCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
@@ -54,14 +53,14 @@ class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
 
   //获取代理对象的时候调用该方法发送请求
   @throws[Exception]
-  override def sendAndProcessor(rpcRequest: RpcRequest): AnyRef = {
+  override def sendProcessor(rpcRequest: RpcRequest): AnyRef = {
     //序列化
     val requestMsg = this.serializer.serializer(rpcRequest)
     val queue = new LinkedBlockingQueue[RpcResponse]
     //保存请求信息
     mapCallBack.put(rpcRequest.getRequestId, queue)
     //发送消息
-    channel.sendMsg(requestMsg)
+    channel.sendMessage(requestMsg)
     //取出返回信息 30S超时时间
     val response: RpcResponse = queue.poll(TIME_AWAIT, TimeUnit.MILLISECONDS)
     IsCondition.conditionException(response == null, "Request wait response time await")

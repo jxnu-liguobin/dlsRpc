@@ -14,4 +14,6 @@ object Constants {
   //请求id，一般从 0 开始自增
   final lazy val REQUEST_START_VALUE: Int = 0
 
+  final lazy val MESSAGE_LENGTH: Int = 4
+
 }

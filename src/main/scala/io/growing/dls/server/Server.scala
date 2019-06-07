@@ -31,11 +31,10 @@ class Server extends LazyLogging {
   //服务端消息处理器
   private[this] var messageHandler: ServerMessageHandler = _
   //服务端任务执行器，使用缓存线程池
-  private[this] var executor: Executor = _
+  private[this] final lazy val executor: Executor = ExecutorBuilder.executorBuild("dlsRpc-thread-executor-%d", daemon = true)
 
   def this(serverChannel: ServerChannel, serializer: Serializer, protocol: Protocol, port: Int, serviceBean: Any) {
     this()
-    this.executor = ExecutorBuilder.executorBuild("dlsRpc-business-executor-%d", daemon = true)
     this.serviceBean = serviceBean
     this.serverChannel = serverChannel
     this.serializer = serializer
@@ -46,7 +45,7 @@ class Server extends LazyLogging {
 
   def start(): Unit = {
     try {
-      serverChannel.start(port, executor, protocol, messageHandler)
+      serverChannel.openServerChannel(port, executor, protocol, messageHandler)
       logger.info("Server start port : {}", port)
     } catch {
       case e: IOException =>

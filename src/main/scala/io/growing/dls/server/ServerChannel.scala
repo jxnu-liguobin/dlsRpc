@@ -23,6 +23,6 @@ trait ServerChannel extends AbstractChannel {
    * @throws IOException IO异常
    */
   @throws[IOException]
-  def start(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit
+  def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit
 
 }

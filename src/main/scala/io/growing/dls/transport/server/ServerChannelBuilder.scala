@@ -14,7 +14,7 @@ object ServerChannelBuilder {
 
   def build(bossGroup: EventLoopGroup, workerGroup: EventLoopGroup,
             channelHandler: ChannelHandler, port: Int): ChannelFuture = {
-    val b = new ServerBootstrap
+    lazy val b = new ServerBootstrap
     b.group(bossGroup, workerGroup).channel(classOf[NioServerSocketChannel]).childHandler(channelHandler).
       option(ChannelOption.SO_KEEPALIVE, Boolean.box(true)).bind(port)
     //需要封装true，不然推断出错，接收参数是Option，会被推断为Option[Any]

@@ -26,7 +26,7 @@ class ServerMessageHandlerImpl extends ServerMessageHandler with LazyLogging {
     this.channel = channel
   }
 
-  override def receiveAndProcessor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
+  override def processor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
     //接口消息并反序列化解码拿到真正的请求
     val rpcRequest: RpcRequest = serializer.deserializer(request, classOf[RpcRequest])
     val rpcResponse = new RpcResponse
@@ -53,6 +53,6 @@ class ServerMessageHandlerImpl extends ServerMessageHandler with LazyLogging {
         rpcResponse.setError(e)
     }
     //序列化并返回数据给客户端
-    receiveMessage.sendMsg(serializer.serializer(rpcResponse))
+    receiveMessage.send(serializer.serializer(rpcResponse))
   }
 }

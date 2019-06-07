@@ -17,6 +17,6 @@ trait ServerMessageHandler {
    * @param request        来自客户端的请求消息
    * @param receiveMessage 发送消息的实现
    */
-  def receiveAndProcessor(request: Array[Byte], receiveMessage: SendMessage): Unit
+  def processor(request: Array[Byte], receiveMessage: SendMessage): Unit
 
 }

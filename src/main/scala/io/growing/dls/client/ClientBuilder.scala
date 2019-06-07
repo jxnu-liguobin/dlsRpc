@@ -28,5 +28,5 @@ object ClientBuilder {
    * @tparam T 代理对象类型
    * @return
    */
-  def builderClass[T](interfaceClass: Class[T]) = new ClientBuilder[T](interfaceClass)
+  def builderWithClass[T](interfaceClass: Class[T]) = new ClientBuilder[T](interfaceClass)
 }

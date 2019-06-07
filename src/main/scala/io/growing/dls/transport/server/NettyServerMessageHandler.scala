@@ -37,7 +37,7 @@ class NettyServerMessageHandler(executor: Executor, messageHandler: ServerMessag
     //接收服务端发送的数据
     val writeMsg = msg.asInstanceOf[Array[Byte]]
     //任务异步化
-    executor.execute(() => messageHandler.receiveAndProcessor(writeMsg, receiveMessage = this))
+    executor.execute(() => messageHandler.processor(writeMsg, receiveMessage = this))
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
@@ -45,7 +45,7 @@ class NettyServerMessageHandler(executor: Executor, messageHandler: ServerMessag
     if (outboundChannel.isActive) outboundChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE)
   }
 
-  override def sendMsg(msg: Array[Byte]): Unit = {
+  override def send(msg: Array[Byte]): Unit = {
     ChannelWriteMessageUtil.sendMsg(outboundChannel, msg)
   }
 }

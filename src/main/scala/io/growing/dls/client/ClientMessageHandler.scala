@@ -18,7 +18,7 @@ trait ClientMessageHandler {
    * @throws Exception 可能是序列化
    */
   @throws[Exception]
-  def receiveAndProcessor(request: Array[Byte]): Unit
+  def receiveProcessor(request: Array[Byte]): Unit
 
   /**
    * 发现消息时处理
@@ -28,5 +28,5 @@ trait ClientMessageHandler {
    * @return
    */
   @throws[Exception]
-  def sendAndProcessor(rpcRequest: RpcRequest): AnyRef
+  def sendProcessor(rpcRequest: RpcRequest): AnyRef
 }

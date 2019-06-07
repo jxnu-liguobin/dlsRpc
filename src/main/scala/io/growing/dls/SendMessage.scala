@@ -8,5 +8,5 @@ package io.growing.dls
  */
 trait SendMessage {
 
-  def sendMsg(msg: Array[Byte]): Unit
+  def send(msg: Array[Byte]): Unit
 }

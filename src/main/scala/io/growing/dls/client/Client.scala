@@ -44,12 +44,12 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
     this.clientClass = clientClass
   }
 
-  def forAddress(socketAddress: SocketAddress): Builder = {
+  def bindingAddress(socketAddress: SocketAddress): Builder = {
     this.socketAddress = socketAddress
     this.asInstanceOf[Builder]
   }
 
-  def forAddress(host: String, port: Int): Builder = {
+  def bindingAddress(host: String, port: Int): Builder = {
     IsCondition.conditionException(host == null, "host can't be empty")
     IsCondition.conditionException(port < 1, "port can't less than 1")
     this.socketAddress = InetSocketAddress.createUnresolved(host, port)
@@ -59,7 +59,7 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
   private[client] def start(): Unit = {
     try {
       //客户端通道开启
-      clientChannel.start(messageHandler, socketAddress, protocol)
+      clientChannel.open(messageHandler, socketAddress, protocol)
       logger.info("clientChannel start success ")
     }
     catch {
@@ -85,7 +85,7 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
         request.setMethodName(method.getName)
         request.setParameterTypes(method.getParameterTypes)
         request.setParameters(args)
-        val result: AnyRef = messageHandler.sendAndProcessor(request)
+        val result: AnyRef = messageHandler.sendProcessor(request)
         result
       }
 

@@ -6,6 +6,8 @@ import io.growing.dls.modules.ProviderModule
 import scala.reflect.ClassTag
 
 /**
+ * 这里使用guice注入
+ *
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */

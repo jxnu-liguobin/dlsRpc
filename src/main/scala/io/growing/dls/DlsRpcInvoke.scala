@@ -3,7 +3,7 @@ package io.growing.dls
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
-import io.growing.dls.client.ClientBuilder.builderClass
+import io.growing.dls.client.ClientBuilder.builderWithClass
 import io.growing.dls.server.ServerBuilder
 
 /**
@@ -15,7 +15,7 @@ import io.growing.dls.server.ServerBuilder
 object DlsRpcInvoke {
 
   def publishService(port: Int, serviceBean: Any): Unit = {
-    val server = ServerBuilder.bindingPort(port).publishService(serviceBean).build
+    val server = ServerBuilder.buildWithPort(port).publishService(serviceBean).build
     server.start()
     TimeUnit.SECONDS.sleep(1000)
     //防止还没启动就停了
@@ -24,7 +24,7 @@ object DlsRpcInvoke {
 
   def obtainService[T](host: String, por: Int, target: Class[T]): T = {
     val serviceAddress: InetSocketAddress = InetSocketAddress.createUnresolved(host, por)
-    builderClass(target).forAddress(serviceAddress).build
+    builderWithClass(target).bindingAddress(serviceAddress).build
   }
 
 }

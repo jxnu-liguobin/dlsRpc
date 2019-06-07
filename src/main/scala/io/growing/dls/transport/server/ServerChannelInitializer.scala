@@ -5,8 +5,9 @@ import java.util.concurrent.Executor
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.server.ServerMessageHandler
 import io.growing.dls.transport.MessageCodec
+import io.growing.dls.utils.IsCondition
+import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
-import io.netty.channel.{ChannelInitializer, ChannelPipeline}
 import io.netty.handler.logging.{LogLevel, LoggingHandler}
 
 /**
@@ -19,10 +20,10 @@ class ServerChannelInitializer(executor: Executor, messageHandler: ServerMessage
   extends ChannelInitializer[SocketChannel] with LazyLogging {
 
   override def initChannel(c: SocketChannel): Unit = {
-    val pipeline: ChannelPipeline = c.pipeline
-    pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
-    pipeline.addLast("messageCodec", new MessageCodec)
-    pipeline.addLast("server-message-handler", new NettyServerMessageHandler(executor, messageHandler))
+    IsCondition.conditionException(c == null, "SocketChannel can't be null")
+    c.pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
+    c.pipeline.addLast("messageCodec", new MessageCodec)
+    c.pipeline.addLast("server-message-handler", new NettyServerMessageHandler(executor, messageHandler))
     logger.info("ServerChannelInitializer  initChannel ... ")
   }
 }

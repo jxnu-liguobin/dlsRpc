@@ -17,22 +17,21 @@ import io.netty.channel.{Channel, EventLoopGroup}
  */
 class NettyClientChannel extends ClientChannel with LazyLogging {
 
-  private[this] var workerGroup: EventLoopGroup = _
+  private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private[this] var channel: Channel = _
   private[this] var protocol: Protocol = _
 
-  override def start(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
+  override def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
     this.protocol = protocol
-    workerGroup = new NioEventLoopGroup
-    channel = ClientChannelBuilder.build(socketAddress, workerGroup, new ClientChannelInitializer(messageHandler))
+    this.channel = ClientChannelBuilder.build(socketAddress, workerGroup, new ClientChannelInitializer(messageHandler))
   }
 
-  override def sendMsg(msg: Array[Byte]): Unit = {
+  override def sendMessage(msg: Array[Byte]): Unit = {
     ChannelWriteMessageUtil.sendMsg(channel, msg)
   }
 
   override def shutdown(): Unit = {
-    if (IsCondition.conditionWarn(channel == null || !channel.isOpen)) return
+    if (IsCondition.conditionWarn(channel == null || !channel.isOpen, "channel is already closed")) return
     try {
       channel.close
     } catch {

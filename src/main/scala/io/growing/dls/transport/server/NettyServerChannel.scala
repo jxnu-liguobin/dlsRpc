@@ -24,13 +24,11 @@ class NettyServerChannel extends ServerChannel with LazyLogging {
   //所有由EventLoop处理得I/O事件都将在它专有的Thread上处理
   //一个Channel在它的生命周期内只注册一个EventLoop
   //一个EventLoop可能会被分配给一个或多个Channel
-  private[this] var bossGroup: EventLoopGroup = _
-  private[this] var workerGroup: EventLoopGroup = _
+  private[this] lazy final val bossGroup: EventLoopGroup = new NioEventLoopGroup
+  private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private[this] var channel: Channel = _
 
-  override def start(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
-    bossGroup = new NioEventLoopGroup
-    workerGroup = new NioEventLoopGroup
+  override def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
     //异步通知
     val nettyServerChannelFuture: ChannelFuture = ServerChannelBuilder.build(bossGroup, workerGroup,
       new ServerChannelInitializer(executor, messageHandler), port)

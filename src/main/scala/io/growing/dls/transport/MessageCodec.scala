@@ -2,6 +2,7 @@ package io.growing.dls.transport
 
 import java.util
 
+import io.growing.dls.Constants
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
@@ -17,7 +18,7 @@ import io.netty.handler.codec.ByteToMessageCodec
  */
 class MessageCodec extends ByteToMessageCodec[Array[Byte]] {
 
-  private[transport] lazy val MESSAGE_LENGTH = 4
+  private[transport] lazy val MESSAGE_LENGTH: Int = Constants.MESSAGE_LENGTH
 
   @throws[Exception]
   override protected def encode(channelHandlerContext: ChannelHandlerContext, msg: Array[Byte], byteBuf: ByteBuf): Unit = {
