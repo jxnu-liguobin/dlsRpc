@@ -35,4 +35,24 @@ If you can't find a dependency in benchmark,then according to the prompt  to
  add dependency on module 'dlsRpc'
 ```
 
+Benchmark
+---
+
+- Condition 
+
+| Title | Value |
+| --- | --- |
+| CPU | i5 7300HQ |
+| Memory | 12G DDR4(2400MHz) |
+| Threads | 35 |
+
+- Details
+
+| Benchmark | Mode | Cnt | Score | Error | Units |
+| --- | --- | --- | --- | --- | --- |
+| dlsRpc.JmhClient.JmhClient | Throughput |  20 | 25.144 ± 1.576 |  | ops/ms |
+| dlsRpc.JmhClient.JmhClient | Average time |  20 | 1.339 ± 0.029 |  | ms/op |
+| dlsRpc.JmhClient.JmhClient | Sampling time |  571301 | 1.309 ± 0.005 | | ms/op |
+| dlsRpc.JmhClient.JmhClient | Single shot invocation time |   |  2567.914 |   | ms/op |
+
 [@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java) [@Original Java Edition](https://github.com/yeyincai/flashRPC)

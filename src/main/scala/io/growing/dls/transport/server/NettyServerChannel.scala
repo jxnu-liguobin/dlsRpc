@@ -4,8 +4,8 @@ import java.util.concurrent.Executor
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.Protocol
-import io.growing.dls.exception.RPCException
 import io.growing.dls.server.{ServerChannel, ServerMessageHandler}
+import io.growing.dls.utils.IsCondition
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.{Channel, ChannelFuture, EventLoopGroup}
 
@@ -43,11 +43,8 @@ class NettyServerChannel extends ServerChannel with LazyLogging {
         logger.warn("Start fail : {}", ex)
         throw new RuntimeException("Interrupted waiting for bind")
     }
-    if (!nettyServerChannelFuture.isSuccess) {
-      logger.warn("Start fail : {}", nettyServerChannelFuture.cause
-      )
-      throw new RPCException("Failed to bind", nettyServerChannelFuture.cause)
-    }
+    IsCondition.conditionWarn(!nettyServerChannelFuture.isSuccess, s"Start fail : {${nettyServerChannelFuture.cause}")
+    IsCondition.conditionException(!nettyServerChannelFuture.isSuccess, "Failed to bind", nettyServerChannelFuture.cause())
     channel = nettyServerChannelFuture.channel
   }
 

@@ -23,7 +23,6 @@ import scala.util.Try
  */
 class Client[Builder <: Client[_, _], T] extends LazyLogging {
 
-
   //获得客户端通道
   private[this] lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
   //获得序列化

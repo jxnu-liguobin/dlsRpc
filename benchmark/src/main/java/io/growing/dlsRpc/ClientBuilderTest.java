@@ -11,7 +11,7 @@ public class ClientBuilderTest {
 
     public static void main(String[] args) {
 
-        InetSocketAddress serviceAddress = InetSocketAddress.createUnresolved("127.0.0.1", 8012);
+        InetSocketAddress serviceAddress = InetSocketAddress.createUnresolved("127.0.0.1", 8889);
         Hello hello = builderClass(Hello.class).forAddress(serviceAddress).build();
 
         for (int i = 0; i < 100000; i++) {

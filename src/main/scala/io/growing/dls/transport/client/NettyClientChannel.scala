@@ -5,7 +5,7 @@ import java.net.SocketAddress
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.Protocol
 import io.growing.dls.client.{ClientChannel, ClientMessageHandler}
-import io.growing.dls.utils.ChannelWriteMessageUtil
+import io.growing.dls.utils.{ChannelWriteMessageUtil, IsCondition}
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.{Channel, EventLoopGroup}
 
@@ -32,7 +32,7 @@ class NettyClientChannel extends ClientChannel with LazyLogging {
   }
 
   override def shutdown(): Unit = {
-    if (channel == null || !channel.isOpen) return
+    if (IsCondition.conditionWarn(channel == null || !channel.isOpen)) return
     try {
       channel.close
     } catch {

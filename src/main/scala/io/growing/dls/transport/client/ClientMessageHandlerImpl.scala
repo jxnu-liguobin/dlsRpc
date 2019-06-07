@@ -2,6 +2,7 @@ package io.growing.dls.transport.client
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.client.ClientMessageHandler
+import io.growing.dls.utils.IsCondition
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import io.netty.util.ReferenceCountUtil
@@ -25,15 +26,18 @@ class ClientMessageHandlerImpl(messageHandler: ClientMessageHandler)
 
   override def channelRead(ctx: ChannelHandlerContext, msg: Any): Unit = {
     logger.debug("Client read  msg : {}", msg)
-    if (!msg.isInstanceOf[Array[Byte]]) {
-      ReferenceCountUtil.release(msg)
-      return
+    IsCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching") match {
+      case true => {
+        //TODO
+      }
+      case false => {
+        //接收服务端发送的数据
+        val writeMsg = msg.asInstanceOf[Array[Byte]]
+        //调用io.growing.dls.client.ClientMessageHandler
+        messageHandler.receiveAndProcessor(writeMsg)
+        ReferenceCountUtil.release(msg)
+      }
     }
-    //接收服务端发送的数据
-    val writeMsg = msg.asInstanceOf[Array[Byte]]
-    //调用io.growing.dls.client.ClientMessageHandler
-    messageHandler.receiveAndProcessor(writeMsg)
-    ReferenceCountUtil.release(msg)
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {

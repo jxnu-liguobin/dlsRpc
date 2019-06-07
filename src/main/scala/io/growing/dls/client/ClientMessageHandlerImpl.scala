@@ -5,8 +5,8 @@ import java.util.concurrent.{BlockingQueue, ConcurrentMap, LinkedBlockingQueue, 
 import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.Serializer
-import io.growing.dls.exception.RPCException
 import io.growing.dls.meta.{RpcRequest, RpcResponse}
+import io.growing.dls.utils.IsCondition
 
 /**
  * 客户端消息处理器实现
@@ -36,11 +36,17 @@ class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
   override def receiveAndProcessor(request: Array[Byte]): Unit = {
     //反序列化收到的消息
     val rpcResponse = this.serializer.deserializer(request, classOf[RpcResponse])
-    if (rpcResponse != null && rpcResponse.requestId > 0) {
-      val queue: BlockingQueue[RpcResponse] = mapCallBack.get(rpcResponse.getRequestId)
-      queue.add(rpcResponse)
-      mapCallBack.remove(rpcResponse.getRequestId)
-    } else logger.warn("ReceiveAndProcessor not found data getRequestId : {}", rpcResponse.requestId)
+    IsCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
+      s"ReceiveAndProcessor not found data getRequestId : {${rpcResponse.getRequestId}}") match {
+      case false => {
+        val queue: BlockingQueue[RpcResponse] = mapCallBack.get(rpcResponse.getRequestId)
+        queue.add(rpcResponse)
+        mapCallBack.remove(rpcResponse.getRequestId)
+      }
+      case true => {
+        //TODO
+      }
+    }
   }
 
   @throws[Exception]
@@ -50,8 +56,8 @@ class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
     mapCallBack.put(rpcRequest.getRequestId, queue)
     channel.sendMsg(requestMsg)
     val response: RpcResponse = queue.poll(TIME_AWAIT, TimeUnit.MILLISECONDS)
-    if (response != null) if (response.getError != null) throw RPCException(response.getError.getMessage)
-    else response.getResult
-    else throw RPCException("Request wait response time await")
+    IsCondition.conditionException(response == null, "Request wait response time await")
+    IsCondition.conditionException(response.getError != null,cause = response.getError)
+    response.getResult
   }
 }

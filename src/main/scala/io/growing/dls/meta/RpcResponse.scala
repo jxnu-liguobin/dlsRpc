@@ -15,11 +15,9 @@ final case class RpcResponse() {
   //请求id
   @BeanProperty
   var requestId: Long = _
-
   //错误
   @BeanProperty
   var error: Throwable = _
-
   //返回值
   @BeanProperty
   var result: AnyRef = _

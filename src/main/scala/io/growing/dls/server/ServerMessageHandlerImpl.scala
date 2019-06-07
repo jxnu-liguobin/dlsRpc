@@ -4,6 +4,7 @@ import java.lang.reflect.Method
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.meta.{RpcRequest, RpcResponse}
+import io.growing.dls.utils.IsCondition
 import io.growing.dls.{SendMessage, Serializer}
 
 /**
@@ -39,17 +40,17 @@ class ServerMessageHandlerImpl extends ServerMessageHandler with LazyLogging {
         logger.warn("Client send msg is fail : {}", e)
         rpcResponse.setError(e)
     }
-    if (method != null) {
-      try {
-        //使用得当的方法进行调用，并传入接收到参数列表（可变长参数使用:_*）
-        val ret = method.invoke(serviceBean, rpcRequest.getParameters: _*)
-        rpcResponse.setResult(ret)
-      }
-      catch {
-        case e: Exception =>
-          logger.warn("Method : {}  invoke! fail : {}", method.getName, e)
-          rpcResponse.setError(e)
-      }
+    IsCondition.conditionException(method == null, "method can't be null")
+
+    try {
+      //使用得当的方法进行调用，并传入接收到参数列表（可变长参数使用:_*）
+      val ret = method.invoke(serviceBean, rpcRequest.getParameters: _*)
+      rpcResponse.setResult(ret)
+    }
+    catch {
+      case e: Exception =>
+        logger.warn("Method : {}  invoke! fail : {}", method.getName, e)
+        rpcResponse.setError(e)
     }
     //序列化并返回数据给客户端
     receiveMessage.sendMsg(serializer.serializer(rpcResponse))

@@ -1,10 +1,12 @@
 package io.growing.dls.utils
 
-import java.util.concurrent.{ Executor, Executors }
+import java.util.concurrent.{Executor, Executors}
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 
 /**
+ * 线程池
+ *
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */

@@ -9,7 +9,7 @@ public class ServerBuilderTest {
 
     public static void main(String[] args) throws InterruptedException {
         Hello hello = new HelloImpl();
-        Server server = ServerBuilder.forPort(8012).publishService(hello).build();
+        Server server = ServerBuilder.forPort(8889).publishService(hello).build();
         server.start();
         TimeUnit.SECONDS.sleep(1000);
         server.shutdown();

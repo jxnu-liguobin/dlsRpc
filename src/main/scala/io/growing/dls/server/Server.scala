@@ -28,7 +28,7 @@ class Server extends LazyLogging {
   private[this] var serviceBean: Any = _
   //服务端消息处理器
   private[this] var messageHandler: ServerMessageHandler = _
-  //服务端任务执行器
+  //服务端任务执行器，使用缓存线程池
   private[this] var executor: Executor = _
 
   def this(serverChannel: ServerChannel, serializer: Serializer, protocol: Protocol, port: Int, serviceBean: Any) {

@@ -11,8 +11,9 @@ object ChannelWriteMessageUtil extends LazyLogging {
 
   def sendMsg(outboundChannel: Channel, obj: Any): Unit = {
     outboundChannel.writeAndFlush(obj).addListener((future: ChannelFuture) => {
-      if (future.isSuccess) outboundChannel.read
-      else logger.warn("OutboundChannel : {}, sendMsg : {}", outboundChannel, obj, future.cause)
+      if (!IsCondition.conditionWarn(!future.isSuccess,
+        s"OutboundChannel : {$outboundChannel}, sendMsg : {$obj} because {${future.cause}"))
+        outboundChannel.read
     })
   }
 }

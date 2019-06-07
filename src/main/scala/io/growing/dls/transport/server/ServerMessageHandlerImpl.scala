@@ -5,7 +5,7 @@ import java.util.concurrent.Executor
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.SendMessage
 import io.growing.dls.server.ServerMessageHandler
-import io.growing.dls.utils.ChannelWriteMessageUtil
+import io.growing.dls.utils.{ChannelWriteMessageUtil, IsCondition}
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import io.netty.util.ReferenceCountUtil
@@ -30,7 +30,7 @@ class ServerMessageHandlerImpl(executor: Executor, messageHandler: ServerMessage
   override def channelRead(ctx: ChannelHandlerContext, msg: Any): Unit = {
     logger.debug("Service read msg : {} ", msg)
     //接收客户端发送的数据
-    if (!msg.isInstanceOf[Array[Byte]]) {
+    if (IsCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching")) {
       ReferenceCountUtil.release(msg)
       return
     }

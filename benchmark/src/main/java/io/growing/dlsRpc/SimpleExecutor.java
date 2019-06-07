@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class SimpleExecutor {
+
     private final Runnable task;
     private final AtomicLong counter = new AtomicLong(0L);
     private final AtomicBoolean stopFlag = new AtomicBoolean(false);
@@ -53,7 +54,7 @@ public class SimpleExecutor {
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException var13) {
-                ;
+
             }
 
             long count = this.counter.get();
