@@ -18,7 +18,7 @@ import io.growing.dls.utils.IsCondition
  */
 class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
-  final lazy val (consulClient, loadBalancerMap) = ConsulBuilder.checkAndBuild(consulAddress)
+  private[this] final lazy val (consulClient, loadBalancerMap) = ConsulBuilder.checkAndBuild(consulAddress)
 
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {
