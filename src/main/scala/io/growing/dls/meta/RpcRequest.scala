@@ -10,7 +10,7 @@ import scala.beans.BeanProperty
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */
-final case class RpcRequest() {
+sealed case class RpcRequest() {
 
   //请求id，线程安全
   @BeanProperty

@@ -1,5 +1,4 @@
 import Dependencies.Versions
-import sbt.util
 
 
 name := "dlsRpc"
@@ -12,6 +11,5 @@ lazy val root = Project(id = "dlsRpc", base = file("."))
   ).settings(Dependencies.core)
 
 
-logLevel := util.Level.Warn
 javacOptions ++= Seq("-encoding", "UTF-8")
 javaOptions in run += "-Xmx1G"

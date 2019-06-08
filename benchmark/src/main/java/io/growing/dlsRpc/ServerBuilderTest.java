@@ -5,7 +5,6 @@ import io.growing.dls.DlsRpcInvoke;
 public class ServerBuilderTest {
 
     public static void main(String[] args) {
-        Hello hello = new HelloImpl();
-        DlsRpcInvoke.publishService(8877, hello);
+        DlsRpcInvoke.publishService(8877, new HelloImpl());
     }
 }

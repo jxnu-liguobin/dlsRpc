@@ -18,6 +18,7 @@ Technology
 * Protostuff
 * Jmh
 * Guice
+* Consul
 
 Test & Use
 ---

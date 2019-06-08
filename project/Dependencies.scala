@@ -12,13 +12,16 @@ object Dependencies {
     val logging = "3.9.2"
     val slfj = "2.1.2"
     val protostuff = "1.0.12"
+    val consul = "1.4.2"
     //    val jmh = "1.9.1"
   }
 
   object Compiles {
 
+    lazy val consulAPi: ModuleID = "com.ecwid.consul" % "consul-api" % Versions.consul
+
     lazy val guava: ModuleID = "com.google.guava" % "guava" % Versions.guava
-    
+
     lazy val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
     //sbt中jmh太难用了，各种问题，试了三个插件都跑步起来
     //    lazy val jmh: Seq[ModuleID] = Seq(
@@ -45,5 +48,5 @@ object Dependencies {
 
   import Compiles._
 
-  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, log, guice)
+  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, log, guice, consulAPi)
 }
