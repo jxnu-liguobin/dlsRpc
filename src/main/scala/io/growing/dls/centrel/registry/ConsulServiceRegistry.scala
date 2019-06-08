@@ -4,7 +4,7 @@ import java.util
 
 import com.ecwid.consul.v1.agent.model.NewService
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dls.centrel.discovery.ConsulBuilder
+import io.growing.dls.centrel.ConsulBuilder
 import io.growing.dls.meta.ServiceAddress
 import io.growing.dls.utils.Constants
 

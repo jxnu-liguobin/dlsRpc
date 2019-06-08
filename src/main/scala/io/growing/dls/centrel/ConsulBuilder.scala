@@ -1,4 +1,4 @@
-package io.growing.dls.centrel.discovery
+package io.growing.dls.centrel
 
 import java.util.concurrent.ConcurrentHashMap
 

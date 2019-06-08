@@ -6,6 +6,7 @@ import java.util.{ArrayList => JArrayList, List => JList}
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{ConsulClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dls.centrel.ConsulBuilder
 import io.growing.dls.centrel.discovery.loadbalancer.RandomLoadBalancer
 import io.growing.dls.meta.ServiceAddress
 import io.growing.dls.utils.IsCondition
