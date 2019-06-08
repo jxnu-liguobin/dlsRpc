@@ -17,7 +17,7 @@ import io.growing.dls.utils.Constants
  */
 class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegistry with LazyLogging {
 
-  private[this]final lazy val (consulClient, _) = ConsulBuilder.checkAndBuild(consulAddress)
+  private[this] final lazy val (consulClient, _) = ConsulBuilder.checkAndBuild(consulAddress)
 
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     val newService = new NewService
@@ -33,6 +33,8 @@ class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegist
     check.setInterval("1s")
     newService.setCheck(check)
     consulClient.agentServiceRegister(newService)
+    logger.info(s"RegisterService : {$serviceName} success")
+
   }
 
   //暂时使用这种做服务id名

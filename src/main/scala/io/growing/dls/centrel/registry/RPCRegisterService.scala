@@ -38,7 +38,6 @@ class RPCRegisterService extends LazyLogging {
     for (serviceName <- getServiceNames.iterator()) {
       serviceRegistry.register(serviceName, serviceAddress)
     }
-    logger.info("InitRegisterService success")
   }
 
   /**
@@ -48,7 +47,6 @@ class RPCRegisterService extends LazyLogging {
    * @param serviceAddress
    */
   def registerService(serviceName: String, serviceAddress: ServiceAddress) = {
-    logger.info(s"RegisterService : {$serviceName} success")
     serviceRegistry.register(serviceName, serviceAddress)
   }
 }
