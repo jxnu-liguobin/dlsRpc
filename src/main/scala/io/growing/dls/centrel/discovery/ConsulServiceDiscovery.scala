@@ -1,5 +1,8 @@
 package io.growing.dls.centrel.discovery
 
+import java.util
+import java.util.concurrent.ConcurrentHashMap
+
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
@@ -21,10 +24,6 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
   lazy val address = consulAddress.split(":")
   lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
   lazy val consulClient = new ConsulClient(rawClient)
-
-  import java.util
-  import java.util.concurrent.ConcurrentHashMap
-
   final lazy val loadBalancerMap = new ConcurrentHashMap[String, loadbalancer.RandomLoadBalancer[ServiceAddress]]
 
   //传进来的是service的类名
@@ -36,12 +35,13 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
       val healthServices: util.List[HealthService] = consulClient.getHealthServices(serviceName,
         true, QueryParams.DEFAULT).getValue
       loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices))
-      // Watch consul
+      // 监测 consul
       longPolling(serviceName)
     }
     //返回真实服务的地址（ip:port）可能是null
     val sd = loadBalancerMap.get(serviceName).next
     IsCondition.conditionException(sd.port < 0, "port can't less  0")
+    logger.info("real address is {}", sd)
     sd.toString
   }
 

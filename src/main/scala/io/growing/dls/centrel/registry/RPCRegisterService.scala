@@ -1,6 +1,7 @@
 package io.growing.dls.centrel.registry
 
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dls.Constants.PACKAGE_SERVICE
 import io.growing.dls.meta.ServiceAddress
 import io.growing.dls.utils
 import javax.inject.Inject
@@ -15,12 +16,10 @@ import scala.collection.JavaConverters
  */
 class RPCRegisterService extends LazyLogging {
 
-
   //这里不能使用ServiceLoadUtil 可能是循环依赖，具体暂时不清楚
   @Inject
   private[this] var serviceRegistry: ServiceRegistry = _
 
-  import io.growing.dls.Constants.PACKAGE_SERVICE
 
   /**
    * 获取所有需要注册的服务类名
