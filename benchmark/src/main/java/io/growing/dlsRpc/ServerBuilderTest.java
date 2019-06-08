@@ -1,6 +1,6 @@
 package io.growing.dlsRpc;
 
-import io.growing.dls.DlsRpcInvoke;
+import io.growing.dls.utils.DlsRpcInvoke;
 
 public class ServerBuilderTest {
 

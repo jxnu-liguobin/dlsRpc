@@ -1,4 +1,4 @@
-package io.growing.dls
+package io.growing.dls.utils
 
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit

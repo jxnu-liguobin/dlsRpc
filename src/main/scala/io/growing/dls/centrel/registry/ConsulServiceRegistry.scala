@@ -5,9 +5,8 @@ import java.util
 import com.ecwid.consul.v1.agent.model.NewService
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient}
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dls.Constants
 import io.growing.dls.meta.ServiceAddress
-import io.growing.dls.utils.IsCondition
+import io.growing.dls.utils.{Constants, IsCondition}
 
 /**
  * 使用consul的服务注册

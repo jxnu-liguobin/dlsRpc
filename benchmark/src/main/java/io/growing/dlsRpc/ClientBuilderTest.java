@@ -1,7 +1,7 @@
 package io.growing.dlsRpc;
 
 
-import io.growing.dls.DlsRpcInvoke;
+import io.growing.dls.utils.DlsRpcInvoke;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

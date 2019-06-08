@@ -9,7 +9,8 @@ import io.growing.dls.serialize.ProtostuffSerializer
 import io.growing.dls.server.ServerChannel
 import io.growing.dls.transport.client.NettyClientChannel
 import io.growing.dls.transport.server.NettyServerChannel
-import io.growing.dls.{Constants, Protocol, Serializer}
+import io.growing.dls.utils.Constants
+import io.growing.dls.{Protocol, Serializer}
 
 /**
  * guice接口和实现绑定注入

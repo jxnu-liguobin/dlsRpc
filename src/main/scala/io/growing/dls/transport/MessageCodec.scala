@@ -2,7 +2,7 @@ package io.growing.dls.transport
 
 import java.util.{List => JList}
 
-import io.growing.dls.Constants
+import io.growing.dls.utils.Constants
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec

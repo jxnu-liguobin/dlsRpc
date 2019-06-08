@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicLong
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.exception.RPCException
 import io.growing.dls.meta.RpcRequest
-import io.growing.dls.utils.{IsCondition, ServiceLoadUtil}
-import io.growing.dls.{Constants, Protocol, Serializer}
+import io.growing.dls.utils.{Constants, IsCondition, ServiceLoadUtil}
+import io.growing.dls.{Protocol, Serializer}
 
 import scala.util.Try
 

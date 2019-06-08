@@ -6,12 +6,9 @@ import java.util.{ArrayList => JArrayList, List => JList}
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dls.Constants
 import io.growing.dls.centrel.discovery.loadbalancer.RandomLoadBalancer
 import io.growing.dls.meta.ServiceAddress
-import io.growing.dls.utils.IsCondition
-
-import scala.collection.JavaConverters
+import io.growing.dls.utils.{Constants, IsCondition}
 
 /**
  * 使用consul的服务发现
@@ -23,6 +20,7 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
 
   IsCondition.conditionException(!consulAddress.matches(Constants.PATTERN), "ip invalid")
   final lazy val address = consulAddress.split(":")
+  IsCondition.conditionException(address(1).toInt < 0, "port can't less  0")
   final lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
   final lazy val consulClient = new ConsulClient(rawClient)
   final lazy val loadBalancerMap = new ConcurrentHashMap[String, loadbalancer.RandomLoadBalancer[ServiceAddress]]
@@ -62,9 +60,9 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
   }
 
   private[this] def buildLoadBalancer(healthServices: JList[HealthService]): loadbalancer.RandomLoadBalancer[ServiceAddress] = {
+    import io.growing.dls.utils.ImplicitUtils.javaItToScalaIt // 隐式对象
     val address = new JArrayList[ServiceAddress]()
-    //TODO 隐式对象优化
-    for (service <- JavaConverters.asScalaIterator(healthServices.iterator())) {
+    for (service <- healthServices.iterator()) {
       address.add(ServiceAddress(service.getService.getAddress, service.getService.getPort))
     }
     new RandomLoadBalancer(address)

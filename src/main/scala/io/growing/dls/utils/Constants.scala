@@ -1,4 +1,4 @@
-package io.growing.dls
+package io.growing.dls.utils
 
 /**
  * 系统常量
@@ -23,6 +23,9 @@ object Constants {
 
   //服务发现与注册中心
   final lazy val CONSUL_ADDRESS = "127.0.0.1:8500"
+
+  //默认是服务调用地址就是本地，暂时不用
+  final lazy val DEFAULT_DISCOVER_ADDRESS = "localhost:8080"
 
 
 }
