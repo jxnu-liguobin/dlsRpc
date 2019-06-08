@@ -30,7 +30,7 @@ object Dependencies {
     //      "org.openjdk.jmh" % "jmh-generator-annprocess" % Versions.jmh
     //    )
     lazy val log4j2: Seq[ModuleID] = Seq(
-      "org.apache.logging.log4j" %% "log4j-api-scala_2.12" % Versions.log4j_api,
+      "org.apache.logging.log4j" %% "log4j-api-scala" % Versions.log4j_api,
       "org.apache.logging.log4j" % "log4j-api" % Versions.log4j,
       "org.apache.logging.log4j" % "log4j-core" % Versions.log4j,
       "org.apache.logging.log4j" % "log4j-slf4j-impl" % Versions.log4j)
