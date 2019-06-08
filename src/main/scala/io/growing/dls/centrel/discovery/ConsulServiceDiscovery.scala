@@ -1,10 +1,9 @@
 package io.growing.dls.centrel.discovery
 
-import java.util.concurrent.ConcurrentHashMap
 import java.util.{ArrayList => JArrayList, List => JList}
 
 import com.ecwid.consul.v1.health.model.HealthService
-import com.ecwid.consul.v1.{ConsulClient, QueryParams, Response}
+import com.ecwid.consul.v1.{QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.centrel.ConsulBuilder
 import io.growing.dls.centrel.discovery.loadbalancer.RandomLoadBalancer
@@ -19,7 +18,7 @@ import io.growing.dls.utils.IsCondition
  */
 class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
-  final lazy val (consulClient, loadBalancerMap): (ConsulClient, ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]) = ConsulBuilder.buildDiscover(consulAddress)
+  final lazy val (consulClient, loadBalancerMap) = ConsulBuilder.checkAndBuild(consulAddress)
 
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {
