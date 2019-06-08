@@ -3,10 +3,10 @@ package io.growing.dls.centrel.registry
 import java.util
 
 import com.ecwid.consul.v1.agent.model.NewService
-import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient}
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dls.centrel.discovery.ConsulBuilder
 import io.growing.dls.meta.ServiceAddress
-import io.growing.dls.utils.{Constants, IsCondition}
+import io.growing.dls.utils.Constants
 
 /**
  * 使用consul的服务注册
@@ -15,13 +15,9 @@ import io.growing.dls.utils.{Constants, IsCondition}
  * @version 1.0, 2019-06-08
  * @param consulAddress ip:port
  */
-class ConsulServiceRegistry(consulAddress: String) extends ServiceRegistry with LazyLogging {
+class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegistry with LazyLogging {
 
-  IsCondition.conditionException(!consulAddress.matches(Constants.PATTERN), "ip invalid")
-  final lazy val address = consulAddress.split(":")
-  IsCondition.conditionException(address(1).toInt < 0, "port can't less  0")
-  final lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
-  final lazy val consulClient = new ConsulClient(rawClient)
+  final lazy val consulClient = ConsulBuilder.buildRegistry(consulAddress)
 
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     val newService = new NewService
@@ -39,14 +35,14 @@ class ConsulServiceRegistry(consulAddress: String) extends ServiceRegistry with 
     consulClient.agentServiceRegister(newService)
   }
 
+  //暂时使用这种做服务id名
   private[this] def generateNewIdForService(serviceName: String): String = {
-    serviceName + "-" + Constants.CONSUL_ADDRESS
+    serviceName + "-" + Constants.CONSUL_ADDRESS_IP + ":" + Constants.CONSUL_ADDRESS_PORT
   }
 
-
+  //手动根据id清除，id需要转码
+  //PUT http://127.0.0.1:8500/v1/agent/service/deregister/Hello-127.0.0.1
   def deregister(serviceId: String) = {
     consulClient.agentServiceDeregister(serviceId)
-    //手动根据id清除，id需要转码
-    //PUT http://127.0.0.1:8500/v1/agent/service/deregister/Hello-127.0.0.1
   }
 }

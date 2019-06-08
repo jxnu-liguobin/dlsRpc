@@ -11,7 +11,7 @@ import io.growing.dls.meta.ServiceAddress
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-object TestGuiceInject extends App with LazyLogging {
+object TestGuiceInject extends App  {
 
   private lazy val register: RPCRegisterService = ServiceLoadUtil.getProvider(classOf[RPCRegisterService])
   private lazy val discover: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])

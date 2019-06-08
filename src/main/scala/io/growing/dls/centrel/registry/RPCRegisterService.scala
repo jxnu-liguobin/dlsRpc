@@ -23,7 +23,7 @@ class RPCRegisterService extends LazyLogging {
   /**
    * 获取所有需要注册的服务类名
    */
-  def getServiceNames(): JList[String] = {
+  def getServiceNames: JList[String] = {
     ClassUtil.getClassListByAnnotation(Constants.PACKAGE_SERVICE, classOf[RPCService])
   }
 
@@ -35,7 +35,7 @@ class RPCRegisterService extends LazyLogging {
   def initRegisterService(serviceAddress: ServiceAddress): Unit = {
     //TODO 注册前检查实现类是否存在，避免注册无效服务
     import io.growing.dls.utils.ImplicitUtils.javaItToScalaIt // 隐式对象
-    for (serviceName <- getServiceNames().iterator()) {
+    for (serviceName <- getServiceNames.iterator()) {
       serviceRegistry.register(serviceName, serviceAddress)
     }
     logger.info("InitRegisterService success")

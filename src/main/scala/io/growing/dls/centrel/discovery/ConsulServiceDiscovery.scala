@@ -4,11 +4,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.{ArrayList => JArrayList, List => JList}
 
 import com.ecwid.consul.v1.health.model.HealthService
-import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient, QueryParams, Response}
+import com.ecwid.consul.v1.{ConsulClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.centrel.discovery.loadbalancer.RandomLoadBalancer
 import io.growing.dls.meta.ServiceAddress
-import io.growing.dls.utils.{Constants, IsCondition}
+import io.growing.dls.utils.IsCondition
 
 /**
  * 使用consul的服务发现
@@ -16,14 +16,9 @@ import io.growing.dls.utils.{Constants, IsCondition}
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery with LazyLogging {
+class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
-  IsCondition.conditionException(!consulAddress.matches(Constants.PATTERN), "ip invalid")
-  final lazy val address = consulAddress.split(":")
-  IsCondition.conditionException(address(1).toInt < 0, "port can't less  0")
-  final lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
-  final lazy val consulClient = new ConsulClient(rawClient)
-  final lazy val loadBalancerMap = new ConcurrentHashMap[String, loadbalancer.RandomLoadBalancer[ServiceAddress]]
+  final lazy val (consulClient, loadBalancerMap): (ConsulClient, ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]) = ConsulBuilder.buildDiscover(consulAddress)
 
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {

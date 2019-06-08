@@ -5,7 +5,7 @@ object Dependencies {
 
   object Versions {
     val scala212 = "2.12.7"
-    val log4j2 = "2.11.1"
+    val log4j = "2.11.1"
     val guava = "19.0"
     val guice = "3.0"
     val netty = "4.1.6.Final"
@@ -13,6 +13,7 @@ object Dependencies {
     val slfj = "2.1.2"
     val protostuff = "1.0.12"
     val consul = "1.4.2"
+    val log4j_api = "11.0"
     //    val jmh = "1.9.1"
   }
 
@@ -29,10 +30,10 @@ object Dependencies {
     //      "org.openjdk.jmh" % "jmh-generator-annprocess" % Versions.jmh
     //    )
     lazy val log4j2: Seq[ModuleID] = Seq(
-      "org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
-      "org.apache.logging.log4j" % "log4j-api" % Versions.log4j2,
-      "org.apache.logging.log4j" % "log4j-core" % Versions.log4j2,
-      "org.apache.logging.log4j" % "log4j-slf4j-impl" % Versions.log4j2)
+      "org.apache.logging.log4j" %% "log4j-api-scala_2.12" % Versions.log4j_api,
+      "org.apache.logging.log4j" % "log4j-api" % Versions.log4j,
+      "org.apache.logging.log4j" % "log4j-core" % Versions.log4j,
+      "org.apache.logging.log4j" % "log4j-slf4j-impl" % Versions.log4j)
 
     lazy val protostuff: Seq[ModuleID] = Seq(
       "com.dyuproject.protostuff" % "protostuff-core" % Versions.protostuff,
