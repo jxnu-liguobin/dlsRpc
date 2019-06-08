@@ -10,5 +10,5 @@ import java.net.InetSocketAddress;
 @State(value = Scope.Benchmark)
 public class ClientHello {
     public static final Hello hello = ClientBuilder.builderWithClass(Hello.class).bindingAddress(
-            InetSocketAddress.createUnresolved("127.0.0.1", 8012)).build();
+            InetSocketAddress.createUnresolved("127.0.0.1", 8080)).build();
 }

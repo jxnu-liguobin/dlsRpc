@@ -81,3 +81,6 @@ Benchmark
 | dlsRpc.JmhClient.JmhClient | Single shot invocation time |   |  2567.914 |   | ms/op |
 
 [@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java) [@Original Java Edition](https://github.com/yeyincai/flashRPC)
+
+[@NioEventLoopGroup](https://www.jianshu.com/p/2e3ae43dc4cb) [@consul-api](https://github.com/Ecwid/consul-api) [@EnableEurekaClient源码分析](https://www.cnblogs.com/zhangjianbin/p/6616866.html)
+
