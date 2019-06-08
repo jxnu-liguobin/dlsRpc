@@ -1,4 +1,4 @@
-package io.growing.dls.servicetest;
+package io.growing.dls.rpctest;
 
 import com.google.inject.Singleton;
 

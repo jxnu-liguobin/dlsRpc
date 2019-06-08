@@ -19,10 +19,10 @@ import io.growing.dls.utils.IsCondition
 class ConsulServiceRegistry(consulAddress: String) extends ServiceRegistry with LazyLogging {
 
   IsCondition.conditionException(!consulAddress.matches(Constants.PATTERN), "ip invalid")
-  lazy val address = consulAddress.split(":")
+  final lazy val address = consulAddress.split(":")
   IsCondition.conditionException(address(1).toInt < 0, "port can't less  0")
-  lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
-  lazy val consulClient = new ConsulClient(rawClient)
+  final lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
+  final lazy val consulClient = new ConsulClient(rawClient)
 
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     val newService = new NewService

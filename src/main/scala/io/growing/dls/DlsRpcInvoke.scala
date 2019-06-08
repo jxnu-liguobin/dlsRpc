@@ -9,6 +9,8 @@ import io.growing.dls.server.ServerBuilder
 /**
  * 封装服务注册和获取，一个服务对应一个channel端口
  *
+ * 后面要使用服务注册发现，并支持自动注册，支持多个服务
+ *
  * @author 梦境迷离
  * @version 1.0, 2019-06-07
  */

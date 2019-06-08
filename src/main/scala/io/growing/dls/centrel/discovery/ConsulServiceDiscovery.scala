@@ -1,12 +1,13 @@
 package io.growing.dls.centrel.discovery
 
-import java.util
 import java.util.concurrent.ConcurrentHashMap
+import java.util.{ArrayList => JArrayList, List => JList}
 
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.Constants
+import io.growing.dls.centrel.discovery.loadbalancer.RandomLoadBalancer
 import io.growing.dls.meta.ServiceAddress
 import io.growing.dls.utils.IsCondition
 
@@ -21,18 +22,18 @@ import scala.collection.JavaConverters
 class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery with LazyLogging {
 
   IsCondition.conditionException(!consulAddress.matches(Constants.PATTERN), "ip invalid")
-  lazy val address = consulAddress.split(":")
-  lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
-  lazy val consulClient = new ConsulClient(rawClient)
+  final lazy val address = consulAddress.split(":")
+  final lazy val rawClient = new ConsulRawClient(address(0), Integer.valueOf(address(1)))
+  final lazy val consulClient = new ConsulClient(rawClient)
   final lazy val loadBalancerMap = new ConcurrentHashMap[String, loadbalancer.RandomLoadBalancer[ServiceAddress]]
 
   //传进来的是service的类名
-  override def discover(serviceName: String): String = {
+  override def discover(serviceName: String): ServiceAddress = {
     IsCondition.conditionException(serviceName == null, "service name can't be null")
     //    val realName = serviceName + "-" + Constants.CONSUL_ADDRESS
     if (!loadBalancerMap.containsKey(serviceName)) {
       //名字是serviceName-ip:port，    //TODO 优化过期接口
-      val healthServices: util.List[HealthService] = consulClient.getHealthServices(serviceName,
+      val healthServices: JList[HealthService] = consulClient.getHealthServices(serviceName,
         true, QueryParams.DEFAULT).getValue
       loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices))
       // 监测 consul
@@ -42,7 +43,7 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
     val sd = loadBalancerMap.get(serviceName).next
     IsCondition.conditionException(sd.port < 0, "port can't less  0")
     logger.info("real address is {}", sd)
-    sd.toString
+    sd
   }
 
   private[this] def longPolling(serviceName: String) {
@@ -50,7 +51,7 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
       var consulIndex: Long = -1
       do {
         val param = QueryParams.Builder.builder().setIndex(consulIndex).build()
-        val healthyServices: Response[util.List[HealthService]] = consulClient.getHealthServices(serviceName, true, param)
+        val healthyServices: Response[JList[HealthService]] = consulClient.getHealthServices(serviceName, true, param)
         consulIndex = healthyServices.getConsulIndex
         logger.debug("consul index for {} is {}", serviceName, consulIndex)
         val healthServices = healthyServices.getValue
@@ -60,12 +61,12 @@ class ConsulServiceDiscovery(consulAddress: String) extends ServiceDiscovery wit
     }).start()
   }
 
-  private[this] def buildLoadBalancer(healthServices: java.util.List[HealthService]): loadbalancer.RandomLoadBalancer[ServiceAddress] = {
-    val address = new util.ArrayList[ServiceAddress]()
+  private[this] def buildLoadBalancer(healthServices: JList[HealthService]): loadbalancer.RandomLoadBalancer[ServiceAddress] = {
+    val address = new JArrayList[ServiceAddress]()
     //TODO 隐式对象优化
     for (service <- JavaConverters.asScalaIterator(healthServices.iterator())) {
       address.add(ServiceAddress(service.getService.getAddress, service.getService.getPort))
     }
-    new loadbalancer.RandomLoadBalancer(address)
+    new RandomLoadBalancer(address)
   }
 }

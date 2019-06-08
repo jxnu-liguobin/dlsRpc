@@ -8,9 +8,19 @@ package io.growing.dls.meta
  */
 case class ServiceAddress(ip: String, port: Int) {
 
-  def getIp = ip
+  /**
+   * 暴露ip
+   *
+   * @return
+   */
+  def getIp: String = ip
 
-  def getPort = port
+  /**
+   * 暴露port
+   *
+   * @return
+   */
+  def getPort: Int = port
 
   /**
    * 特殊的toString，可以直接使用作为tcp的参数

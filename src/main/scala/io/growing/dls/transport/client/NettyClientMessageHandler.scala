@@ -20,7 +20,7 @@ class NettyClientMessageHandler(messageHandler: ClientMessageHandler)
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
     outboundChannel = ctx.channel
-    logger.info("ClientMessageHandlerImpl  init ")
+    logger.info("NettyClientMessageHandler channelActive")
     ctx.read
   }
 

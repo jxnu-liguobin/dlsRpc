@@ -1,9 +1,11 @@
 package io.growing.dls.centrel.registry
 
+import java.util.{List => JList}
+
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dls.Constants.PACKAGE_SERVICE
 import io.growing.dls.meta.ServiceAddress
-import io.growing.dls.utils
+import io.growing.dls.utils.ClassUtil
 import javax.inject.Inject
 
 import scala.collection.JavaConverters
@@ -24,8 +26,8 @@ class RPCRegisterService extends LazyLogging {
   /**
    * 获取所有需要注册的服务类名
    */
-  def getServiceNames(): java.util.List[String] = {
-    utils.ClassUtil.getClassListByAnnotation(PACKAGE_SERVICE, classOf[RPCService])
+  def getServiceNames(): JList[String] = {
+    ClassUtil.getClassListByAnnotation(PACKAGE_SERVICE, classOf[RPCService])
   }
 
   /**
@@ -34,6 +36,7 @@ class RPCRegisterService extends LazyLogging {
    * @param serviceAddress 注册地址
    */
   def initRegisterService(serviceAddress: ServiceAddress): Unit = {
+    //TODO 注册前检查实现类是否存在，避免注册无效服务
     for (serviceName <- JavaConverters.asScalaIterator(getServiceNames().iterator())) {
       serviceRegistry.register(serviceName, serviceAddress)
     }

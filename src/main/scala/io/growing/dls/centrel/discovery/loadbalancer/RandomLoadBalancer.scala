@@ -1,6 +1,7 @@
 package io.growing.dls.centrel.discovery.loadbalancer
 
 import java.util.concurrent.ThreadLocalRandom
+import java.util.{List => JList}
 
 import io.growing.dls.utils.IsCondition
 
@@ -10,7 +11,7 @@ import io.growing.dls.utils.IsCondition
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-class RandomLoadBalancer[T](serviceAddresses: java.util.List[T]) extends Loadbalancer {
+class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer {
 
   /**
    * 服务的地址 ip:port

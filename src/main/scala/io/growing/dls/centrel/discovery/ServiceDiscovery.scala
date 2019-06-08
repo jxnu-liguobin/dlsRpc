@@ -1,5 +1,7 @@
 package io.growing.dls.centrel.discovery
 
+import io.growing.dls.meta.ServiceAddress
+
 /**
  * 服务发现顶级接口
  *
@@ -14,6 +16,6 @@ trait ServiceDiscovery {
    * @param serviceName class name
    * @return
    */
-  def discover(serviceName: String): String
+  def discover(serviceName: String): ServiceAddress
 
 }

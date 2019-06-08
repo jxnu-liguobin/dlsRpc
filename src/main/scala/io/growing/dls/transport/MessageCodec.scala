@@ -1,6 +1,6 @@
 package io.growing.dls.transport
 
-import java.util
+import java.util.{List => JList}
 
 import io.growing.dls.Constants
 import io.netty.buffer.ByteBuf
@@ -28,7 +28,7 @@ class MessageCodec extends ByteToMessageCodec[Array[Byte]] {
   }
 
   @throws[Exception]
-  override protected def decode(ctx: ChannelHandlerContext, in: ByteBuf, out: util.List[AnyRef]): Unit = {
+  override protected def decode(ctx: ChannelHandlerContext, in: ByteBuf, out: JList[AnyRef]): Unit = {
     if (in.readableBytes < MESSAGE_LENGTH) return
     in.markReaderIndex
     val messageLength = in.readInt

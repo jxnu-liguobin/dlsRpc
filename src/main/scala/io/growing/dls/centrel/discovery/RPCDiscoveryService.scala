@@ -1,6 +1,7 @@
 package io.growing.dls.centrel.discovery
 
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dls.meta.ServiceAddress
 import javax.inject.Inject
 
 /**
@@ -14,7 +15,7 @@ class RPCDiscoveryService extends LazyLogging {
   @Inject
   private[this] var serviceDiscovery: ServiceDiscovery = _
 
-  def obtainService(serviceName: String): String = {
+  def obtainServiceAddress(serviceName: String): ServiceAddress = {
     serviceDiscovery.discover(serviceName)
   }
 }
