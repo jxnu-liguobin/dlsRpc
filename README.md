@@ -1,6 +1,6 @@
 # A simple RPC implemented by Scala
 
-High performance RPC framework based on HTTP/2 Protocol, Netty Transport and Protostuff Serialization
+High performance RPC framework based on HTTP/2 Protocol, Consul, Guice, Netty Transport and Protostuff Serialization
   
 * Java 8
 * Scala 2.12.7
