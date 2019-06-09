@@ -1,13 +1,9 @@
 import Dependencies.Versions
 
-name := "dlsRpc"
-version := "1.0.0"
-scalaVersion := Versions.scala212
-
 //工程通用配置
 lazy val commonSettings = Seq(
   organization := "io.growing",
-  version := "1.0.1",
+  version := "1.0.2",
   scalaVersion := Versions.scala212
 )
 
