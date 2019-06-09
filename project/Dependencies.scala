@@ -49,5 +49,10 @@ object Dependencies {
 
   import Compiles._
 
-  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, log, guice, consulAPi)
+  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, guice)
+
+  val consuls = libraryDependencies ++= Seq(consulAPi)
+
+  val commos = libraryDependencies ++= Seq(log)
+
 }
