@@ -56,7 +56,7 @@ Note
 ---
 
 ```
-The benchmark module use dlsRpc by dlsRpc-*.jar where is in their target folders 
+The benchmark module use dlsRpc by dlsRpc-*.jar where is in their target folders after you package
 ```
 
 Benchmark
