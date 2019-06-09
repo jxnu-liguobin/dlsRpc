@@ -1,4 +1,4 @@
-package io.growing.dlsRpc;
+package io.growing.dls;
 
 import io.growing.dls.client.ClientBuilder;
 import org.openjdk.jmh.annotations.Scope;

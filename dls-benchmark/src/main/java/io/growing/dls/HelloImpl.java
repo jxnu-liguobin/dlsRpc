@@ -1,4 +1,4 @@
-package io.growing.dlsRpc;
+package io.growing.dls;
 
 import com.typesafe.scalalogging.LazyLogging;
 import com.typesafe.scalalogging.Logger;

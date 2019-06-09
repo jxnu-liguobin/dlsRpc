@@ -1,4 +1,4 @@
-package io.growing.dlsRpc;
+package io.growing.dls;
 
 import com.google.common.base.Preconditions;
 

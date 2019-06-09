@@ -7,7 +7,7 @@ scalaVersion := Versions.scala212
 //工程通用配置
 lazy val commonSettings = Seq(
   organization := "io.growing",
-  version := "1.0.0",
+  version := "1.0.1",
   scalaVersion := Versions.scala212
 )
 
@@ -30,3 +30,6 @@ lazy val commons = Project(id = "dlsRpc-common", base = file("dlsRpc-common"))
 
 javacOptions ++= Seq("-encoding", "UTF-8")
 javaOptions in run += "-Xmx1G"
+
+//编译路径
+//windows不能使用git cmd 命令行打包，需要使用sbt
