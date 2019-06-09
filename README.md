@@ -56,8 +56,7 @@ Note
 ---
 
 ```
-If you can't find a dependency in benchmark,then according to the prompt  to                                                                                     
- add dependency on module 'dlsRpc'
+The benchmark module use dlsRpc by dlsRpc-*.jar where is in their target folders 
 ```
 
 Benchmark
