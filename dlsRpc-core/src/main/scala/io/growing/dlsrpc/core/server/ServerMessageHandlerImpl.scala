@@ -2,31 +2,32 @@ package io.growing.dlsrpc.core.server
 
 import java.lang.reflect.Method
 
+import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
+import javax.inject.Inject
 
 /**
  * 服务端消息处理实现
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
-class ServerMessageHandlerImpl extends ServerMessageHandler with LazyLogging {
+@Singleton
+class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: ServerChannel) extends ServerMessageHandler with LazyLogging {
 
-  private[this] var serializer: Serializer = _
+  //需要处理的服务
   private[this] var serviceBean: Any = _
-  private[this] var channel: ServerChannel = _
 
-  def this(serviceBean: Any, serializer: Serializer, channel: ServerChannel) {
-    this()
-    this.serviceBean = serviceBean
-    this.serializer = serializer
-    this.channel = channel
+  //手动选择bean
+  def setProcessBean(bean: Any) = {
+    this.serviceBean = bean
   }
 
   override def processor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
+    IsCondition.conditionException(this.serviceBean == null, "bean can't be null")
     //接口消息并反序列化解码拿到真正的请求
     val rpcRequest: RpcRequest = serializer.deserializer(request, classOf[RpcRequest])
     val rpcResponse = new RpcResponse

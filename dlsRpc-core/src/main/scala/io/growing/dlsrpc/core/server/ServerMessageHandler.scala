@@ -1,15 +1,16 @@
 package io.growing.dlsrpc.core.server
 
+import com.google.inject.ImplementedBy
 import io.growing.dlsrpc.core.api.SendMessage
 
 /**
  * 服务端消息处理器顶级接口
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
+@ImplementedBy(classOf[ServerMessageHandlerImpl])
 trait ServerMessageHandler {
-
 
   /**
    * 接收并处理消息
@@ -18,5 +19,12 @@ trait ServerMessageHandler {
    * @param receiveMessage 发送消息的实现
    */
   def processor(request: Array[Byte], receiveMessage: SendMessage): Unit
+
+  /**
+   * 设置需要处理的服务
+   *
+   * @param bean
+   */
+  def setProcessBean(bean: Any)
 
 }

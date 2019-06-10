@@ -32,6 +32,7 @@ class NettyServerChannel extends ServerChannel with LazyLogging {
     //异步通知
     val nettyServerChannelFuture: ChannelFuture = ServerChannelBuilder.build(bossGroup, workerGroup,
       new ServerChannelInitializer(executor, messageHandler), port)
+
     try {
       nettyServerChannelFuture.await
     }

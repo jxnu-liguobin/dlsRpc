@@ -12,7 +12,6 @@ import io.growing.dlsrpc.core.api.{AbstractChannel, Protocol}
  */
 trait ClientChannel extends AbstractChannel {
 
-
   /**
    * 打开通道
    *
@@ -21,7 +20,6 @@ trait ClientChannel extends AbstractChannel {
    * @param protocol
    */
   def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit
-
 
   /**
    * 发送消息

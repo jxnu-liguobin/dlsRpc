@@ -14,10 +14,13 @@ object Dependencies {
     val protostuff = "1.0.12"
     val consul = "1.4.2"
     val log4j_api = "11.0"
+    val cglib = "3.2.10"
     //    val jmh = "1.9.1"
   }
 
   object Compiles {
+
+    lazy val cglib: ModuleID = "cglib" % "cglib-nodep" % Versions.cglib
 
     lazy val consulAPi: ModuleID = "com.ecwid.consul" % "consul-api" % Versions.consul
 
@@ -49,7 +52,7 @@ object Dependencies {
 
   import Compiles._
 
-  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, guice)
+  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, guice, cglib)
 
   val consuls = libraryDependencies ++= Seq(consulAPi)
 

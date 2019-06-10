@@ -1,5 +1,6 @@
 package io.growing.dlsrpc.core.client
 
+import com.google.inject.ImplementedBy
 import io.growing.dlsrpc.common.metadata.RpcRequest
 
 
@@ -7,8 +8,9 @@ import io.growing.dlsrpc.common.metadata.RpcRequest
  * 客户端消息处理器顶级接口
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-04
+ * @version 1.1, 2019-06-04
  */
+@ImplementedBy(classOf[ClientMessageHandlerImpl])
 trait ClientMessageHandler {
 
 

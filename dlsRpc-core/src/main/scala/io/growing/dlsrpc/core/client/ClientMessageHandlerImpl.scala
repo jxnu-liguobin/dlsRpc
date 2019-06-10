@@ -3,38 +3,36 @@ package io.growing.dlsrpc.core.client
 import java.util.concurrent.{BlockingQueue, ConcurrentMap, LinkedBlockingQueue, TimeUnit}
 
 import com.google.common.collect.Maps
+import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
 import io.growing.dlsrpc.common.utils.{Constants, IsCondition}
 import io.growing.dlsrpc.core.api.Serializer
+import javax.inject.Inject
+
 
 /**
+ *
  * 客户端消息处理器实现
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-04
+ * @version 1.1, 2019-06-04
+ * @param serializer 序列化
+ * @param channel    实际发送消息的通道
  */
-class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
+@Singleton
+class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: ClientChannel)
+  extends ClientMessageHandler with LazyLogging {
 
-  //序列化
-  private[this] var serializer: Serializer = _
-  //客户端通道
-  private[this] var channel: ClientChannel = _
   //超时时间
   private[this] final lazy val TIME_AWAIT: Int = Constants.TIME_AWAIT
   //记录请求id和调用返回
   private[this] final lazy val mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = Maps.newConcurrentMap()
 
-  def this(serializer: Serializer, channel: ClientChannel) {
-    this()
-    this.serializer = serializer
-    this.channel = channel
-  }
-
   @throws[Exception]
   override def receiveProcessor(request: Array[Byte]): Unit = {
     //反序列化收到的消息
-    val rpcResponse = this.serializer.deserializer(request, classOf[RpcResponse])
+    val rpcResponse = serializer.deserializer(request, classOf[RpcResponse])
     IsCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
       s"ReceiveAndProcessor not found data getRequestId : {${rpcResponse.getRequestId}}") match {
       case false => {
@@ -55,7 +53,7 @@ class ClientMessageHandlerImpl extends ClientMessageHandler with LazyLogging {
   @throws[Exception]
   override def sendProcessor(rpcRequest: RpcRequest): AnyRef = {
     //序列化
-    val requestMsg = this.serializer.serializer(rpcRequest)
+    val requestMsg = serializer.serializer(rpcRequest)
     val queue = new LinkedBlockingQueue[RpcResponse]
     //保存请求信息
     mapCallBack.put(rpcRequest.getRequestId, queue)

@@ -9,6 +9,6 @@ import java.net.InetSocketAddress;
 
 @State(value = Scope.Benchmark)
 public class ClientHello {
-    public static final Hello hello = ClientBuilder.builderWithClass(Hello.class).bindingAddress(
+    public static final Hello hello = ClientBuilder.builderWithClass(Hello.class).linkToAddress(
             InetSocketAddress.createUnresolved("127.0.0.1", 8080)).build();
 }

@@ -26,7 +26,7 @@ object DlsRpcInvoke {
 
   def obtainService[T](host: String, por: Int, target: Class[T]): T = {
     val serviceAddress: InetSocketAddress = InetSocketAddress.createUnresolved(host, por)
-    builderWithClass(target).bindingAddress(serviceAddress).build
+    builderWithClass(target).linkToAddress(serviceAddress).build
   }
 
 }

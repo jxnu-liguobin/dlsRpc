@@ -6,7 +6,7 @@ package io.growing.dlsrpc.core.client
  * @author 梦境迷离
  * @version 1.0, 2019-06-05
  */
-class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuilder[T], T](clientClass) {
+class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuilder[T], T] {
 
   /**
    * 打开通道并创建代理对象
@@ -14,6 +14,7 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
    * @return 代理对象
    */
   def build: T = {
+    super.setClientClass(clientClass)
     super.start()
     super.getClientProxy
   }

@@ -10,7 +10,7 @@ import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.metadata.RpcRequest
 import io.growing.dlsrpc.common.utils.{Constants, IsCondition}
-import io.growing.dlsrpc.core.api.{Protocol, Serializer}
+import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 
 import scala.util.Try
@@ -21,12 +21,10 @@ import scala.util.Try
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */
-class Client[Builder <: Client[_, _], T] extends LazyLogging {
+class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
 
   //获得客户端通道
   private[this] lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
-  //获得序列化
-  private[this] lazy val serializer: Serializer = ServiceLoadUtil.getProvider(classOf[Serializer])
   //传输协议
   private[this] var protocol: Protocol = _
   //  private[this] lazy val protocol: Protocol = ServiceLoadUtil.getProvider(classOf[Protocol])
@@ -35,22 +33,27 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
   //线程安全的自增请求id
   private[this] lazy val atomicLong: AtomicLong = new AtomicLong(Constants.REQUEST_START_VALUE)
   //消息处理器
-  private[this] lazy val messageHandler: ClientMessageHandler = new ClientMessageHandlerImpl(serializer, clientChannel)
+  private[this] lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
   //调用服务的实现的接口（JDK代理，必须要有实现接口）
   private[this] var clientClass: Class[T] = _
   //this.protocol = ServiceLoadUtil.getProvider(Protocol.class);
 
-  def this(clientClass: Class[T]) {
-    this()
+  def setClientClass(clientClass: Class[T]): Client[_, _] = {
     this.clientClass = clientClass
+    this
   }
 
-  def bindingAddress(socketAddress: SocketAddress): Builder = {
+  def setTransportProtocol(protocol: Protocol): Client[_, _] = {
+    this.protocol = protocol
+    this
+  }
+
+  def linkToAddress(socketAddress: SocketAddress): Builder = {
     this.socketAddress = socketAddress
     this.asInstanceOf[Builder]
   }
 
-  def bindingAddress(host: String, port: Int): Builder = {
+  def linkToAddress(host: String, port: Int): Builder = {
     IsCondition.conditionException(host == null, "host can't be empty")
     IsCondition.conditionException(port < 1, "port can't less than 1")
     this.socketAddress = InetSocketAddress.createUnresolved(host, port)
@@ -75,6 +78,8 @@ class Client[Builder <: Client[_, _], T] extends LazyLogging {
    * @return 代理对象
    */
   private[client] def getClientProxy: T = {
+
+    IsCondition.conditionException(clientClass == null, "param error")
 
     val clientInvocationHandler: InvocationHandler = (proxy, method, args) => {
 
