@@ -8,15 +8,16 @@ import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.server.{ServerChannel, ServerMessageHandler}
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.{Channel, ChannelFuture, EventLoopGroup}
+import javax.inject.Inject
 
 
 /**
  * Netty服务端通道
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
-class NettyServerChannel extends ServerChannel with LazyLogging {
+class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitializer) extends ServerChannel with LazyLogging {
 
   //控制流、多线程处理、并发
   //一个EventLoopGroup包含一个或者多个EventLoop
@@ -31,7 +32,7 @@ class NettyServerChannel extends ServerChannel with LazyLogging {
   override def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
     //异步通知
     val nettyServerChannelFuture: ChannelFuture = ServerChannelBuilder.build(bossGroup, workerGroup,
-      new ServerChannelInitializer(executor, messageHandler), port)
+      serverChannelInitializer.setExecutor(executor), port)
 
     try {
       nettyServerChannelFuture.await

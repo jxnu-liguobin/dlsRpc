@@ -9,14 +9,15 @@ import io.growing.dlsrpc.core.client.{ClientChannel, ClientMessageHandler}
 import io.growing.dlsrpc.core.utils.ChannelWriteMessageUtil
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.{Channel, EventLoopGroup}
+import javax.inject.Inject
 
 /**
  * Netty客户端通道
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
-class NettyClientChannel extends ClientChannel with LazyLogging {
+class NettyClientChannel @Inject()(clientChannelInitializer: ClientChannelInitializer) extends ClientChannel with LazyLogging {
 
   private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private[this] var channel: Channel = _
@@ -24,7 +25,7 @@ class NettyClientChannel extends ClientChannel with LazyLogging {
 
   override def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
     this.protocol = protocol
-    this.channel = ClientChannelBuilder.build(socketAddress, workerGroup, new ClientChannelInitializer(messageHandler))
+    this.channel = ClientChannelBuilder.build(socketAddress, workerGroup, clientChannelInitializer) //使用注入bean
   }
 
   override def sendMessage(msg: Array[Byte]): Unit = {

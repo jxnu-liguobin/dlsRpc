@@ -6,7 +6,7 @@ import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.SendMessage
 import io.growing.dlsrpc.core.server.ServerMessageHandler
-import io.growing.dlsrpc.core.utils.ChannelWriteMessageUtil
+import io.growing.dlsrpc.core.utils.{ChannelWriteMessageUtil, ServiceLoadUtil}
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import io.netty.util.ReferenceCountUtil
@@ -15,10 +15,13 @@ import io.netty.util.ReferenceCountUtil
  * 服务端消息处理器实现
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
-class NettyServerMessageHandler(executor: Executor, messageHandler: ServerMessageHandler)
+class NettyServerMessageHandler(executor: Executor)
   extends ChannelInboundHandlerAdapter with SendMessage with LazyLogging {
+
+  //取得消息处理器实现实例
+  final lazy val messageHandler: ServerMessageHandler = ServiceLoadUtil.getProvider(classOf[ServerMessageHandler])
 
   private[this] var outboundChannel: Channel = _
 

@@ -10,7 +10,7 @@ import io.growing.dlsrpc.core.client.ClientChannel
 import io.growing.dlsrpc.core.protocol.Http2Protocol
 import io.growing.dlsrpc.core.rpc.{RPCDiscoveryService, RPCRegisterService}
 import io.growing.dlsrpc.core.serialize.ProtostuffSerializer
-import io.growing.dlsrpc.core.server.{Server, ServerChannel}
+import io.growing.dlsrpc.core.server.ServerChannel
 import io.growing.dlsrpc.core.transport.client.NettyClientChannel
 import io.growing.dlsrpc.core.transport.server.NettyServerChannel
 
@@ -22,6 +22,7 @@ import io.growing.dlsrpc.core.transport.server.NettyServerChannel
  */
 class ProviderModule extends AbstractModule {
 
+  //这里进行绑定的bean是系统顶级接口的实现类，不再这里绑定类使用了单例注解
   override def configure(): Unit = {
 
     //传输协议
@@ -42,10 +43,6 @@ class ProviderModule extends AbstractModule {
     bind(classOf[RPCRegisterService]).asEagerSingleton()
     //RPC对外服务发现
     bind(classOf[RPCDiscoveryService]).asEagerSingleton()
-    //使用依赖注入管理server
-    bind(classOf[Server]).asEagerSingleton()
 
-    //TODO 客户端需要泛型，不适合在这里处理，待优化
-    //    bind(classOf[Client]).asEagerSingleton()
   }
 }

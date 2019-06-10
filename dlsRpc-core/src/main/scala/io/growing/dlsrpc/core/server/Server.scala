@@ -3,6 +3,7 @@ package io.growing.dlsrpc.core.server
 import java.io.IOException
 import java.util.concurrent.Executor
 
+import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.utils.IsCondition
@@ -23,6 +24,7 @@ import scala.util.Try
  * @param serverChannel  服务通道
  * @param messageHandler 消息处理
  */
+@Singleton
 class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, messageHandler: ServerMessageHandler
                        , registerService: RPCRegisterService) extends LazyLogging {
 

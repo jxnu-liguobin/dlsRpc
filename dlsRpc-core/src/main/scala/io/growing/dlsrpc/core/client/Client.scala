@@ -72,11 +72,7 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
     }
   }
 
-  /**
-   * 创建动态代理并发送请求，获取服务端的结果。
-   *
-   * @return 代理对象
-   */
+  //创建动态代理并发送请求，获取服务端的结果。
   private[client] def getClientProxy: T = {
 
     IsCondition.conditionException(clientClass == null, "param error")

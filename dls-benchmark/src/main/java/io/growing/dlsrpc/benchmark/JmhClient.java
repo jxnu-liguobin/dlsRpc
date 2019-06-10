@@ -19,6 +19,7 @@ public class JmhClient {
         }
     }
 
+    //先启动server，再压测
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .forks(1).threadGroups(35).mode(Mode.All) //all模式测试所有

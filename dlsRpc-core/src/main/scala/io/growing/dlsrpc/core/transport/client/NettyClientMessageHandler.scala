@@ -1,19 +1,22 @@
 package io.growing.dlsrpc.core.transport.client
 
+import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.client.ClientMessageHandler
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import io.netty.util.ReferenceCountUtil
+import javax.inject.Inject
 
 /**
  * 客户端消息处理实现
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-05
+ * @version 1.1, 2019-06-05
  */
-class NettyClientMessageHandler(messageHandler: ClientMessageHandler)
+@Singleton
+class NettyClientMessageHandler @Inject()(messageHandler: ClientMessageHandler)
   extends ChannelInboundHandlerAdapter with LazyLogging {
 
   private[this] var outboundChannel: Channel = _
@@ -34,7 +37,7 @@ class NettyClientMessageHandler(messageHandler: ClientMessageHandler)
         //接收服务端发送的数据
         val writeMsg = msg.asInstanceOf[Array[Byte]]
         //调用io.growing.dls.client.ClientMessageHandler
-        messageHandler.receiveProcessor(writeMsg)
+        messageHandler.receiveProcessor(writeMsg) //使用注入bean
         ReferenceCountUtil.release(msg)
       }
     }

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ClientBuilderTest {
 
 
+    //先启动server
     public static void main(String[] args) {
 
         Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, Hello.class);
