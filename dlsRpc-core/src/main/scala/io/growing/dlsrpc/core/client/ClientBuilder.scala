@@ -16,7 +16,7 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
   def build: T = {
     super.setClientClass(clientClass)
     super.start()
-    super.getClientProxy
+    super.cglibProxy
   }
 }
 

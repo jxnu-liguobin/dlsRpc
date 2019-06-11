@@ -29,10 +29,10 @@ sealed case class RpcRequest() {
   var parameterTypes: Array[Class[_]] = _
   //参数列表
   @BeanProperty
-  var parameters: Array[_ <: Object] = _
+  var parameters: Array[_] = _
 
   def this(requestId: Long, className: String, methodName: String, version: String,
-           parameterTypes: Array[Class[_]], parameters: Array[_ <: Object]) {
+           parameterTypes: Array[Class[_]], parameters: Array[_]) {
     this()
     this.requestId = requestId
     this.className = className

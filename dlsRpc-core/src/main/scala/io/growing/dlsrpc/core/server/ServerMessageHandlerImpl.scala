@@ -8,6 +8,7 @@ import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
 import javax.inject.Inject
+import net.sf.cglib.reflect.FastClass
 
 /**
  * 服务端消息处理实现
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @Singleton
 class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: ServerChannel) extends ServerMessageHandler with LazyLogging {
 
-  //需要处理的服务
+  //需要处理的服务，实际使用反射调用这里只需要class文件名，不需要bean
   private[this] var serviceBean: Any = _
 
   //手动选择bean
@@ -26,26 +27,31 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     this.serviceBean = bean
   }
 
+
   override def processor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
     IsCondition.conditionException(this.serviceBean == null, "bean can't be null")
     //接口消息并反序列化解码拿到真正的请求
     val rpcRequest: RpcRequest = serializer.deserializer(request, classOf[RpcRequest])
     val rpcResponse = new RpcResponse
     rpcResponse.setRequestId(rpcRequest.getRequestId)
+    //TODO 切换调用方式
     var method: Method = null
-    try {
-      //通过方法名称和参数类型确定一个方法
-      method = serviceBean.getClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes: _*)
-    } catch {
-      case e: Exception =>
-        logger.warn("Client send msg is fail : {}", e)
-        rpcResponse.setError(e)
-    }
-    IsCondition.conditionException(method == null, "method can't be null")
 
+    logger.info(serviceBean.getClass.getGenericSuperclass.getTypeName)
     try {
-      //使用得当的方法进行调用，并传入接收到参数列表（可变长参数使用:_*）
-      val ret = method.invoke(serviceBean, rpcRequest.getParameters: _*)
+      var ret: AnyRef = None
+      if (("java.lang.Object").equals(serviceBean.getClass.getGenericSuperclass.getTypeName)) {
+        //如果直接父类是Object，认为它没有实现任何接口
+        val serviceFastClass = FastClass.create(serviceBean.getClass)
+        val serviceFastMethod = serviceFastClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes)
+        ret = serviceFastMethod.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[AnyRef]])
+        logger.info("cglib invoke")
+      } else {
+        //通过方法名称和参数类型确定一个方法
+        method = serviceBean.getClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes: _*)
+        ret = method.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[Object]]: _*)
+        logger.info("jdk invoke")
+      }
       rpcResponse.setResult(ret)
     }
     catch {

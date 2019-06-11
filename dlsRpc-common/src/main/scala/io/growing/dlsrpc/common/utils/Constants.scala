@@ -19,7 +19,7 @@ object Constants {
   final lazy val PATTERN = "(?:(?:[0,1]?\\d?\\d|2[0-4]\\d|25[0-5])\\.){3}(?:[0,1]?\\d?\\d|2[0-4]\\d|25[0-5]):\\d{0,5}"
 
   //默认注册的包下的service
-  final lazy val PACKAGE_SERVICE = "io.growing.dls"
+  final lazy val PACKAGE_SERVICE = "io.growing.dlsrpc"
 
   //服务发现与注册中心
   final lazy val CONSUL_ADDRESS_IP = "127.0.0.1"

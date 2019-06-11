@@ -19,6 +19,7 @@ Technology
 * Jmh
 * Guice
 * Consul
+* Cglib
 
 Test & Use
 ---

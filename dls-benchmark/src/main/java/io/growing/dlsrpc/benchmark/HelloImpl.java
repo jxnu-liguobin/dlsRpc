@@ -1,17 +1,9 @@
 package io.growing.dlsrpc.benchmark;
 
-import com.typesafe.scalalogging.LazyLogging;
-import com.typesafe.scalalogging.Logger;
 
-public class HelloImpl implements Hello, LazyLogging {
+public class HelloImpl {
 
-    @Override
     public String sayHello(String name) {
         return name.concat("-hello!");
-    }
-
-    @Override
-    public Logger logger() {
-        return null;
     }
 }

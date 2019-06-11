@@ -12,6 +12,7 @@ import io.growing.dlsrpc.common.metadata.RpcRequest
 import io.growing.dlsrpc.common.utils.{Constants, IsCondition}
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
+import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
 
 import scala.util.Try
 
@@ -73,14 +74,11 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   }
 
   //创建动态代理并发送请求，获取服务端的结果。
-  private[client] def getClientProxy: T = {
-
+  private[client] def proxy[T]: T = {
     IsCondition.conditionException(clientClass == null, "param error")
-
     val clientInvocationHandler: InvocationHandler = (proxy, method, args) => {
-
       //执行方法时被调用
-      def invoke(proxy: Any, method: Method, args: Array[_ <: Object]) = {
+      def invoke(proxy: Any, method: Method, args: Array[_ <: Any]) = {
         val request: RpcRequest = new RpcRequest
         request.setRequestId(atomicLong.incrementAndGet)
         request.setClassName(clientClass.getName)
@@ -96,6 +94,31 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
     //根据JDK代理使用反射获得该接口的实现类的对象
     newProxyInstance(classOf[Client[_, _]].getClassLoader, Array[Class[_]](clientClass),
       clientInvocationHandler).asInstanceOf[T]
+  }
+
+  //不知道为什么这个抽出去会出问题
+  private[this] class ClientCglibProxy extends MethodInterceptor {
+    //执行方法时，实际是去调用远程的方法并获取结果
+    @throws[Throwable]
+    override def intercept(o: scala.AnyRef, method: Method, objects: Array[AnyRef], methodProxy: MethodProxy): AnyRef = {
+      val request: RpcRequest = new RpcRequest
+      request.setRequestId(atomicLong.incrementAndGet)
+      request.setClassName(o.getClass.getSimpleName)
+      request.setMethodName(method.getName)
+      request.setParameterTypes(method.getParameterTypes)
+      request.setParameters(objects)
+      messageHandler.sendProcessor(request)
+    }
+  }
+
+  //cglib代理构造代理对象
+  private[client] def cglibProxy[T]: T = {
+    IsCondition.conditionException(clientClass == null, "param error")
+    val daoProxy = new ClientCglibProxy
+    val enhancer = new Enhancer
+    enhancer.setCallback(daoProxy)
+    enhancer.setSuperclass(clientClass)
+    enhancer.create.asInstanceOf[T]
   }
 
   override protected def finalize() = Try(clientChannel.shutdown())

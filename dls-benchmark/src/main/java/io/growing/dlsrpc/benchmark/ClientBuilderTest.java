@@ -11,7 +11,8 @@ public class ClientBuilderTest {
     //先启动server
     public static void main(String[] args) {
 
-        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, Hello.class);
+        //默认cglib，不需要接口
+        HelloImpl hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, HelloImpl.class);
 
         for (int i = 0; i < 100000; i++) {
             assert (hello.sayHello(i + "dls")).equals(i + "dls-hello!");
