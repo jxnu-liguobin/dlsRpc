@@ -14,7 +14,7 @@ import io.growing.dlsrpc.common.utils.IsCondition
 class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer {
 
   /**
-   * 服务的地址 ip:port
+   * 服务的地址
    *
    * @return
    */

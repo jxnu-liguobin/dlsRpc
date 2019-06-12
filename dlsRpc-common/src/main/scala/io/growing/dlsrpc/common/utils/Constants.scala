@@ -21,8 +21,9 @@ object Constants {
   //默认注册的包下的service
   final lazy val PACKAGE_SERVICE = "io.growing.dlsrpc"
 
-  //服务发现与注册中心
+  //服务发现与注册中心，默认ip
   final lazy val CONSUL_ADDRESS_IP = "127.0.0.1"
+  //默认端口
   final lazy val CONSUL_ADDRESS_PORT = 8500
 
   //默认是服务调用地址就是本地，暂时不用
