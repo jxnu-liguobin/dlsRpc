@@ -5,7 +5,7 @@ import java.lang.reflect.Method
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.{IsCondition, SuperClassUtils}
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
 import javax.inject.Inject
 import net.sf.cglib.reflect.FastClass
@@ -36,21 +36,21 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     rpcResponse.setRequestId(rpcRequest.getRequestId)
     //TODO 切换调用方式
     var method: Method = null
-
-    logger.info(serviceBean.getClass.getGenericSuperclass.getTypeName)
     try {
       var ret: AnyRef = None
-      if (("java.lang.Object").equals(serviceBean.getClass.getGenericSuperclass.getTypeName)) {
-        //如果直接父类是Object，认为它没有实现任何接口
-        val serviceFastClass = FastClass.create(serviceBean.getClass)
-        val serviceFastMethod = serviceFastClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes)
-        ret = serviceFastMethod.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[AnyRef]])
-        logger.info("cglib invoke")
-      } else {
-        //通过方法名称和参数类型确定一个方法
-        method = serviceBean.getClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes: _*)
-        ret = method.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[Object]]: _*)
-        logger.info("jdk invoke")
+      SuperClassUtils.matchProxy(serviceBean.getClass) match {
+        case "CGLIB" => {
+          val serviceFastClass = FastClass.create(serviceBean.getClass)
+          val serviceFastMethod = serviceFastClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes)
+          ret = serviceFastMethod.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[AnyRef]])
+          logger.debug("CGLIB invoke")
+        }
+        case "JDK" => {
+          //通过方法名称和参数类型确定一个方法
+          method = serviceBean.getClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes: _*)
+          ret = method.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[Object]]: _*)
+          logger.debug("JDK invoke")
+        }
       }
       rpcResponse.setResult(ret)
     }

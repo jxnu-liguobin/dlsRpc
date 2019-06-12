@@ -28,5 +28,11 @@ object Constants {
   //默认是服务调用地址就是本地，暂时不用
   final lazy val DEFAULT_DISCOVER_ADDRESS = "localhost:8080"
 
+  //默认启用cglib
+  final lazy val CGLIB_PROXY: Boolean = true
+
+  //是否强制
+  final lazy val TO_CGLIB_PROXY: Boolean = false
+
 
 }

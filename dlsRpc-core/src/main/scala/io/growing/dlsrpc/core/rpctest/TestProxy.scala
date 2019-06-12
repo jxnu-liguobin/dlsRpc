@@ -1,7 +1,5 @@
 package io.growing.dlsrpc.core.rpctest
 
-import java.util
-
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke
 
 /**
@@ -13,46 +11,33 @@ import io.growing.dlsrpc.core.utils.DlsRpcInvoke
  */
 object TestProxy extends App {
 
+  //jdk
   DlsRpcInvoke.publishService(8082, new HelloImpl())
-
 }
 
-//默认是cglib
-object TestProxyClient extends App {
 
-  //不需要接口
-  val hello: HelloImpl = DlsRpcInvoke.obtainService("127.0.0.1", 8082, classOf[HelloImpl])
-  for (i <- 1 to 3) {
-    val ret: String = hello.sayHello("I am cglib proxy")
-    println(ret)
-  }
+object TestProxy2 extends App {
 
+  //cglib
+  DlsRpcInvoke.publishService(8083, new WorldImpl())
 }
 
 object TestJDKProxyClient extends App {
 
-  //  //需要接口
-  //  val hello: Hello = DlsRpcInvoke.obtainService("127.0.0.1", 8081, classOf[Hello])
-  //  for (i <- 1 to 3) {
-  //    val ret: String = hello.sayHello("I am jdk proxy")
-  //    println(ret)
-  //  }
+  //需要接口
+  val hello: Hello = DlsRpcInvoke.obtainService("127.0.0.1", 8082, classOf[Hello])
+  val ret: String = hello.sayHello("I am jdk proxy")
+  println(ret)
 
 }
 
-//获取类实现的接口
-object Test extends App {
+object TestCglibProxyClient extends App {
 
-  getSuperInterfaces(new HelloImpl)
+  //不需要接口
+  val hello: WorldImpl = DlsRpcInvoke.obtainService("127.0.0.1", 8083, classOf[WorldImpl])
+  val ret: String = hello.sayHello("I am cglib proxy")
+  println(ret)
 
-  def getSuperInterfaces(obj: AnyRef): Unit = {
-    val ret = new util.ArrayList[String]()
-    val seq = obj.getClass.getInterfaces
-    for (i <- seq) {
-      println(i.getSimpleName)
-      ret.add(i.getSimpleName)
-    }
-  }
 }
 
 

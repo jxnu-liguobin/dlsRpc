@@ -5,14 +5,23 @@ import io.growing.dlsrpc.core.utils.DlsRpcInvoke;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+
+/**
+ * 手动测试rpc调用
+ *
+ * @author 梦境迷离
+ * @version 1.0, 2019-06-12
+ */
 public class ClientBuilderTest {
 
 
     //先启动server
     public static void main(String[] args) {
 
-        //默认cglib，不需要接口
-        HelloImpl hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, HelloImpl.class);
+        //JDK
+//        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, Hello.class);
+        //CGLIB
+        WorldImpl hello = DlsRpcInvoke.obtainService("127.0.0.1", 8083, WorldImpl.class);
 
         for (int i = 0; i < 100000; i++) {
             assert (hello.sayHello(i + "dls")).equals(i + "dls-hello!");
@@ -27,7 +36,7 @@ public class ClientBuilderTest {
             }
         });
 
-        sim.execute(35, 60);
+        sim.execute(350, 60);
     }
 
 }

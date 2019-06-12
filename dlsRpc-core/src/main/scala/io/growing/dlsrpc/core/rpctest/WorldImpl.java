@@ -1,16 +1,14 @@
 package io.growing.dlsrpc.core.rpctest;
 
-import com.google.inject.Singleton;
-
-
 /**
- * 用于测试jdk代理，有接口
+ * 用于测试cglib，无接口
+ *
+ * @author 梦境迷离
+ * @version 1.0, 2019-06-12
  */
-@Singleton
-public class HelloImpl implements Hello {
+public class WorldImpl {
 
     public String sayHello(String name) {
         return name.concat("-hello!");
     }
-
 }

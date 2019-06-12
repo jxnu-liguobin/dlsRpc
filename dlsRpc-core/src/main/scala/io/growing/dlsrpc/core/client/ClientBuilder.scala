@@ -1,5 +1,7 @@
 package io.growing.dlsrpc.core.client
 
+import io.growing.dlsrpc.common.utils.SuperClassUtils
+
 /**
  * 客户端建造器
  *
@@ -16,7 +18,10 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
   def build: T = {
     super.setClientClass(clientClass)
     super.start()
-    super.cglibProxy
+    SuperClassUtils.matchProxy(clientClass) match {
+      case "CGLIB" => super.cglibProxy
+      case "JDK" => super.proxy
+    }
   }
 }
 
