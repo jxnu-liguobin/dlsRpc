@@ -19,6 +19,7 @@ import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
  */
 class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
+  @volatile
   private[this] final lazy val (consulClient, loadBalancerMap) = ConsulBuilder.checkAndBuild(consulAddress)
 
   //传进来的是service的类名
