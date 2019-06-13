@@ -28,6 +28,7 @@ Test & Use
 - sbt compile
 - import use IDEA
 - refresh maven module named benchmark 
+- run sbt task: plupublishM2
 
 Examples
 ---
@@ -57,7 +58,7 @@ Note
 ---
 
 ```
-The benchmark module use dlsRpc by dlsRpc-*.jar where is in their target folders after you package
+set maven home,like /.m2/repository where benchmark module can be find
 ```
 
 Benchmark
