@@ -30,7 +30,7 @@ class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitia
   private[this] var channel: Channel = _
 
   override def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
-    //异步通知
+    //异步通知，这里打开的时候需要先设置执行线程
     val nettyServerChannelFuture: ChannelFuture = ServerChannelBuilder.build(bossGroup, workerGroup,
       serverChannelInitializer.setExecutor(executor), port)
 

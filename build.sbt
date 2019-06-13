@@ -1,4 +1,5 @@
 import Dependencies.Versions
+import sbtassembly.MergeStrategy
 
 //工程通用配置
 lazy val commonSettings = Seq(

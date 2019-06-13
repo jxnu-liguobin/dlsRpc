@@ -1,5 +1,6 @@
 package io.growing.dlsrpc.common.utils
 
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.exception.ProxyException
 
 /**
@@ -53,11 +54,11 @@ object SuperClassUtils extends App {
    */
   def matchProxy[T](clazz: Class[T]): String = {
     if (getVaildSuperInterface(clazz) == null || getVaildSuperInterface(clazz).isEmpty) {
-      if (Constants.CGLIB_PROXY) {
+      if (CGLIB_PROXY) {
         "CGLIB"
       } else throw ProxyException("Proxy happen fail")
     } else {
-      if (Constants.CGLIB_PROXY && Constants.TO_CGLIB_PROXY) {
+      if (CGLIB_PROXY && TO_CGLIB_PROXY) {
         "CGLIB"
       } else {
         "JDK"

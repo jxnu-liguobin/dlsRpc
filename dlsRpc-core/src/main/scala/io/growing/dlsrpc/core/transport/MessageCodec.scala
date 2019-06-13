@@ -2,7 +2,7 @@ package io.growing.dlsrpc.core.transport
 
 import java.util.{List => JList}
 
-import io.growing.dlsrpc.common.utils.Constants
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
@@ -17,8 +17,6 @@ import io.netty.handler.codec.ByteToMessageCodec
  * @version 1.0, 2019-06-05
  */
 class MessageCodec extends ByteToMessageCodec[Array[Byte]] {
-
-  private[transport] lazy val MESSAGE_LENGTH: Int = Constants.MESSAGE_LENGTH
 
   @throws[Exception]
   override protected def encode(channelHandlerContext: ChannelHandlerContext, msg: Array[Byte], byteBuf: ByteBuf): Unit = {

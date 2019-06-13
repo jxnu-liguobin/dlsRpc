@@ -3,8 +3,9 @@ package io.growing.dlsrpc.core.rpc
 import java.util.{List => JList}
 
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
-import io.growing.dlsrpc.common.utils.{ClassUtil, Constants}
+import io.growing.dlsrpc.common.utils.ClassUtil
 import io.growing.dlsrpc.consul.registry.{RPCService, ServiceRegistry}
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class RPCRegisterService extends LazyLogging {
    * 获取所有需要注册的服务类名
    */
   def getServiceNames: JList[String] = {
-    ClassUtil.getClassListByAnnotation(Constants.PACKAGE_SERVICE, classOf[RPCService])
+    ClassUtil.getClassListByAnnotation(PACKAGE_SERVICE, classOf[RPCService])
   }
 
   /**

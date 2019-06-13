@@ -1,8 +1,8 @@
 package io.growing.dlsrpc.core.modules
 
 import com.google.inject.AbstractModule
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
-import io.growing.dlsrpc.common.utils.Constants
 import io.growing.dlsrpc.consul.discovery.{ConsulServiceDiscovery, ServiceDiscovery}
 import io.growing.dlsrpc.consul.registry.{ConsulServiceRegistry, ServiceRegistry}
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
@@ -35,10 +35,10 @@ class ProviderModule extends AbstractModule {
     bind(classOf[ServerChannel]).to(classOf[NettyServerChannel]).asEagerSingleton()
     //服务注册
     bind(classOf[ServiceRegistry]).toInstance(new ConsulServiceRegistry(
-      ServiceAddress(Constants.CONSUL_ADDRESS_IP, Constants.CONSUL_ADDRESS_PORT)))
+      ServiceAddress(CONSUL_ADDRESS_IP, CONSUL_ADDRESS_PORT)))
     //服务发现
     bind(classOf[ServiceDiscovery]).toInstance(new ConsulServiceDiscovery(
-      ServiceAddress(Constants.CONSUL_ADDRESS_IP, Constants.CONSUL_ADDRESS_PORT)))
+      ServiceAddress(CONSUL_ADDRESS_IP, CONSUL_ADDRESS_PORT)))
     //RPC对外服务注册
     bind(classOf[RPCRegisterService]).asEagerSingleton()
     //RPC对外服务发现

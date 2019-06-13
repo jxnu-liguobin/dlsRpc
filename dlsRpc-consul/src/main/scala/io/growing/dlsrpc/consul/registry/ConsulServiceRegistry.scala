@@ -4,8 +4,8 @@ import java.util
 
 import com.ecwid.consul.v1.agent.model.NewService
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
-import io.growing.dlsrpc.common.utils.Constants
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
 
 /**
@@ -40,7 +40,7 @@ class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegist
 
   //暂时使用这种做服务id名
   private[this] def generateNewIdForService(serviceName: String): String = {
-    serviceName + "-" + Constants.CONSUL_ADDRESS_IP + ":" + Constants.CONSUL_ADDRESS_PORT
+    serviceName + "-" + CONSUL_ADDRESS_IP + ":" + CONSUL_ADDRESS_PORT
   }
 
   //手动根据id清除，id需要转码

@@ -15,10 +15,14 @@ object Dependencies {
     val consul = "1.4.2"
     val log4j_api = "11.0"
     val cglib = "3.2.10"
+    val config = "1.3.4"
     //    val jmh = "1.9.1"
   }
 
   object Compiles {
+
+
+    lazy val config: ModuleID = "com.typesafe" % "config" % Versions.config
 
     lazy val cglib: ModuleID = "cglib" % "cglib-nodep" % Versions.cglib
 
@@ -56,6 +60,6 @@ object Dependencies {
 
   val consuls = libraryDependencies ++= Seq(consulAPi)
 
-  val commos = libraryDependencies ++= Seq(log)
+  val commos = libraryDependencies ++= Seq(log,config)
 
 }

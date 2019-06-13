@@ -7,9 +7,10 @@ import java.net.{InetSocketAddress, SocketAddress}
 import java.util.concurrent.atomic.AtomicLong
 
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.metadata.RpcRequest
-import io.growing.dlsrpc.common.utils.{Constants, IsCondition}
+import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
@@ -32,7 +33,7 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   //服务端地址
   private[this] var socketAddress: SocketAddress = _
   //线程安全的自增请求id
-  private[this] lazy val atomicLong: AtomicLong = new AtomicLong(Constants.REQUEST_START_VALUE)
+  private[this] lazy val atomicLong: AtomicLong = new AtomicLong(REQUEST_START_VALUE)
   //消息处理器
   private[this] lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
   //调用服务的实现的接口（JDK代理，必须要有实现接口）

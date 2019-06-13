@@ -5,8 +5,9 @@ import java.util.concurrent.{BlockingQueue, ConcurrentMap, LinkedBlockingQueue, 
 import com.google.common.collect.Maps
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
-import io.growing.dlsrpc.common.utils.{Constants, IsCondition}
+import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Serializer
 import javax.inject.Inject
 
@@ -24,8 +25,6 @@ import javax.inject.Inject
 class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: ClientChannel)
   extends ClientMessageHandler with LazyLogging {
 
-  //超时时间
-  private[this] final lazy val TIME_AWAIT: Int = Constants.TIME_AWAIT
   //记录请求id和调用返回
   private[this] final lazy val mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = Maps.newConcurrentMap()
 
