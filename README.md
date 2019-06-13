@@ -28,7 +28,7 @@ Test & Use
 - sbt compile
 - import use IDEA
 - refresh maven module named benchmark 
-- run sbt task: plupublishM2
+- run sbt task: publishM2
 
 Examples
 ---
