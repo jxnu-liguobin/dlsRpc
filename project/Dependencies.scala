@@ -6,7 +6,7 @@ object Dependencies {
   object Versions {
     val scala212 = "2.12.7"
     val log4j = "2.11.1"
-    val guava = "19.0"
+    //    val guava = "19.0"
     val guice = "3.0"
     val netty = "4.1.6.Final"
     val logging = "3.9.2"
@@ -28,7 +28,7 @@ object Dependencies {
 
     lazy val consulAPi: ModuleID = "com.ecwid.consul" % "consul-api" % Versions.consul
 
-    lazy val guava: ModuleID = "com.google.guava" % "guava" % Versions.guava
+    //    lazy val guava: ModuleID = "com.google.guava" % "guava" % Versions.guava
 
     lazy val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
     //sbt中jmh太难用了，各种问题，试了三个插件都跑步起来
@@ -56,7 +56,7 @@ object Dependencies {
 
   import Compiles._
 
-  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guava, guice, cglib)
+  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guice, cglib)
 
   val consuls = libraryDependencies ++= Seq(consulAPi)
 
