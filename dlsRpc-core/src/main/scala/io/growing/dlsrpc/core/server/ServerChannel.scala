@@ -1,6 +1,5 @@
 package io.growing.dlsrpc.core.server
 
-import java.io.IOException
 import java.util.concurrent.Executor
 
 import io.growing.dlsrpc.core.api.{AbstractChannel, Protocol}
@@ -20,9 +19,7 @@ trait ServerChannel extends AbstractChannel {
    * @param executor       执行器
    * @param protocol       传输协议
    * @param messageHandler 消息处理器
-   * @throws IOException IO异常
    */
-  @throws[IOException]
   def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit
 
 }

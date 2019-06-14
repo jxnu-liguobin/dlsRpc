@@ -31,6 +31,7 @@ object DlsRpcConfiguration {
 
   //默认配置，外界不可访问
   private object Constants {
+
     //客户端超时时间
     final lazy val TIME_AWAIT: Int = 30 * 1000
 
@@ -46,6 +47,7 @@ object DlsRpcConfiguration {
 
     //服务发现与注册中心，默认ip
     final lazy val CONSUL_ADDRESS_IP = "127.0.0.1"
+
     //默认端口
     final lazy val CONSUL_ADDRESS_PORT = 8500
 

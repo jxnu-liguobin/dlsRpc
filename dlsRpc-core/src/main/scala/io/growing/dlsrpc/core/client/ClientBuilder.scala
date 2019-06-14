@@ -1,5 +1,6 @@
 package io.growing.dlsrpc.core.client
 
+import io.growing.dlsrpc.common.exception.{ProxyException, RPCException}
 import io.growing.dlsrpc.common.utils.SuperClassUtils
 
 /**
@@ -16,11 +17,21 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
    * @return 代理对象
    */
   def build: T = {
-    super.setClientClass(clientClass)
-    super.start()
-    SuperClassUtils.matchProxy(clientClass) match {
-      case "CGLIB" => super.cglibProxy
-      case "JDK" => super.proxy
+    try {
+      super.setClientClass(clientClass)
+      super.start()
+      SuperClassUtils.matchProxy(clientClass) match {
+        case "CGLIB" => super.cglibProxy
+        case "JDK" => super.proxy
+      }
+    }
+    catch {
+      case e: ClassCastException => {
+        throw new ProxyException("class cast fail", e)
+      }
+      case ex: Exception => {
+        throw new RPCException("Other error", ex)
+      }
     }
   }
 }

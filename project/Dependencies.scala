@@ -60,6 +60,6 @@ object Dependencies {
 
   val consuls = libraryDependencies ++= Seq(consulAPi)
 
-  val commos = libraryDependencies ++= Seq(log,config)
+  val commos = libraryDependencies ++= Seq(log, config)
 
 }

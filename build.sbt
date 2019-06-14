@@ -1,5 +1,4 @@
 import Dependencies.Versions
-import sbtassembly.MergeStrategy
 
 //工程通用配置
 lazy val commonSettings = Seq(
@@ -30,3 +29,9 @@ javaOptions in run += "-Xmx1G"
 
 //编译路径
 //windows不能使用git cmd 命令行打包，需要使用sbt
+
+//发布到本地maven仓库的时候，允许覆盖jar。
+//发布到仓库后本地maven才能引入，而不再需要加入lib文件
+publishM2Configuration := publishM2Configuration.value.withOverwrite(true)
+publishConfiguration := publishConfiguration.value.withOverwrite(true)
+publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)

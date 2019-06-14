@@ -1,6 +1,5 @@
 package io.growing.dlsrpc.core.client
 
-import java.io.IOException
 import java.lang.reflect.Proxy.newProxyInstance
 import java.lang.reflect.{InvocationHandler, Method}
 import java.net.{InetSocketAddress, SocketAddress}
@@ -8,14 +7,11 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
-import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.metadata.RpcRequest
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
-
-import scala.util.Try
 
 /**
  * 内部客户端基本实现
@@ -62,19 +58,16 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
     this.asInstanceOf[Builder]
   }
 
+
+  //不予捕获通道造成错误
   private[client] def start(): Unit = {
-    try {
-      //客户端通道开启
-      clientChannel.open(messageHandler, socketAddress, protocol)
-      logger.info("clientChannel start success ")
-    }
-    catch {
-      case e: IOException =>
-        throw new RPCException("clientChannel init fail", e)
-    }
+    //客户端通道开启
+    clientChannel.open(messageHandler, socketAddress, protocol)
+    logger.info("clientChannel start success ")
   }
 
   //创建动态代理并发送请求，获取服务端的结果。
+  @throws[Exception]
   private[client] def proxy[T]: T = {
     IsCondition.conditionException(clientClass == null, "param error")
     val clientInvocationHandler: InvocationHandler = (proxy, method, args) => {
@@ -113,6 +106,7 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   }
 
   //cglib代理构造代理对象
+  @throws[Exception]
   private[client] def cglibProxy[T]: T = {
     IsCondition.conditionException(clientClass == null, "param error")
     val daoProxy = new ClientCglibProxy
@@ -122,6 +116,6 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
     enhancer.create.asInstanceOf[T]
   }
 
-  override protected def finalize() = Try(clientChannel.shutdown())
+  override protected def finalize() = try clientChannel.shutdown() finally System.gc()
 
 }

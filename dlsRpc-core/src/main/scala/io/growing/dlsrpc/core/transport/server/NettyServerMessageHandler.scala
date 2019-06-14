@@ -31,6 +31,7 @@ class NettyServerMessageHandler(executor: Executor)
     ctx.read
   }
 
+  @throws[Exception]
   override def channelRead(ctx: ChannelHandlerContext, msg: Any): Unit = {
     logger.debug("Service read msg : {} ", msg)
     //接收客户端发送的数据

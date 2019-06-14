@@ -28,6 +28,7 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
   }
 
 
+  @throws[Exception]
   override def processor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
     IsCondition.conditionException(this.serviceBean == null, "bean can't be null")
     //接口消息并反序列化解码拿到真正的请求

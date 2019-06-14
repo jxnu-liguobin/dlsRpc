@@ -35,12 +35,18 @@ class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: Client
     IsCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
       s"ReceiveAndProcessor not found data getRequestId : {${rpcResponse.getRequestId}}") match {
       case false => {
-        //获取该请求id的返回信息队列
-        val queue: BlockingQueue[RpcResponse] = mapCallBack.get(rpcResponse.getRequestId)
-        //将返回信息保存到队列
-        queue.add(rpcResponse)
-        //从回调中删除该请求
-        mapCallBack.remove(rpcResponse.getRequestId)
+        try {
+          //获取该请求id的返回信息队列
+          val queue: BlockingQueue[RpcResponse] = mapCallBack.get(rpcResponse.getRequestId)
+          //将返回信息保存到队列
+          queue.add(rpcResponse)
+          //从回调中删除该请求
+          mapCallBack.remove(rpcResponse.getRequestId)
+        } catch {
+          case e: Exception => {
+            logger.error("Client receive message fail {} ", e.getMessage)
+          }
+        }
       }
       case true => {
         //TODO
@@ -51,15 +57,22 @@ class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: Client
   //获取代理对象的时候调用该方法发送请求
   @throws[Exception]
   override def sendProcessor(rpcRequest: RpcRequest): AnyRef = {
-    //序列化
-    val requestMsg = serializer.serializer(rpcRequest)
-    val queue = new LinkedBlockingQueue[RpcResponse]
-    //保存请求信息
-    mapCallBack.put(rpcRequest.getRequestId, queue)
-    //发送消息
-    channel.sendMessage(requestMsg)
-    //取出返回信息 30S超时时间
-    val response: RpcResponse = queue.poll(TIME_AWAIT, TimeUnit.MILLISECONDS)
+    var response: RpcResponse = null
+    try {
+      //序列化
+      val requestMsg = serializer.serializer(rpcRequest)
+      val queue = new LinkedBlockingQueue[RpcResponse]
+      //保存请求信息
+      mapCallBack.put(rpcRequest.getRequestId, queue)
+      //发送消息
+      channel.sendMessage(requestMsg)
+      //取出返回信息 30S超时时间
+      response = queue.poll(TIME_AWAIT, TimeUnit.MILLISECONDS)
+    } catch {
+      case e: Exception => {
+        logger.error("Client send message fail {} ", e.getMessage)
+      }
+    }
     IsCondition.conditionException(response == null, "Request wait response time await")
     IsCondition.conditionException(response.getError != null, cause = response.getError)
     response.getResult

@@ -1,11 +1,9 @@
 package io.growing.dlsrpc.core.server
 
-import java.io.IOException
 import java.util.concurrent.Executor
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
 import io.growing.dlsrpc.core.rpc.RPCRegisterService
@@ -53,20 +51,16 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     this
   }
 
-  def start(): Unit = {
-    try {
-      IsCondition.conditionException(serviceBean == null || !port.isValidInt || port < 0, "params error")
-      //注入进的消息处理器并不知发布哪个服务
-      messageHandler.setProcessBean(serviceBean)
-      serverChannel.openServerChannel(port, executor, protocol, messageHandler)
-      logger.info("Server start port : {}", port)
-      //TODO 启动服务的时候开始初始化注册所有有注解的服务
-      //      rpc.initRegisterService(Constants.CONSUL_ADDRESS)
 
-    } catch {
-      case e: IOException =>
-        throw new RPCException("serverChannel init fail : {}", e)
-    }
+  //对于通道错误不予捕获，任务服务没有进行下去的必要
+  def start(): Unit = {
+    IsCondition.conditionException(serviceBean == null || !port.isValidInt || port < 0, "params error")
+    //注入进的消息处理器并不知发布哪个服务
+    messageHandler.setProcessBean(serviceBean)
+    serverChannel.openServerChannel(port, executor, protocol, messageHandler)
+    logger.info("Server start port : {}", port)
+    //TODO 启动服务的时候开始初始化注册所有有注解的服务
+    //      rpc.initRegisterService(Constants.CONSUL_ADDRESS)
   }
 
   def shutdown(): Unit = {
