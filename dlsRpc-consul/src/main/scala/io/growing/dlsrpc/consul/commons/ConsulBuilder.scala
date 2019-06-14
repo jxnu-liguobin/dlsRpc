@@ -1,8 +1,9 @@
 package io.growing.dlsrpc.consul.commons
 
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient}
+import com.google.common.collect.Maps
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.exception.RPCException
 import io.growing.dlsrpc.common.metadata.ServiceAddress
@@ -24,12 +25,12 @@ object ConsulBuilder {
    * @return
    */
   @deprecated
-  def buildDiscover(consulAddress: ServiceAddress): (ConsulClient, ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]) = {
+  def buildDiscover(consulAddress: ServiceAddress): (ConsulClient, ConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]) = {
     IsCondition.conditionException(!consulAddress.toString.matches(PATTERN), "not an valid format like ip:port")
     IsCondition.conditionException(consulAddress.getPort < 0, "port can't less  0")
     val rawClient = new ConsulRawClient(consulAddress.getIp, consulAddress.getPort)
     val consulClient = new ConsulClient(rawClient)
-    val loadBalancerMap = new ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]
+    val loadBalancerMap = Maps.newConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]
     (consulClient, loadBalancerMap)
   }
 
@@ -54,10 +55,10 @@ object ConsulBuilder {
    * @param consulAddress
    * @tparam S
    */
-  def checkAndBuild[S](consulAddress: S): (ConsulClient, ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]) = {
+  def checkAndBuild[S](consulAddress: S): (ConsulClient, ConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]) = {
     consulAddress match {
       case s: ServiceAddress => {
-        lazy val loadBalancerMap = new ConcurrentHashMap[String, RandomLoadBalancer[ServiceAddress]]
+        lazy val loadBalancerMap = Maps.newConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]
         IsCondition.conditionException(!s.toString.matches(PATTERN), "not an valid format like ip:port")
         IsCondition.conditionException(s.getPort < 0, "port can't less  0")
         lazy val rawClient = new ConsulRawClient(s.getIp, s.getPort)

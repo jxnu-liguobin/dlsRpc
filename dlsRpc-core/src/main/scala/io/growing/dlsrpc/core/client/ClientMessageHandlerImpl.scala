@@ -2,6 +2,7 @@ package io.growing.dlsrpc.core.client
 
 import java.util.concurrent._
 
+import com.google.common.collect.Maps
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
@@ -25,7 +26,7 @@ class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: Client
   extends ClientMessageHandler with LazyLogging {
 
   //记录请求id和调用返回
-  private[this] final lazy val mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = new ConcurrentHashMap
+  private[this] final lazy val mapCallBack: ConcurrentMap[Long, BlockingQueue[RpcResponse]] = Maps.newConcurrentMap()
 
   @throws[Exception]
   override def receiveProcessor(request: Array[Byte]): Unit = {

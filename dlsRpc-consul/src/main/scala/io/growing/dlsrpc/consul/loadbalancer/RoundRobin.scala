@@ -1,9 +1,10 @@
 package io.growing.dlsrpc.consul.loadbalancer
 
 import java.util
-import java.util.concurrent.{ConcurrentHashMap, ThreadLocalRandom}
+import java.util.concurrent.ThreadLocalRandom
 import java.util.{ArrayList => JArrayList, List => JList, Map => JMap}
 
+import com.google.common.collect.Maps
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.common.utils.IsCondition
@@ -38,7 +39,7 @@ class RoundRobin[T](weightServiceAddresses: JList[T]) extends Loadbalancer[T] {
    * @return
    */
   private[this] def convertToMap(weightServiceAddresses: JList[T]): JMap[WeightServiceAddress, Int] = {
-    val ms: JMap[WeightServiceAddress, Int] = new ConcurrentHashMap[WeightServiceAddress, Int]
+    val ms: JMap[WeightServiceAddress, Int] = Maps.newConcurrentMap()
     for (service <- weightServiceAddresses.iterator()) {
       val s: WeightServiceAddress = service.asInstanceOf[WeightServiceAddress]
       ms.put(new WeightServiceAddress(s.getIp, s.getPort, s.getWeight + weight), weight)
@@ -75,7 +76,7 @@ object RoundRobin {
   private val port = 9000
 
   //默认的服务列表，从配置文件读取
-  private final lazy val defaultWeightServiceAddress: JMap[WeightServiceAddress, Int] = new ConcurrentHashMap[WeightServiceAddress, Int]
+  private final lazy val defaultWeightServiceAddress: JMap[WeightServiceAddress, Int] = Maps.newConcurrentMap()
   SERVICE_IP_LIST.forEach(x => defaultWeightServiceAddress.put(new WeightServiceAddress(x, port, weight), weight))
   SERVICE_IP_LIST.forEach(x => {
     IsCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip")
