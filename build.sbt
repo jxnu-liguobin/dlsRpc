@@ -4,7 +4,8 @@ import Dependencies.Versions
 lazy val commonSettings = Seq(
   organization := "io.growing",
   version := "1.0.4",
-  scalaVersion := Versions.scala212
+  scalaVersion := Versions.scala212,
+  Dependencies.commons
 )
 
 //根项目配置，benchmark与本项目无直接依赖关系，所以导入benchmark时需要手动关联dlsRpc
@@ -22,7 +23,7 @@ lazy val consuls = Project(id = "dlsRpc-consul", base = file("dlsRpc-consul"))
 
 //通用工具和隐式对象，不可反向依赖core，consuls
 lazy val commons = Project(id = "dlsRpc-common", base = file("dlsRpc-common"))
-  .settings(commonSettings, Dependencies.commos)
+  .settings(commonSettings, Dependencies.common)
 
 javacOptions ++= Seq("-encoding", "UTF-8")
 javaOptions in run += "-Xmx1G"

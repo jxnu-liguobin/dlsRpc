@@ -3,7 +3,6 @@ package io.growing.dlsrpc.consul.registry
 import java.util
 
 import com.ecwid.consul.v1.agent.model.NewService
-import com.google.common.collect.Lists
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
