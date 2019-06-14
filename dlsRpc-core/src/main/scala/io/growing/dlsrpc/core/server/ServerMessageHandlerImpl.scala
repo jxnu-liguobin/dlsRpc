@@ -4,6 +4,7 @@ import java.lang.reflect.Method
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
 import io.growing.dlsrpc.common.utils.{IsCondition, SuperClassUtils}
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
@@ -27,7 +28,6 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     this.serviceBean = bean
   }
 
-
   @throws[Exception]
   override def processor(request: Array[Byte], receiveMessage: SendMessage): Unit = {
     IsCondition.conditionException(this.serviceBean == null, "bean can't be null")
@@ -40,13 +40,13 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     try {
       var ret: AnyRef = None
       SuperClassUtils.matchProxy(serviceBean.getClass) match {
-        case "CGLIB" => {
+        case ProxyType.CGLIB => {
           val serviceFastClass = FastClass.create(serviceBean.getClass)
           val serviceFastMethod = serviceFastClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes)
           ret = serviceFastMethod.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[AnyRef]])
           logger.debug("CGLIB invoke")
         }
-        case "JDK" => {
+        case ProxyType.JDK => {
           //通过方法名称和参数类型确定一个方法
           method = serviceBean.getClass.getMethod(rpcRequest.getMethodName, rpcRequest.getParameterTypes: _*)
           ret = method.invoke(serviceBean, rpcRequest.getParameters.asInstanceOf[Array[Object]]: _*)

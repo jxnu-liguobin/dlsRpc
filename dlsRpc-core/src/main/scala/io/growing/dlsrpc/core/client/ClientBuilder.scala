@@ -1,5 +1,6 @@
 package io.growing.dlsrpc.core.client
 
+import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.exception.{ProxyException, RPCException}
 import io.growing.dlsrpc.common.utils.SuperClassUtils
 
@@ -21,8 +22,8 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
       super.setClientClass(clientClass)
       super.start()
       SuperClassUtils.matchProxy(clientClass) match {
-        case "CGLIB" => super.cglibProxy
-        case "JDK" => super.proxy
+        case ProxyType.CGLIB => super.cglibProxy
+        case ProxyType.JDK => super.proxy
       }
     }
     catch {

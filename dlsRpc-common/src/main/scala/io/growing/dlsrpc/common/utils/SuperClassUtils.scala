@@ -1,6 +1,8 @@
 package io.growing.dlsrpc.common.utils
 
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.enums.ProxyType
+import io.growing.dlsrpc.common.enums.ProxyType.ProxyType
 import io.growing.dlsrpc.common.exception.ProxyException
 
 /**
@@ -52,16 +54,16 @@ object SuperClassUtils extends App {
    * @tparam T
    * @return
    */
-  def matchProxy[T](clazz: Class[T]): String = {
+  def matchProxy[T](clazz: Class[T]): ProxyType = {
     if (getVaildSuperInterface(clazz) == null || getVaildSuperInterface(clazz).isEmpty) {
       if (CGLIB_PROXY) {
-        "CGLIB"
+        ProxyType.CGLIB
       } else throw ProxyException("Proxy happen fail")
     } else {
       if (CGLIB_PROXY && TO_CGLIB_PROXY) {
-        "CGLIB"
+        ProxyType.CGLIB
       } else {
-        "JDK"
+        ProxyType.JDK
       }
     }
   }
