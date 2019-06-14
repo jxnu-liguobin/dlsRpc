@@ -16,17 +16,17 @@
         <dependency>
             <groupId>io.growing</groupId>
             <artifactId>dlsrpc-common_2.12</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>io.growing</groupId>
             <artifactId>dlsrpc-core_2.12</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>io.growing</groupId>
             <artifactId>dlsrpc-consul_2.12</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

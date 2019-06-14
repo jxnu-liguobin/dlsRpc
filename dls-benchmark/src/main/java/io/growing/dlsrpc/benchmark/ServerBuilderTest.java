@@ -1,7 +1,6 @@
 package io.growing.dlsrpc.benchmark;
 
 
-import io.growing.dlsrpc.core.rpctest.HelloImpl;
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke;
 
 
@@ -17,9 +16,9 @@ public class ServerBuilderTest {
     //先启动consul，再启动这个server
     public static void main(String[] args) {
         //JDK
-        DlsRpcInvoke.publishService(8080, new HelloImpl());
+//        DlsRpcInvoke.publishService(8080, new HelloImpl());
         //CGLIB
-//        DlsRpcInvoke.publishService(8083, new WorldImpl());
+        DlsRpcInvoke.publishService(8083, new WorldImpl());
 
     }
 }
