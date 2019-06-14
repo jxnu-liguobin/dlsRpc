@@ -11,7 +11,7 @@ import io.growing.dlsrpc.common.utils.IsCondition
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer {
+class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer[T] {
 
   /**
    * 服务的地址

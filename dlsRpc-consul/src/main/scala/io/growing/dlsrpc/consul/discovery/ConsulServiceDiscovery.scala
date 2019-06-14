@@ -36,8 +36,8 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
     }
     //返回真实服务的地址（ip:port）可能是null
     val sd = loadBalancerMap.get(serviceName).next
-    IsCondition.conditionException(sd.port < 0, "port can't less  0")
-    logger.info("real address is {}", sd)
+    IsCondition.conditionException(sd.getPort < 0, "port can't less  0")
+    logger.info("Real address is {}", sd)
     sd
   }
 
@@ -48,9 +48,9 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         val param = QueryParams.Builder.builder().setIndex(consulIndex).build()
         val healthyServices: Response[JList[HealthService]] = consulClient.getHealthServices(serviceName, true, param)
         consulIndex = healthyServices.getConsulIndex
-        logger.debug("consul index for {} is {}", serviceName, consulIndex)
+        logger.debug("Consul index for {} is {}", serviceName, consulIndex)
         val healthServices = healthyServices.getValue
-        logger.debug("service addresses of {} is {}", serviceName, healthServices)
+        logger.debug("Service addresses of {} is {}", serviceName, healthServices)
         loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices))
       } while (true)
     }).start()

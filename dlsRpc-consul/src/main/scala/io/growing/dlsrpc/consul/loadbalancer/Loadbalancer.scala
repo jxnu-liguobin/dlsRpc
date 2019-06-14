@@ -6,6 +6,8 @@ package io.growing.dlsrpc.consul.loadbalancer
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-trait Loadbalancer {
+trait Loadbalancer[T] {
+
+  def next: T
 
 }
