@@ -9,8 +9,6 @@ import io.growing.dlsrpc.common.metadata.ServiceAddress
  *
  * 一般就是服务端用，所以写在这个模块
  *
- * 使用该类有默认端口8500
- *
  * @author 梦境迷离
  * @version 1.0, 2019-06-14
  */

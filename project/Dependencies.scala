@@ -57,15 +57,15 @@ object Dependencies {
   import Compiles._
 
   //RPC调用
-  val core = libraryDependencies ++= log4j2 ++ protostuff ++ netty ++ Seq(guice, cglib)
+  val core = libraryDependencies ++= protostuff ++ netty ++ Seq(guice, cglib)
 
   //服务注册发现
   val consuls = libraryDependencies ++= Seq(consulAPi)
 
   //配置、工具、常量
-  val common = libraryDependencies ++= Seq(log, config)
+  val common = libraryDependencies ++= Seq(config)
 
   //通用依赖
-  val commons = libraryDependencies ++= Seq(log, guava)
+  val commons = libraryDependencies ++= log4j2 ++ Seq(log, guava)
 
 }

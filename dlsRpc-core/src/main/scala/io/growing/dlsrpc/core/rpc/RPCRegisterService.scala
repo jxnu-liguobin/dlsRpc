@@ -36,7 +36,7 @@ class RPCRegisterService extends LazyLogging {
    */
   def initRegisterService(serviceAddress: ServiceAddress): Unit = {
     //TODO 注册前检查实现类是否存在，避免注册无效服务 // 隐式对象
-    import io.growing.dlsrpc.common.utils.ImplicitUtils.javaItToScalaIt
+    import io.growing.dlsrpc.common.utils.ImplicitUtils.jIteratorToSIterator
     for (serviceName <- getServiceNames.iterator()) {
       serviceRegistry.register(serviceName, serviceAddress)
     }
