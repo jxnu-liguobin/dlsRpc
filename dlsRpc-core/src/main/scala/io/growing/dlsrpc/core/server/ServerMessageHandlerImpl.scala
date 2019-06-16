@@ -21,6 +21,7 @@ import net.sf.cglib.reflect.FastClass
 class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: ServerChannel) extends ServerMessageHandler with LazyLogging {
 
   //需要处理的服务，实际使用反射调用这里只需要class文件名，不需要bean
+  @volatile
   private[this] var serviceBean: Any = _
 
   //手动选择bean

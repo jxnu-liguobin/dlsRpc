@@ -10,5 +10,9 @@ package io.growing.dlsrpc.core.api
  */
 trait AbstractChannel {
 
+
+  /**
+   * 关闭，默认回调channel.close
+   */
   def shutdown(): Unit
 }

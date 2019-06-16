@@ -15,12 +15,16 @@ class ServerBuilder private() {
   //注入服务端
   private[this] lazy val server: Server = ServiceLoadUtil.getProvider(classOf[Server])
   //传输协议，目前没使用
+  @volatile
   private[this] var protocol: Protocol = _
   //服务端口
+  @volatile
   private[this] var port: Int = _
   //需要发布rpc的服务
+  @volatile
   private[this] var serviceBean: Any = _
 
+  //允许覆盖初始化传进来的值
   def bindPort(port: Int): ServerBuilder = {
     this.port = port
     this
@@ -39,6 +43,8 @@ class ServerBuilder private() {
     server
     //protocol = ServiceLoadUtil.getProvider(Protocol.class);
   }
+
+  def stopServer: Unit = this.server.shutdown()
 }
 
 object ServerBuilder {

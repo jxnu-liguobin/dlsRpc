@@ -15,12 +15,16 @@ import javax.inject.Inject
  * Netty客户端通道
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-05
+ * @version 1.2, 2019-06-05
  */
 class NettyClientChannel @Inject()(clientChannelInitializer: ClientChannelInitializer) extends ClientChannel with LazyLogging {
 
   private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
+
+  @volatile
   private[this] var channel: Channel = _
+
+  @volatile
   private[this] var protocol: Protocol = _
 
   override def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
@@ -39,6 +43,6 @@ class NettyClientChannel @Inject()(clientChannelInitializer: ClientChannelInitia
     } catch {
       case e: Exception =>
         logger.warn("Close NettyClientChannel fail : {}", e)
-    } finally workerGroup.shutdownGracefully
+    }
   }
 }

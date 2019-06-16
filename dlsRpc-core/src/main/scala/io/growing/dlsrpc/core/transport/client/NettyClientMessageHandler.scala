@@ -19,6 +19,7 @@ import javax.inject.Inject
 class NettyClientMessageHandler @Inject()(messageHandler: ClientMessageHandler)
   extends ChannelInboundHandlerAdapter with LazyLogging {
 
+  @volatile
   private[this] var outboundChannel: Channel = _
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {

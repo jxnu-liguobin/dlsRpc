@@ -24,18 +24,26 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   //获得客户端通道
   private[this] lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
   //传输协议
+  @volatile
   private[this] var protocol: Protocol = _
+  //HTT2
   //  private[this] lazy val protocol: Protocol = ServiceLoadUtil.getProvider(classOf[Protocol])
   //服务端地址
+  @volatile
   private[this] var socketAddress: SocketAddress = _
   //线程安全的自增请求id
   private[this] lazy val atomicLong: AtomicLong = new AtomicLong(REQUEST_START_VALUE)
   //消息处理器
   private[this] lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
   //调用服务的实现的接口（JDK代理，必须要有实现接口）
+  @volatile
   private[this] var clientClass: Class[T] = _
   //this.protocol = ServiceLoadUtil.getProvider(Protocol.class);
 
+  def getClientChannel: ClientChannel = this.clientChannel
+
+
+  //允许将初始化值覆盖
   def setClientClass(clientClass: Class[T]): Client[_, _] = {
     this.clientClass = clientClass
     this
@@ -116,6 +124,12 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
     enhancer.create.asInstanceOf[T]
   }
 
-  override protected def finalize() = try clientChannel.shutdown() finally System.gc()
-
+  //关闭时强制GC
+  protected[client] def shutdown(): Unit = {
+    try clientChannel.shutdown()
+    finally {
+      System.gc()
+      System.exit(0)
+    }
+  }
 }

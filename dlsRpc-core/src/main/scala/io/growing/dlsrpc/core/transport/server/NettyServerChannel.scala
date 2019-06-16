@@ -7,7 +7,7 @@ import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.server.{ServerChannel, ServerMessageHandler}
 import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.{Channel, ChannelFuture, EventLoopGroup}
+import io.netty.channel.{Channel, EventLoopGroup}
 import javax.inject.Inject
 
 
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Netty服务端通道
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-05
+ * @version 1.2, 2019-06-05
  */
 class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitializer) extends ServerChannel with LazyLogging {
 
@@ -27,34 +27,22 @@ class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitia
   //一个EventLoop可能会被分配给一个或多个Channel
   private[this] lazy final val bossGroup: EventLoopGroup = new NioEventLoopGroup
   private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
+
+  @volatile
   private[this] var channel: Channel = _
 
   override def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
     //异步通知，这里打开的时候需要先设置执行线程
-    val nettyServerChannelFuture: ChannelFuture = ServerChannelBuilder.build(bossGroup, workerGroup,
-      serverChannelInitializer.setExecutor(executor), port)
-
-    try {
-      nettyServerChannelFuture.await
-    }
-    catch {
-      case ex: InterruptedException =>
-        Thread.currentThread.interrupt()
-        logger.warn("Start fail : {}", ex)
-        throw new RuntimeException("Interrupted waiting for bind")
-    }
-    IsCondition.conditionWarn(!nettyServerChannelFuture.isSuccess, s"Start fail : {${nettyServerChannelFuture.cause}")
-    IsCondition.conditionException(!nettyServerChannelFuture.isSuccess, "Failed to bind", nettyServerChannelFuture.cause())
-    channel = nettyServerChannelFuture.channel
+    channel = ServerChannelBuilder.build(bossGroup, workerGroup, serverChannelInitializer.setExecutor(executor), port)
   }
 
   override def shutdown(): Unit = {
     if (IsCondition.conditionWarn(channel == null || !channel.isOpen)) return
     try {
-      channel.close
+      channel.close()
     } catch {
       case e: Exception =>
         logger.warn("Close NettyServerChannel fail : {}", e)
-    } finally workerGroup.shutdownGracefully
+    }
   }
 }

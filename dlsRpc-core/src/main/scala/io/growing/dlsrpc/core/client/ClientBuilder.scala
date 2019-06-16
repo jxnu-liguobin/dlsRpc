@@ -35,6 +35,8 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
       }
     }
   }
+
+  def stopClient: Unit = super.shutdown()
 }
 
 object ClientBuilder {
