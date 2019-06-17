@@ -32,6 +32,7 @@ object DlsRpcConfiguration {
   final val CGLIB_PROXY: Boolean = Try(config.getBoolean("dlsrpc.proxy.mode.cglib-proxy")).getOrElse(Constants.CGLIB_PROXY)
   final val TO_CGLIB_PROXY: Boolean = Try(config.getBoolean("dlsrpc.proxy.mode.force-cglib-proxy")).getOrElse(Constants.TO_CGLIB_PROXY)
   final val WEB_SERVER_PORT: Int = Try(config.getInt("dlsrpc.server.port")).getOrElse(Constants.WEB_SERVER_PORT)
+  final val DEFAULT_WEIGHT: Int = Try(config.getInt("dlsrpc.server.balancer-weight")).getOrElse(Constants.DEFAULT_WEIGHT)
 
   private final lazy val default: JList[String] = new util.ArrayList[String]()
   default.add(DEFAULT_DISCOVER_ADDRESS)
@@ -41,7 +42,10 @@ object DlsRpcConfiguration {
   //默认配置，外界不可访问
   private object Constants {
 
+    //默认权值
     final val WEB_SERVER_PORT = 8080
+
+    final val DEFAULT_WEIGHT = 5
 
     //客户端超时时间
     final val TIME_AWAIT = 30 * 1000

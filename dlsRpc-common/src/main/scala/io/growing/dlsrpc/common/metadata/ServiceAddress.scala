@@ -1,12 +1,12 @@
 package io.growing.dlsrpc.common.metadata
 
 /**
- * 服务注册使用
+ * 基础服务信息，用于通用性设计
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-08
+ * @version 1.0, 2019-06-17
  */
-case class ServiceAddress(ip: String, port: Int) {
+abstract class ServiceAddress(ip: String, port: Int) {
 
   /**
    * 暴露ip

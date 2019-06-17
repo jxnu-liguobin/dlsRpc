@@ -17,8 +17,7 @@ import io.growing.dlsrpc.consul.commons.ConsulBuilder
  */
 class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegistry with LazyLogging {
 
-  @volatile
-  private[this] final lazy val (consulClient, _) = ConsulBuilder.checkAndBuild(consulAddress)
+  private[this] final lazy val consulClient = ConsulBuilder.checkAndBuild(consulAddress)
 
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     val newService = new NewService

@@ -7,11 +7,12 @@ import java.util.{ArrayList => JArrayList, List => JList, Map => JMap}
 import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.metadata.WeightServiceAddress
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.common.utils.IsCondition
 
 /**
- * 加权轮询法
+ * 加权随机法+加权Hash
  *
  * 没有完全支持泛型，只负责IP轮询，暂无容错
  *
@@ -19,16 +20,16 @@ import io.growing.dlsrpc.common.utils.IsCondition
  * @version 1.0, 2019-06-14
  * @param weightServiceAddresses 所有存活的服务
  */
-class RoundRobin[T] private(val weightServiceAddresses: JList[T]) extends Loadbalancer[T]
+class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadbalancer[T]
   with LazyLogging {
 
-  import RoundRobin._
+  import WeightLoadBalancer._
 
   //临时服务地址，可能被修改
   @volatile
   protected[this] var serviceIps: JMap[WeightServiceAddress, Int] = _
 
-  if (weightServiceAddresses.isEmpty) {
+  if (weightServiceAddresses.isEmpty || weightServiceAddresses.size() == 0) {
     serviceIps = defaultWeightServiceAddress
     logger.info("Number of incoming empty, using the default configuration list {}", serviceIps.size())
   } else {
@@ -69,24 +70,44 @@ class RoundRobin[T] private(val weightServiceAddresses: JList[T]) extends Loadba
     while (it.hasNext) {
       val server = it.next()
       val weight = serverMap.get(server)
-      for (i <- 0 until weight) {
+      for (_ <- 0 until weight) {
         serverList.add(server)
       }
     }
-    serverList.get(ThreadLocalRandom.current.nextInt(serviceIps.size())).asInstanceOf[T]
+
+    val pos = ThreadLocalRandom.current.nextInt(serverList.size())
+    serverList.get(pos).asInstanceOf[T]
+  }
+
+  override def next(remoteIp: String): T = {
+    IsCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip and set error in dlsRpc.conf")
+    val serverMap: JMap[WeightServiceAddress, Int] = serviceIps
+    val it: util.Iterator[WeightServiceAddress] = serverMap.keySet().iterator()
+    val serverList = new JArrayList[WeightServiceAddress]
+    while (it.hasNext) {
+      val server = it.next()
+      val weight = serverMap.get(server)
+      for (_ <- 0 until weight) {
+        serverList.add(server)
+      }
+    }
+    val hashCode = remoteIp.hashCode
+    val serverListSize = serverList.size
+    val pos = hashCode % serverListSize
+    serverList.get(pos).asInstanceOf[T]
   }
 }
 
-object RoundRobin extends App {
+object WeightLoadBalancer extends App {
 
   //默认权值
-  private val weight = 2
+  private val weight = 5
 
   //配置了默认服务ip优先级高一点
   private val high_weight = 10
 
   //默认WEB端口
-  private val port = 9000
+  private val port = WEB_SERVER_PORT
 
   //默认的服务列表，从配置文件读取，表示启用的服务列表，隐式去重
   private final lazy val defaultWeightServiceAddress: JMap[WeightServiceAddress, Int] = Maps.newConcurrentMap()
@@ -95,9 +116,11 @@ object RoundRobin extends App {
 
   //Test data
   val s = new util.ArrayList[WeightServiceAddress]()
-  s.add(new WeightServiceAddress("127.0.0.1", port, 0))
-  s.add(new WeightServiceAddress("127.0.1.5", port, 0))
-  s.add(new WeightServiceAddress("127.7.1.2", port, 0))
-  s.add(new WeightServiceAddress("127.1.1.2", port, 0))
-  println(new RoundRobin(s).next)
+  s.add(new WeightServiceAddress("127.0.0.1", port, 2))
+  s.add(new WeightServiceAddress("127.0.1.5", port, 1))
+  s.add(new WeightServiceAddress("127.7.1.2", port, 1))
+  s.add(new WeightServiceAddress("127.1.1.2", port, 1))
+  s.add(new WeightServiceAddress("192.168.1.1", port, 1))
+  println(new WeightLoadBalancer(s).next)
+  println(new WeightLoadBalancer(s).next("127.0.5.1"))
 }

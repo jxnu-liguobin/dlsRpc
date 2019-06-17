@@ -6,7 +6,7 @@ import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient}
 import com.google.common.collect.Maps
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
 import io.growing.dlsrpc.common.exception.RPCException
-import io.growing.dlsrpc.common.metadata.ServiceAddress
+import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress}
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
 
@@ -50,19 +50,18 @@ object ConsulBuilder {
   }
 
   /**
-   * 统一封装并返回
+   * /统一封装并返回
    *
    * @param consulAddress
-   * @tparam S
+   * @return
    */
-  def checkAndBuild[S](consulAddress: S): (ConsulClient, ConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]) = {
+  def checkAndBuild(consulAddress: ServiceAddress): ConsulClient = {
     consulAddress match {
-      case s: ServiceAddress => {
-        lazy val loadBalancerMap = Maps.newConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]
+      case s: NormalServiceAddress => {
         IsCondition.conditionException(!s.toString.matches(PATTERN), "not an valid format like ip:port")
         IsCondition.conditionException(s.getPort < 0, "port can't less  0")
         lazy val rawClient = new ConsulRawClient(s.getIp, s.getPort)
-        (new ConsulClient(rawClient), loadBalancerMap)
+        new ConsulClient(rawClient)
       }
       case _ => {
         //TODO

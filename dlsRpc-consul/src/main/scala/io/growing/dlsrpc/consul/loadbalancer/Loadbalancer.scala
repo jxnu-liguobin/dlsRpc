@@ -8,6 +8,21 @@ package io.growing.dlsrpc.consul.loadbalancer
  */
 trait Loadbalancer[T] {
 
+
+  /**
+   * 权值 + 默认权值
+   *
+   * @return
+   */
   def next: T
+
+
+  /**
+   * HASH IP + 权值 + 默认权值
+   *
+   * @param remoteIp
+   * @return
+   */
+  def next(remoteIp: String): T = ???
 
 }

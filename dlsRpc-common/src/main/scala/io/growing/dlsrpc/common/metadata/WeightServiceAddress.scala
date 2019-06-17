@@ -1,19 +1,19 @@
-package io.growing.dlsrpc.consul.loadbalancer
+package io.growing.dlsrpc.common.metadata
 
 import java.util.Objects
 
-import io.growing.dlsrpc.common.metadata.ServiceAddress
-
 /**
- * 附有加权值所需要的权值的服务器地址
+ * 附有加权所需要的权值的服务器地址
  *
- * 一般就是服务端用，所以写在这个模块
+ * 现在已经成为默认属性
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-14
+ * @version 1.1, 2019-06-14
  */
-class WeightServiceAddress(override val ip: String, override val port: Int, weight: Int)
+class WeightServiceAddress(val ip: String, val port: Int, weight: Int = 5)
   extends ServiceAddress(ip, port) {
+
+  require(weight > 0) //权值必须大于0
 
   def getWeight = this.weight
 

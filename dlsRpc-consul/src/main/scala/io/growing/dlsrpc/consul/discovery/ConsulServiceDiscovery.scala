@@ -4,37 +4,43 @@ import java.util.{ArrayList => JArrayList, List => JList}
 
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{QueryParams, Response}
+import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.metadata.ServiceAddress
+import io.growing.dlsrpc.common.enums.BalancerType
+import io.growing.dlsrpc.common.enums.BalancerType.BalancerType
+import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress, WeightServiceAddress}
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
-import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
+import io.growing.dlsrpc.consul.loadbalancer.{Loadbalancer, RandomLoadBalancer, WeightLoadBalancer}
+
+import scala.util.Try
 
 /**
  * 使用consul的服务发现
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-08
+ * @version 1.1, 2019-06-08
  */
 class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
-  @volatile
-  private[this] final lazy val (consulClient, loadBalancerMap) = ConsulBuilder.checkAndBuild(consulAddress)
+  private[this] final lazy val consulClient = ConsulBuilder.checkAndBuild(consulAddress)
+
+  private[this] final val loadBalancerMap = Maps.newConcurrentMap[String, Loadbalancer[ServiceAddress]]()
 
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {
     IsCondition.conditionException(serviceName == null, "service name can't be null")
-    //    val realName = serviceName + "-" + Constants.CONSUL_ADDRESS
     if (!loadBalancerMap.containsKey(serviceName)) {
-      //名字是serviceName-ip:port，    //TODO 优化过期接口
+      //TODO 优化过期接口
       val healthServices: JList[HealthService] = consulClient.getHealthServices(serviceName,
         true, QueryParams.DEFAULT).getValue
-      loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices))
+      loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[ServiceAddress]](healthServices, BalancerType.WEIGHT))
       // 监测 consul
       longPolling(serviceName)
     }
     //返回真实服务的地址（ip:port）可能是null
+    //val sd = loadBalancerMap.get(serviceName).next("127.0.0.1") //加权后hash 请求ip
     val sd = loadBalancerMap.get(serviceName).next
     IsCondition.conditionException(sd.getPort < 0, "port can't less  0")
     logger.info("Real address is {}", sd)
@@ -51,16 +57,36 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         logger.debug("Consul index for {} is {}", serviceName, consulIndex)
         val healthServices = healthyServices.getValue
         logger.debug("Service addresses of {} is {}", serviceName, healthServices)
-        loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices))
+        loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[ServiceAddress]](healthServices, BalancerType.WEIGHT))
       } while (true)
     }).start()
   }
 
-  private[this] def buildLoadBalancer(healthServices: JList[HealthService]): RandomLoadBalancer[ServiceAddress] = { // 隐式对象
+
+  /**
+   *
+   * @param healthServices 可用服务列表
+   * @param balancerType   启用的负载均衡类型
+   * @tparam L 预期类型
+   * @return 实际类型
+   */
+  private[this] def buildLoadBalancer[L <: Loadbalancer[_]](healthServices: JList[HealthService],
+                                                            balancerType: BalancerType): L = {
     val address = new JArrayList[ServiceAddress]()
-    for (service <- healthServices.iterator()) {
-      address.add(ServiceAddress(service.getService.getAddress, service.getService.getPort))
+
+    balancerType match {
+      case BalancerType.RANDOM => {
+        for (service <- healthServices.iterator()) {
+          address.add(NormalServiceAddress(service.getService.getAddress, service.getService.getPort))
+        }
+        Try(new RandomLoadBalancer(address).asInstanceOf[L]).get
+      }
+      case BalancerType.WEIGHT => {
+        for (service <- healthServices.iterator()) {
+          address.add(new WeightServiceAddress(service.getService.getAddress, service.getService.getPort))
+        }
+        Try(new WeightLoadBalancer(address).asInstanceOf[L]).get
+      }
     }
-    new RandomLoadBalancer(address)
   }
 }
