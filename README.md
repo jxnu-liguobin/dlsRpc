@@ -13,6 +13,24 @@ If you want to join this project, please contact me by email.（想加入本项�
 ![GitHub top language](https://img.shields.io/github/languages/top/jxnu-liguobin/dlsRpc.svg)
 ---
 
+
+Already Implemented functions
+---
+
+- Remote Call base on NIO （基于 NIO 的远程调用）
+- Service Discovery （基于 consul-api 的服务发现）
+- Service Registration base on annotation （基于自定义注解的服务注册）
+- Server-side LoadBalancing with Random, Weight or Hash IP （基于随机、权重、权重 & HASH IP 的服务端负载均衡）
+- Automatic switching between CGLIB and JDK proxy （自动切换 CGLIB、JDK 动态代理）
+- Dependency Injection base on Guice
+- Serializer base on Protostuff
+- Call chaining
+- Multi-module project base on SBT
+- Pressure measurement base on JMH
+- Configuration injection based on typesafe Config
+- loading  
+
+
 Technology
 ---
 
