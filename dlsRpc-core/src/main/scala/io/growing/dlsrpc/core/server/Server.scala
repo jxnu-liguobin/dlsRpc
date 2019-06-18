@@ -4,6 +4,8 @@ import java.util.concurrent.Executor
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration
+import io.growing.dlsrpc.common.metadata.NormalServiceAddress
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
 import io.growing.dlsrpc.core.rpc.RPCRegisterService
@@ -22,7 +24,7 @@ import javax.inject.Inject
  */
 @Singleton
 class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, messageHandler: ServerMessageHandler
-                       , registerService: RPCRegisterService, rpc: RPCRegisterService) extends LazyLogging {
+                       , rpc: RPCRegisterService) extends LazyLogging {
 
   //传输协议，未使用
   @volatile
@@ -33,29 +35,33 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
   //需要发布rpc的服务，一条channel可以发布多个服务，但是这里目前采用这种方案，一条channel对应一个服务
   //注册和发现服务写好后会改成多个
   @volatile
-  private[this] var serviceBean: Any = _
+  private[this] var serviceBeans: Seq[Any] = _
   //服务端任务执行器，使用缓存线程池
   private[this] final lazy val executor: Executor = ExecutorBuilder.executorBuild("dlsRpc-thread-executor-%d", daemon = true)
 
-  def setPort(port: Int): Server = {
+  protected[server] def setPort(port: Int): Server = {
     this.port = port
     this
   }
 
-  def setBean(serviceBean: Any): Server = {
-    this.serviceBean = serviceBean
+  def setBeans(serviceBeans: Seq[Any]): Server = {
+    if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
+      this.serviceBeans = this.serviceBeans ++ serviceBeans
+    } else {
+      this.serviceBeans = serviceBeans
+    }
     this
   }
 
   //对于通道错误不予捕获，任务服务没有进行下去的必要
   def start(): Unit = {
-    IsCondition.conditionException(serviceBean == null || !port.isValidInt || port < 0, "params error")
+    IsCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
     //注入进的消息处理器并不知发布哪个服务
-    messageHandler.setProcessBean(serviceBean)
+    messageHandler.setProcessBeans(serviceBeans)
     serverChannel.openServerChannel(port, executor, protocol, messageHandler)
     logger.info("Server start port : {}", port)
-    //默认将可见的类注册到本地的consul并暴露8080端口
-    //    rpc.initRegisterService(NormalServiceAddress(WEB_SERVER_IP, WEB_SERVER_PORT))
+    //默认将可见的所有类注册到本地的consul并暴露127.0.0.1:8080
+    rpc.initRegisterService(NormalServiceAddress(DlsRpcConfiguration.WEB_SERVER_IP, port))
   }
 
   //关闭时强制GC

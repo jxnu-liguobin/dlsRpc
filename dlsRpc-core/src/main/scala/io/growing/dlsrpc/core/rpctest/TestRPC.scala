@@ -1,5 +1,6 @@
 package io.growing.dlsrpc.core.rpctest
 
+import io.growing.dlsrpc.common.config.DlsRpcConfiguration
 import io.growing.dlsrpc.core.server.ServerBuilder
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke
 
@@ -73,6 +74,18 @@ object NettTest extends App {
 
 }
 
+/**
+ * 集成测试服务发布、注册、RPC
+ */
+object TestRpcServer extends App {
+  //默认发布到本地
+  DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT, Seq(new HelloImpl())).build.start()
+}
+
+object TestRpcClient extends App {
+  val hello: Hello = DlsRpcInvoke.getClientBuilder(classOf[Hello]).build
+  println(hello.sayHello("I am a dog"))
+}
 
 
 

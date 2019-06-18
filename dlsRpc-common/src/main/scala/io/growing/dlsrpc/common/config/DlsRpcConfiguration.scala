@@ -15,16 +15,17 @@ import scala.util.Try
  * @author 梦境迷离
  * @version 1.0, 2019-06-13
  */
-object DlsRpcConfiguration extends App {
+object DlsRpcConfiguration {
+  //去掉 extends App 不然拿不到值
 
   //TODO 路径处理
   var config: Config = ConfigFactory.load("dlsRpc.conf")
 
-  val consumer: Config = ConfigFactory.load("consumer.conf")
-
-  if (consumer != null) {
-    config = consumer
-  }
+//  val consumer: Config = ConfigFactory.load("consumer.conf")
+//
+//  if (consumer != null) {
+//    config = consumer
+//  }
 
   //  private final val config: Config = ConfigFactory.load("dlsRpc.conf")
 

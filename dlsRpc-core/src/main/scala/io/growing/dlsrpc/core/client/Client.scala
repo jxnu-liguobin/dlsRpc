@@ -7,9 +7,11 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
-import io.growing.dlsrpc.common.metadata.RpcRequest
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.enums.ProxyType
+import io.growing.dlsrpc.common.metadata.{RpcRequest, ServiceAddress}
+import io.growing.dlsrpc.common.utils.{IsCondition, SubClassUtils, SuperClassUtils}
 import io.growing.dlsrpc.core.api.Protocol
+import io.growing.dlsrpc.core.rpc.RPCDiscoveryService
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
 
@@ -19,10 +21,12 @@ import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */
-class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
+class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extends LazyLogging {
 
   //获得客户端通道
   private[this] lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
+  //服务发现
+  private[this] lazy val rpc: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])
   //传输协议
   @volatile
   private[this] var protocol: Protocol = _
@@ -36,18 +40,11 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   //消息处理器
   private[this] lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
   //调用服务的实现的接口（JDK代理，必须要有实现接口）
-  @volatile
-  private[this] var clientClass: Class[T] = _
+  //  @volatile
+  //  private[this] var clientClass: Class[T] = _
   //this.protocol = ServiceLoadUtil.getProvider(Protocol.class);
 
   def getClientChannel: ClientChannel = this.clientChannel
-
-
-  //允许将初始化值覆盖
-  def setClientClass(clientClass: Class[T]): Client[_, _] = {
-    this.clientClass = clientClass
-    this
-  }
 
   def setTransportProtocol(protocol: Protocol): Client[_, _] = {
     this.protocol = protocol
@@ -62,10 +59,28 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
   def linkToAddress(host: String, port: Int): Builder = {
     IsCondition.conditionException(host == null, "host can't be empty")
     IsCondition.conditionException(port < 1, "port can't less than 1")
+    //服务发现
+
     this.socketAddress = InetSocketAddress.createUnresolved(host, port)
     this.asInstanceOf[Builder]
   }
 
+
+  //链接到默认服务中心，获得绑定的实际服务地址
+  def linkToCenter: Builder = {
+//    var classs: String = null
+//    //是接口就获取子类，不是接口就直接使用类名
+//    if (clientClass.isInterface) {
+//      classs = SubClassUtils.getSubClassName(clientClass)
+//    } else {
+//      classs = clientClass.getSimpleName
+//    }
+    //服务发现
+    val serviceAddress: ServiceAddress = rpc.obtainServiceAddress(clientClass.getSimpleName)
+    IsCondition.conditionException(serviceAddress == null, "can't find any service address")
+    this.socketAddress = InetSocketAddress.createUnresolved(serviceAddress.getIp, serviceAddress.getPort)
+    this.asInstanceOf[Builder]
+  }
 
   //不予捕获通道造成错误
   private[client] def start(): Unit = {
@@ -83,7 +98,7 @@ class Client[Builder <: Client[_, _], T] protected() extends LazyLogging {
       def invoke(proxy: Any, method: Method, args: Array[_ <: Any]) = {
         val request: RpcRequest = new RpcRequest
         request.setRequestId(atomicLong.incrementAndGet)
-        request.setClassName(clientClass.getName)
+        request.setClassName(clientClass.getSimpleName)
         request.setMethodName(method.getName)
         request.setParameterTypes(method.getParameterTypes)
         request.setParameters(args)

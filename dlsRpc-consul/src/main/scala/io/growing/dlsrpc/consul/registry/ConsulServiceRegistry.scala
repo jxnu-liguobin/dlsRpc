@@ -29,7 +29,7 @@ class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegist
     newService.setPort(serviceAddress.getPort)
     // Set health check
     val check = new NewService.Check()
-    check.setTcp(serviceAddress.toString)
+    check.setTcp(serviceAddress.getIp + ":" + 8500) //TCP检查端口改成8500 好通过/health
     check.setInterval("1s")
     newService.setCheck(check)
     consulClient.agentServiceRegister(newService)

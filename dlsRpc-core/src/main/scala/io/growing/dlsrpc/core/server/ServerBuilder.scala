@@ -22,7 +22,7 @@ class ServerBuilder private() {
   private[this] var port: Int = _
   //需要发布rpc的服务
   @volatile
-  private[this] var serviceBean: Any = _
+  private[this] var serviceBeans: Seq[Any] = _
 
   //允许覆盖初始化传进来的值
   def bindPort(port: Int): ServerBuilder = {
@@ -30,15 +30,20 @@ class ServerBuilder private() {
     this
   }
 
-  def publishService(serviceBean: Any): ServerBuilder = {
-    this.serviceBean = serviceBean
+  def publishServices(serviceBeans: Seq[Any]): ServerBuilder = {
+    if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
+      this.serviceBeans = this.serviceBeans ++ serviceBeans
+    } else {
+      this.serviceBeans = serviceBeans
+    }
     this
   }
 
   //这里主要是设置端口并发布服务，之所以需要改为注入是为了后面拓展发布多服务
+  //build后不能再修改端口
   def build: Server = {
-    IsCondition.conditionException(serviceBean == null || !port.isValidInt || port < 0, "params error")
-    server.setBean(serviceBean)
+    IsCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
+    server.setBeans(serviceBeans)
     server.setPort(port)
     server
     //protocol = ServiceLoadUtil.getProvider(Protocol.class);

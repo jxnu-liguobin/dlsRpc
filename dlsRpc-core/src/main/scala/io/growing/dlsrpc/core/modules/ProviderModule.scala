@@ -43,6 +43,5 @@ class ProviderModule extends AbstractModule {
     bind(classOf[RPCRegisterService]).asEagerSingleton()
     //RPC对外服务发现
     bind(classOf[RPCDiscoveryService]).asEagerSingleton()
-
   }
 }

@@ -2,6 +2,7 @@ package io.growing.dlsrpc.common.utils;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -173,5 +174,86 @@ public class ClassUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获得所有实现该接口的子类
+     *
+     * @param c
+     * @return
+     */
+    public static List<Class<?>> getSubClassByInterface(Class<?> c) {
+        // 返回结果
+        List<Class<?>> returnClassList = new ArrayList<>();
+        // 如果不是一个接口，则不做处理
+        if (c.isInterface()) {
+            // 获得当前的包名
+            String packageName = c.getPackage().getName();
+            try {
+                // 获得当前包下以及子包下的所有类
+                List<Class> allClass = getClasses(packageName);
+                // 判断是否是同一个接口
+                for (int i = 0; i < allClass.size(); i++) {
+                    // 判断是不是一个接口
+                    if (c.isAssignableFrom(allClass.get(i))) {
+                        // 本身不加进去
+                        if (!c.equals(allClass.get(i))) {
+                            returnClassList.add(allClass.get(i));
+                        }
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return returnClassList;
+    }
+
+    // 从一个包中查找出所有的类，在jar包中不能查找
+    private static List<Class> getClasses(String packageName)
+            throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread()
+                .getContextClassLoader();
+        // 用'/'代替'.'路径
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<>();
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            dirs.add(new File(resource.getFile()));
+        }
+        ArrayList<Class> classes = new ArrayList<>();
+        for (File directory : dirs) {
+            classes.addAll(findClasses(directory, packageName));
+        }
+        return classes;
+    }
+
+    private static List<Class> findClasses(File directory, String packageName)
+            throws ClassNotFoundException {
+        List<Class> classes = new ArrayList<>();
+        if (!directory.exists()) {
+            return classes;
+        }
+        File[] files = directory.listFiles();
+        assert files != null;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                assert !file.getName().contains(".");
+                classes.addAll(findClasses(file,
+                        packageName + "." + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                // 去掉'.class'
+                classes.add(Class.forName(packageName
+                        + '.'
+                        + file.getName().substring(0,
+                        file.getName().length() - 6)));
+
+            }
+        }
+        return classes;
     }
 }

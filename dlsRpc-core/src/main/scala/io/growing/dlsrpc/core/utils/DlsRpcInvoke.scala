@@ -14,10 +14,9 @@ import io.growing.dlsrpc.core.server.ServerBuilder._
  * 后面要使用服务注册发现，并支持自动注册，支持多个服务
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-07
+ * @version 1.2, 2019-06-07
  */
 object DlsRpcInvoke {
-
 
   /**
    * 直接发布服务
@@ -25,14 +24,27 @@ object DlsRpcInvoke {
    * @param port
    * @param serviceBean
    */
+  @deprecated
   def publishService(port: Int, serviceBean: Any): Unit = {
-    val server = buildWithPort(port).publishService(serviceBean).build
+    val server = buildWithPort(port).publishServices(Seq(serviceBean)).build
     server.start()
     TimeUnit.SECONDS.sleep(1000)
     //防止还没启动就停了
     //    server.shutdown()
   }
 
+  /**
+   * 发布所有服务
+   *
+   * @param port
+   * @param serviceBeans
+   */
+  @deprecated
+  def publishServices(port: Int, serviceBeans: Seq[Any]): Unit = {
+    val server = buildWithPort(port).publishServices(serviceBeans).build
+    server.start()
+    TimeUnit.SECONDS.sleep(1000)
+  }
 
   /**
    * 直接取得代理对象
@@ -43,11 +55,11 @@ object DlsRpcInvoke {
    * @tparam T
    * @return
    */
+  @deprecated
   def obtainService[T](host: String, port: Int, target: Class[T]): T = {
     val serviceAddress: InetSocketAddress = InetSocketAddress.createUnresolved(host, port)
     builderWithClass(target).linkToAddress(serviceAddress).build
   }
-
 
   /**
    * 获得client建造
@@ -58,11 +70,22 @@ object DlsRpcInvoke {
    * @tparam T
    * @return
    */
+  @deprecated
   def getClientBuilder[T](host: String, port: Int, target: Class[T]): ClientBuilder[T] = {
     val serviceAddress: InetSocketAddress = InetSocketAddress.createUnresolved(host, port)
     builderWithClass(target).linkToAddress(serviceAddress)
   }
 
+  /**
+   * 使用默认的服务中心
+   *
+   * @param target 需要调用的服务的类名
+   * @tparam T
+   * @return
+   */
+  def getClientBuilder[T](target: Class[T]): ClientBuilder[T] = {
+    builderWithClass(target).linkToCenter
+  }
 
   /**
    * 获得server建造
@@ -73,7 +96,18 @@ object DlsRpcInvoke {
    * @return
    */
   def getServerBuilder[T](port: Int, serviceBean: Any): ServerBuilder = {
-    buildWithPort(port).publishService(serviceBean)
+    buildWithPort(port).publishServices(Seq(serviceBean))
   }
 
+  /**
+   * 发布多个服务（暴露）
+   *
+   * @param port WEB端口
+   * @param serviceBeans
+   * @tparam T
+   * @return
+   */
+  def getServerBuilder[T](port: Int, serviceBeans: Seq[Any]): ServerBuilder = {
+    buildWithPort(port).publishServices(serviceBeans)
+  }
 }

@@ -1,13 +1,12 @@
 package io.growing.dlsrpc.core.transport.client
 
-import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.client.ClientMessageHandler
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import io.netty.util.ReferenceCountUtil
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 /**
  * 客户端消息处理实现

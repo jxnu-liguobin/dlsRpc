@@ -24,8 +24,8 @@ trait ServerMessageHandler {
   /**
    * 设置需要处理的服务
    *
-   * @param bean
+   * @param beans
    */
-  def setProcessBean(bean: Any)
+  def setProcessBeans(beans: Seq[Any])
 
 }

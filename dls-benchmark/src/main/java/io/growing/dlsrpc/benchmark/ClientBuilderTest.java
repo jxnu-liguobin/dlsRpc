@@ -1,6 +1,7 @@
 package io.growing.dlsrpc.benchmark;
 
 
+import io.growing.dlsrpc.core.rpctest.Hello;
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,10 +19,9 @@ public class ClientBuilderTest {
     //先启动server
     public static void main(String[] args) {
 
-        //JDK
-//        Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8080, Hello.class);
-        //CGLIB
-        WorldImpl hello = DlsRpcInvoke.obtainService("127.0.0.1", 8083, WorldImpl.class);
+        //Hello 测试jdk
+        //WorldImpl 测试cglb
+        Hello hello = DlsRpcInvoke.getClientBuilder(Hello.class).build();
 
         for (int i = 0; i < 100000; i++) {
             assert (hello.sayHello(i + "dls")).equals(i + "dls-hello!");

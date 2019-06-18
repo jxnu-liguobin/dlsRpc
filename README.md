@@ -36,25 +36,23 @@ Test & Use
 Examples
 ---
 
-- server publish (Will Discard)
+- server 
 
+```java
+List<Object> tmpList1 = new ArrayList<>();
+tmpList1.add(new WorldImpl()); //CGLIB PRXOY
+List<Object> tmpList2 = new ArrayList<>();
+tmpList2.add(new HelloImpl()); //JDK PROXY
+Seq<Object> tmpSeq1 = JavaConverters.asScalaIteratorConverter(tmpList1.iterator()).asScala().toSeq();//init need
+Seq<Object> tmpSeq2 = JavaConverters.asScalaIteratorConverter(tmpList2.iterator()).asScala().toSeq();//add publish bean
+//Demonstration of instantiating publishing services through chain invocation
+ServerBuilder server = DlsRpcInvoke.getServerBuilder(8080, tmpSeq1).publishServices(tmpSeq2);
+server.build().start();
 ```
-in java
-Hello hello = new HelloImpl();
-DlsRpcInvoke.publishService(8889, hello);
+- client
 
-in scala
-val hello = new HelloImpl()
-DlsRpcInvoke.publishService(8889, hello)
-```
-- client obtain (Will Discard)
-
-```
-in java
-Hello hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, Hello.class);
-
-in scala
-val hello = DlsRpcInvoke.obtainService("127.0.0.1", 8889, classOf[Hello])
+```java
+Hello hello = DlsRpcInvoke.getClientBuilder(Hello.class).build();
 ```
 
 Note

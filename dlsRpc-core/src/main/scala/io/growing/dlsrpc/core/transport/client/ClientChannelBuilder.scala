@@ -27,7 +27,7 @@ object ClientChannelBuilder extends LazyLogging {
       await()
 
     NettyListenerUtils.addClosedListener(channelFuture, null, workerGroup)
-
+    logger.info("channelFuture is " + channelFuture)
     channelFuture.channel
   }
 }

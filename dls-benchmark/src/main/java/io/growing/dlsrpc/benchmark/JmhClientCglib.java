@@ -25,7 +25,7 @@ public class JmhClientCglib {
     @Fork(1)
     public void getKey() {
         long t = System.currentTimeMillis();
-        String s = ClientWorld.world.sayHello(t + "dls");
+        String s = ClientWorld.wrold.sayHello(t + "dls");
         if (!s.equals(t + "dls-hello!")) {
             new RuntimeException("error2");
         }

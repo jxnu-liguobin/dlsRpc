@@ -9,9 +9,9 @@ import io.growing.dlsrpc.common.exception.ProxyException
  * 获取类实现的接口
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-12
+ * @version 1.1, 2019-06-12
  */
-object SuperClassUtils extends App {
+object SuperClassUtils {
 
   /**
    * 获取类的父接口
@@ -55,16 +55,22 @@ object SuperClassUtils extends App {
    * @return
    */
   def matchProxy[T](clazz: Class[T]): ProxyType = {
-    if (getVaildSuperInterface(clazz) == null || getVaildSuperInterface(clazz).isEmpty) {
+    //不是接口，且没有实现接口，使用cglib
+    if (!clazz.isInterface && (getVaildSuperInterface(clazz) == null || getVaildSuperInterface(clazz).isEmpty)) {
       if (CGLIB_PROXY) {
-        ProxyType.CGLIB
+        return ProxyType.CGLIB
       } else throw ProxyException("Proxy happen fail")
-    } else {
-      if (CGLIB_PROXY && TO_CGLIB_PROXY) {
-        ProxyType.CGLIB
+    }
+    //不是接口，有实现接口，使用jdk；是接口使用jdk
+    if (clazz.isInterface || !clazz.isInterface && (getVaildSuperInterface(clazz) != null && getVaildSuperInterface(clazz).nonEmpty)) {
+      if (!clazz.isInterface) {
+        if (CGLIB_PROXY && TO_CGLIB_PROXY) {
+          return ProxyType.CGLIB
+        }
       } else {
-        ProxyType.JDK
+        return ProxyType.JDK
       }
     }
+    ProxyType.JDK
   }
 }
