@@ -47,11 +47,6 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     this
   }
 
-  def setProtocol(protocol: Protocol) = {
-    this.protocol = protocol
-    this
-  }
-
   //对于通道错误不予捕获，任务服务没有进行下去的必要
   def start(): Unit = {
     IsCondition.conditionException(serviceBean == null || !port.isValidInt || port < 0, "params error")

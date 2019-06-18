@@ -17,7 +17,7 @@ Technology
 ---
 
 * Netty 
-* Http2 
+* Http2
 * Protostuff
 * Jmh
 * Guice

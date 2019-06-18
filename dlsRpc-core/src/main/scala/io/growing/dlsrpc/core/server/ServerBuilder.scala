@@ -44,6 +44,11 @@ class ServerBuilder private() {
     //protocol = ServiceLoadUtil.getProvider(Protocol.class);
   }
 
+  def setTransportProtocol(protocol: Protocol): ServerBuilder = {
+    this.protocol = protocol
+    this
+  }
+
   def stopServer: Unit = this.server.shutdown()
 }
 

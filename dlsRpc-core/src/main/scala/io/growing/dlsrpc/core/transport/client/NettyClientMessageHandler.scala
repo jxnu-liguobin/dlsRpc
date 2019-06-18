@@ -39,6 +39,8 @@ class NettyClientMessageHandler @Inject()(messageHandler: ClientMessageHandler)
         val writeMsg = msg.asInstanceOf[Array[Byte]]
         //调用io.growing.dls.client.ClientMessageHandler
         messageHandler.receiveProcessor(writeMsg) //使用注入bean
+        //如果一个对象实现了ReferenceCounted，并且包含有其他对象也实现了ReferenceCounted，当这个对象计数为0被回收的时候
+        //所包含的对象同样会通过release()释放掉。
         ReferenceCountUtil.release(msg)
       }
     }
