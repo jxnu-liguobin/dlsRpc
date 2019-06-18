@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 @Singleton
 class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, messageHandler: ServerMessageHandler
-                       , registerService: RPCRegisterService) extends LazyLogging {
+                       , registerService: RPCRegisterService, rpc: RPCRegisterService) extends LazyLogging {
 
   //传输协议，未使用
   @volatile
@@ -54,8 +54,8 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     messageHandler.setProcessBean(serviceBean)
     serverChannel.openServerChannel(port, executor, protocol, messageHandler)
     logger.info("Server start port : {}", port)
-    //TODO 启动服务的时候开始初始化注册所有有注解的服务
-    //      rpc.initRegisterService(Constants.CONSUL_ADDRESS)
+    //默认将可见的类注册到本地的consul并暴露8080端口
+    //    rpc.initRegisterService(NormalServiceAddress(WEB_SERVER_IP, WEB_SERVER_PORT))
   }
 
   //关闭时强制GC

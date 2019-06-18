@@ -15,9 +15,18 @@ import scala.util.Try
  * @author 梦境迷离
  * @version 1.0, 2019-06-13
  */
-object DlsRpcConfiguration {
+object DlsRpcConfiguration extends App {
 
-  private final val config: Config = ConfigFactory.load("dlsRpc.conf")
+  //TODO 路径处理
+  var config: Config = ConfigFactory.load("dlsRpc.conf")
+
+  val consumer: Config = ConfigFactory.load("consumer.conf")
+
+  if (consumer != null) {
+    config = consumer
+  }
+
+  //  private final val config: Config = ConfigFactory.load("dlsRpc.conf")
 
   //读取配置文件
   final val CONSUL_ADDRESS_IP: String = Try(config.getString("dlsrpc.consul.host")).getOrElse(Constants.CONSUL_ADDRESS_IP)
@@ -32,6 +41,7 @@ object DlsRpcConfiguration {
   final val CGLIB_PROXY: Boolean = Try(config.getBoolean("dlsrpc.proxy.mode.cglib-proxy")).getOrElse(Constants.CGLIB_PROXY)
   final val TO_CGLIB_PROXY: Boolean = Try(config.getBoolean("dlsrpc.proxy.mode.force-cglib-proxy")).getOrElse(Constants.TO_CGLIB_PROXY)
   final val WEB_SERVER_PORT: Int = Try(config.getInt("dlsrpc.server.port")).getOrElse(Constants.WEB_SERVER_PORT)
+  final val WEB_SERVER_IP: String = Try(config.getString("dlsrpc.server.ip")).getOrElse(Constants.WEB_SERVER_IP)
   final val DEFAULT_WEIGHT: Int = Try(config.getInt("dlsrpc.server.balancer-weight")).getOrElse(Constants.DEFAULT_WEIGHT)
 
   private final lazy val default: JList[String] = new util.ArrayList[String]()
@@ -41,9 +51,6 @@ object DlsRpcConfiguration {
 
   //默认配置，外界不可访问
   private object Constants {
-
-    //默认权值
-    final val WEB_SERVER_PORT = 8080
 
     final val DEFAULT_WEIGHT = 5
 
@@ -70,6 +77,12 @@ object DlsRpcConfiguration {
 
     //默认是服务调用地址就是本地，暂时不用
     final val DEFAULT_DISCOVER_ADDRESS = "localhost:8080"
+
+    //默认服务调用端口
+    final val WEB_SERVER_PORT = 8080
+
+    //默认服务都在本机，使用本地，且暴露8080端口
+    final val WEB_SERVER_IP = "127.0.0.1"
 
     //默认启用cglib
     final val CGLIB_PROXY = true
