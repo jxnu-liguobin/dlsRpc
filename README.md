@@ -1,6 +1,9 @@
 # A simple RPC implemented by Scala
 
-High performance RPC framework based on HTTP/2 Protocol, Consul, Guice, Netty Transport and Protostuff Serialization
+High performance RPC framework based on HTTP/2 Protocol, Consul, Guice, Netty Transport and Protostuff Serialization.
+
+If you want to join this project, please contact me by email.（想加入本项目的请邮件联系我）
+
   
 * Java 8
 * Scala 2.12.7
@@ -33,7 +36,7 @@ Test & Use
 Examples
 ---
 
-- server publish
+- server publish (Will Discard)
 
 ```
 in java
@@ -44,7 +47,7 @@ in scala
 val hello = new HelloImpl()
 DlsRpcInvoke.publishService(8889, hello)
 ```
-- client obtain
+- client obtain (Will Discard)
 
 ```
 in java
