@@ -11,8 +11,6 @@ If you want to join this project, please contact me by email.（想加入本项�
 [![Build Status](https://travis-ci.org/jxnu-liguobin/dlsRpc.svg?branch=master)](https://travis-ci.org/jxnu-liguobin/dlsRpc)
 ![GitHub](https://img.shields.io/github/license/jxnu-liguobin/dlsRpc.svg)
 ![GitHub top language](https://img.shields.io/github/languages/top/jxnu-liguobin/dlsRpc.svg)
----
-
 
 Already Implemented functions
 ---
@@ -27,11 +25,10 @@ Already Implemented functions
 - Call chaining
 - Multi-module project base on SBT
 - Pressure measurement base on JMH
-- Configuration injection based on typesafe Config
+- Configuration injection base on typesafe Config
 
 
 - loading  
-
 
 Technology
 ---
