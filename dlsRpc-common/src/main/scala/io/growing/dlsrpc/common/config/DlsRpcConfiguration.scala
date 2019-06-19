@@ -21,14 +21,6 @@ object DlsRpcConfiguration {
   //TODO 路径处理
   var config: Config = ConfigFactory.load("dlsRpc.conf")
 
-//  val consumer: Config = ConfigFactory.load("consumer.conf")
-//
-//  if (consumer != null) {
-//    config = consumer
-//  }
-
-  //  private final val config: Config = ConfigFactory.load("dlsRpc.conf")
-
   //读取配置文件
   final val CONSUL_ADDRESS_IP: String = Try(config.getString("dlsrpc.consul.host")).getOrElse(Constants.CONSUL_ADDRESS_IP)
   final val CONSUL_ADDRESS_PORT: Int = Try(config.getInt("dlsrpc.consul.port")).getOrElse(Constants.CONSUL_ADDRESS_PORT)
