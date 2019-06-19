@@ -8,7 +8,7 @@ import java.util.{List => JList}
  * @author 梦境迷离
  * @version 1.0, 2019-06-18
  */
-object SubClassUtils {
+object SubClassUtils extends App {
 
   /**
    * 获取接口的实现类的类名
@@ -24,7 +24,6 @@ object SubClassUtils {
     IsCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
     ret.get(0).getSimpleName
   }
-
 
   /**
    * 获取子类

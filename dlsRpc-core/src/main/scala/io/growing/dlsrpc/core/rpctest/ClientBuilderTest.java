@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.Javatest;
+package io.growing.dlsrpc.core.rpctest;
 
 
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke;
@@ -15,7 +15,9 @@ public class ClientBuilderTest {
     //先启动server
     public static void main(String[] args) {
 
-        HelloWorld hello = DlsRpcInvoke.getClientBuilder(HelloWorld.class).build();
+//        HelloWorld hello = DlsRpcInvoke.getClientBuilder(HelloWorld.class).build();
+//        Hello hello = DlsRpcInvoke.getClientBuilder(Hello.class).build();
+        WorldImpl hello = DlsRpcInvoke.getClientBuilder(WorldImpl.class).build();
         for (int i = 0; i < 100000; i++) {
             System.out.println(hello.sayHello(i + "dls"));
         }

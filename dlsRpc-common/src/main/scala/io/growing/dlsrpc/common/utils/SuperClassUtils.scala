@@ -8,6 +8,8 @@ import io.growing.dlsrpc.common.exception.ProxyException
 /**
  * 获取类实现的接口
  *
+ * 本类不稳定，可能被废弃
+ *
  * @author 梦境迷离
  * @version 1.1, 2019-06-12
  */
@@ -19,9 +21,28 @@ object SuperClassUtils {
    * @param clazz
    * @tparam T
    */
+  @deprecated
   def getSuperInterfaces[T](clazz: Class[T]): List[String] = {
     val names = clazz.getInterfaces
     names.map(m => m.getSimpleName).toList
+  }
+
+  /**
+   * 如果clazz是interface的实现，则返回clazz
+   *
+   * @param clazz
+   * @param interface
+   * @tparam S
+   * @tparam B
+   * @return
+   */
+  def CheckSuperInterfaces[S, B](clazz: Class[S], interface: Class[B]): Class[_] = {
+    val names = clazz.getInterfaces
+    if (names.contains(interface)) {
+      clazz
+    } else {
+      null
+    }
   }
 
   /**
@@ -48,7 +69,7 @@ object SuperClassUtils {
   }
 
   /**
-   * 待优化为枚举
+   * 匹配代理调用方式
    *
    * @param clazz
    * @tparam T
@@ -56,13 +77,13 @@ object SuperClassUtils {
    */
   def matchProxy[T](clazz: Class[T]): ProxyType = {
     //不是接口，且没有实现接口，使用cglib
-    if (!clazz.isInterface && (getVaildSuperInterface(clazz) == null || getVaildSuperInterface(clazz).isEmpty)) {
+    if (!clazz.isInterface && (getVaildSuperInterface[T](clazz) == null || getVaildSuperInterface[T](clazz).isEmpty)) {
       if (CGLIB_PROXY) {
         return ProxyType.CGLIB
       } else throw ProxyException("Proxy happen fail")
     }
     //不是接口，有实现接口，使用jdk；是接口使用jdk
-    if (clazz.isInterface || !clazz.isInterface && (getVaildSuperInterface(clazz) != null && getVaildSuperInterface(clazz).nonEmpty)) {
+    if (clazz.isInterface || !clazz.isInterface && (getVaildSuperInterface[T](clazz) != null && getVaildSuperInterface[T](clazz).nonEmpty)) {
       if (!clazz.isInterface) {
         if (CGLIB_PROXY && TO_CGLIB_PROXY) {
           return ProxyType.CGLIB

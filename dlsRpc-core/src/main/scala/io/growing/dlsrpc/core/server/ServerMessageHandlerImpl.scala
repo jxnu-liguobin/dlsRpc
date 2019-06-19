@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
-import io.growing.dlsrpc.common.utils.{IsCondition, SubClassUtils, SuperClassUtils}
+import io.growing.dlsrpc.common.utils.{IsCondition, SuperClassUtils}
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
 import javax.inject.Inject
 import net.sf.cglib.reflect.FastClass
@@ -37,15 +37,15 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     val rpcRequest: RpcRequest = serializer.deserializer(request, classOf[RpcRequest])
     //根据请求的类获取真实调用的bean
     for (bean <- serviceBeans) {
-      //是类的时候这相等，使用cglib时也会相等
       val className = rpcRequest.getBeanClass
-      if (className.isInstance(bean)) {
+      //不是接口，可能是cglib或者使用实现类调用，那么类名与bean名是匹配的
+      if (!className.isInterface && className.isInstance(bean)) {
         processorBean = bean
-      } else {
-        //不是类的时候不会相等，因为请求传过来的是接口名，获取该接口的子类
-        val subClass = SubClassUtils.getSubClass(className)
+      } else if (className.isInterface) {
+        //是接口时请求传过来的是接口名，获取该接口是否与某个bean所实现的接口匹配
+        val subClass = SuperClassUtils.CheckSuperInterfaces(bean.getClass, className)
         //是接口时，先获取bean的实现接口
-        if (subClass != null && subClass.isInstance(bean)) {
+        if (subClass != null) {
           processorBean = bean
         }
       }

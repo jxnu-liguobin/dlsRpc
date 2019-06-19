@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.Javatest;
+package io.growing.dlsrpc.core.rpctest;
 
 
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration;
@@ -20,8 +20,11 @@ public class ServerBuilderTest {
     //先启动consul，再启动这个server
     public static void main(String[] args) {
         List<Object> tmpList1 = new ArrayList<>();
+        //暴露三个服务
         tmpList1.add(new HelloWorld());
-        //默认从consul获得的服务地址是8081,配置 dlsrpc.server.address.default = "127.0.0.1:8081"
+        tmpList1.add(new HelloImpl());
+        tmpList1.add(new WorldImpl());
+        //默认从consul获得的服务地址是8080,配置 dlsrpc.server.address.default = "127.0.0.1:8080"
         //也就是客户端获取服务实际地址后会向127.0.0.1:8081发起请求
         //服务启动端口也是8081，Server start port : 8081 如果启动马上结束一般是端口被占用
         ServerBuilder server = DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT(), tmpList1);

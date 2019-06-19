@@ -111,8 +111,8 @@ object WeightLoadBalancer extends App {
 
   //默认的服务列表，从配置文件读取，表示启用的服务列表，隐式去重
   private final lazy val defaultWeightServiceAddress: JMap[WeightServiceAddress, Int] = Maps.newConcurrentMap()
-  SERVICE_IP_LIST.foreach(x => defaultWeightServiceAddress.put(new WeightServiceAddress(x, port, high_weight), high_weight))
-  SERVICE_IP_LIST.foreach(x => IsCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
+  SERVICE_IP_LIST.forEach(x => defaultWeightServiceAddress.put(new WeightServiceAddress(x, port, high_weight), high_weight))
+  SERVICE_IP_LIST.forEach(x => IsCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
 
   //Test data
   val s = new util.ArrayList[WeightServiceAddress]()

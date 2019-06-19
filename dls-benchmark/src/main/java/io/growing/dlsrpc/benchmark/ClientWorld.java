@@ -1,6 +1,6 @@
 package io.growing.dlsrpc.benchmark;
 
-import io.growing.dlsrpc.core.rpctest.WorldImpl;
+import io.growing.dlsrpc.benchmark.models.HelloWorld;
 import io.growing.dlsrpc.core.utils.DlsRpcInvoke;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -14,6 +14,10 @@ import org.openjdk.jmh.annotations.State;
 @State(value = Scope.Benchmark)
 public class ClientWorld {
     //jdk
-    public static final WorldImpl wrold = DlsRpcInvoke.getClientBuilder(WorldImpl.class).build();
+//    public static final WorldImpl wrold = DlsRpcInvoke.getClientBuilder(WorldImpl.class).build();
+
+    //RPC consul
+    public static final HelloWorld wrold = DlsRpcInvoke.getClientBuilder(HelloWorld.class).build();
+
 
 }

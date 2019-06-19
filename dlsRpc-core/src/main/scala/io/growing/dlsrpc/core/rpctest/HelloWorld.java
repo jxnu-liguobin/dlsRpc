@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.Javatest;
+package io.growing.dlsrpc.core.rpctest;
 
 import io.growing.dlsrpc.consul.registry.RPCService;
 

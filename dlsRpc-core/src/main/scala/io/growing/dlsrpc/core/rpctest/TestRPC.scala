@@ -79,7 +79,7 @@ object NettTest extends App {
  */
 object TestRpcServer extends App {
   //默认发布到本地
-//  DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT, Seq(new HelloImpl())).build.start()
+  //  DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT, Seq(new HelloImpl())).build.start()
   DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT, Seq(new WorldImpl())).build.start()
 }
 

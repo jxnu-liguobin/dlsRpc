@@ -30,6 +30,7 @@ class ServerBuilder private() {
     this
   }
 
+  //todo
   def publishServices(serviceBeans: Seq[AnyRef]): ServerBuilder = {
     if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
       this.serviceBeans = this.serviceBeans ++ serviceBeans
