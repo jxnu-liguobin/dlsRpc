@@ -17,7 +17,7 @@ sealed case class RpcRequest() {
   var requestId: Long = _
   //调用的服务名称
   @BeanProperty
-  var className: String = _
+  var beanClass: Class[_] = _
   //调用的方法名称
   @BeanProperty
   var methodName: String = _
@@ -31,11 +31,11 @@ sealed case class RpcRequest() {
   @BeanProperty
   var parameters: Array[_] = _
 
-  def this(requestId: Long, className: String, methodName: String, version: String,
+  def this(requestId: Long, beanClass: Class[_], methodName: String, version: String,
            parameterTypes: Array[Class[_]], parameters: Array[_]) {
     this()
     this.requestId = requestId
-    this.className = className
+    this.beanClass = beanClass
     this.methodName = methodName
     this.version = version
     this.parameterTypes = parameterTypes

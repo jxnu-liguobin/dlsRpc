@@ -35,7 +35,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
   //需要发布rpc的服务，一条channel可以发布多个服务，但是这里目前采用这种方案，一条channel对应一个服务
   //注册和发现服务写好后会改成多个
   @volatile
-  private[this] var serviceBeans: Seq[Any] = _
+  private[this] var serviceBeans: Seq[AnyRef] = _
   //服务端任务执行器，使用缓存线程池
   private[this] final lazy val executor: Executor = ExecutorBuilder.executorBuild("dlsRpc-thread-executor-%d", daemon = true)
 
@@ -44,7 +44,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     this
   }
 
-  def setBeans(serviceBeans: Seq[Any]): Server = {
+  def setBeans(serviceBeans: Seq[AnyRef]): Server = {
     if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
       this.serviceBeans = this.serviceBeans ++ serviceBeans
     } else {

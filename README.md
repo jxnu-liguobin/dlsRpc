@@ -56,20 +56,31 @@ Examples
 - server 
 
 ```java
-List<Object> tmpList1 = new ArrayList<>();
-tmpList1.add(new WorldImpl()); //CGLIB PRXOY
-List<Object> tmpList2 = new ArrayList<>();
-tmpList2.add(new HelloImpl()); //JDK PROXY
-Seq<Object> tmpSeq1 = JavaConverters.asScalaIteratorConverter(tmpList1.iterator()).asScala().toSeq();//init need
-Seq<Object> tmpSeq2 = JavaConverters.asScalaIteratorConverter(tmpList2.iterator()).asScala().toSeq();//add publish bean
-//Demonstration of instantiating publishing services through chain invocation
-ServerBuilder server = DlsRpcInvoke.getServerBuilder(8080, tmpSeq1).publishServices(tmpSeq2);
-server.build().start();
+//start server
+public class ServerBuilderTest {
+    public static void main(String[] args) {
+        List<Object> tmpList1 = new ArrayList<>();
+        tmpList1.add(new HelloWorld());
+        ServerBuilder server = DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT(), tmpList1);
+        server.build().start();
+    }
+}
+//service product
+@RPCService
+public class HelloWorld {
+
+    public String sayHello(String name) {
+        return name.concat("-hello!");
+    }
+
+}
 ```
 - client
 
 ```java
-Hello hello = DlsRpcInvoke.getClientBuilder(Hello.class).build();
+//start client
+//no super interface
+HelloWorld hello = DlsRpcInvoke.getClientBuilder(HelloWorld.class).build();
 ```
 
 Note

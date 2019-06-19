@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
-import io.growing.dlsrpc.common.utils.{IsCondition, SuperClassUtils}
+import io.growing.dlsrpc.common.utils.{IsCondition, SubClassUtils, SuperClassUtils}
 import io.growing.dlsrpc.core.api.{SendMessage, Serializer}
 import javax.inject.Inject
 import net.sf.cglib.reflect.FastClass
@@ -22,10 +22,10 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
 
   //需要处理的服务，实际使用反射调用这里只需要class文件名，不需要bean
   @volatile
-  private[this] var serviceBeans: Seq[Any] = _
+  private[this] var serviceBeans: Seq[AnyRef] = _
 
   //手动选择bean
-  def setProcessBeans(bean: Seq[Any]) = {
+  def setProcessBeans(bean: Seq[AnyRef]) = {
     this.serviceBeans = bean
   }
 
@@ -37,20 +37,16 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
     val rpcRequest: RpcRequest = serializer.deserializer(request, classOf[RpcRequest])
     //根据请求的类获取真实调用的bean
     for (bean <- serviceBeans) {
-      //是类的时候这相等
-      if (bean.getClass.getSimpleName.equals(rpcRequest.getClassName)) {
+      //是类的时候这相等，使用cglib时也会相等
+      val className = rpcRequest.getBeanClass
+      if (className.isInstance(bean)) {
         processorBean = bean
       } else {
-        //不是类的时候不会相等，因为请求传过来的是接口名
-        val superClass: List[String] = SuperClassUtils.getVaildSuperInterface(bean.getClass)
+        //不是类的时候不会相等，因为请求传过来的是接口名，获取该接口的子类
+        val subClass = SubClassUtils.getSubClass(className)
         //是接口时，先获取bean的实现接口
-        if (superClass != null && superClass.nonEmpty) {
-          //TODO 通过增加请求信息类型可以消除这里的双循环
-          for (clazzName <- superClass) {
-            if (clazzName.equals(rpcRequest.getClassName)) {
-              processorBean = bean
-            }
-          }
+        if (subClass != null && subClass.isInstance(bean)) {
+          processorBean = bean
         }
       }
     }

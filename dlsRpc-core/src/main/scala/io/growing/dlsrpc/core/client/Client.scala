@@ -90,7 +90,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
       def invoke(proxy: Any, method: Method, args: Array[_ <: Any]) = {
         val request: RpcRequest = new RpcRequest
         request.setRequestId(atomicLong.incrementAndGet)
-        request.setClassName(clientClass.getSimpleName)
+        request.setBeanClass(clientClass)
         request.setMethodName(method.getName)
         request.setParameterTypes(method.getParameterTypes)
         request.setParameters(args)
@@ -112,7 +112,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
     override def intercept(o: scala.AnyRef, method: Method, objects: Array[AnyRef], methodProxy: MethodProxy): AnyRef = {
       val request: RpcRequest = new RpcRequest
       request.setRequestId(atomicLong.incrementAndGet)
-      request.setClassName(clientClass.getSimpleName) //这里类名还是用客户端传进来的，不然调用不好匹配
+      request.setBeanClass(clientClass) //这里类名还是用客户端传进来的，不然调用不好匹配
       request.setMethodName(method.getName)
       request.setParameterTypes(method.getParameterTypes)
       request.setParameters(objects)

@@ -22,7 +22,7 @@ class ServerBuilder private() {
   private[this] var port: Int = _
   //需要发布rpc的服务
   @volatile
-  private[this] var serviceBeans: Seq[Any] = _
+  private[this] var serviceBeans: Seq[AnyRef] = _
 
   //允许覆盖初始化传进来的值
   def bindPort(port: Int): ServerBuilder = {
@@ -30,7 +30,7 @@ class ServerBuilder private() {
     this
   }
 
-  def publishServices(serviceBeans: Seq[Any]): ServerBuilder = {
+  def publishServices(serviceBeans: Seq[AnyRef]): ServerBuilder = {
     if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
       this.serviceBeans = this.serviceBeans ++ serviceBeans
     } else {

@@ -24,4 +24,20 @@ object SubClassUtils {
     IsCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
     ret.get(0).getSimpleName
   }
+
+
+  /**
+   * 获取子类
+   *
+   * @param clazz
+   * @tparam T
+   * @return
+   */
+  def getSubClass[T](clazz: Class[T]) = {
+    val ret: JList[Class[_]] = ClassUtil.getSubClassByInterface(clazz)
+    IsCondition.conditionException(ret == null || ret.size() == 0, "this interface don't have any subClass")
+    //TODO 多类通过显示指定类名
+    IsCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
+    ret.get(0)
+  }
 }

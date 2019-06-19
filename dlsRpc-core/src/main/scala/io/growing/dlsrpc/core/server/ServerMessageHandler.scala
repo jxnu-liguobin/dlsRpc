@@ -26,6 +26,6 @@ trait ServerMessageHandler {
    *
    * @param beans
    */
-  def setProcessBeans(beans: Seq[Any])
+  def setProcessBeans(beans: Seq[AnyRef])
 
 }

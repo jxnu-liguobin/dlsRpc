@@ -2,7 +2,9 @@ package io.growing.dlsrpc.core.utils
 
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
+import java.util.{List => JList}
 
+import io.growing.dlsrpc.common.utils.ImplicitUtils.jListToSeq
 import io.growing.dlsrpc.core.client.ClientBuilder
 import io.growing.dlsrpc.core.client.ClientBuilder._
 import io.growing.dlsrpc.core.server.ServerBuilder
@@ -25,7 +27,7 @@ object DlsRpcInvoke {
    * @param serviceBean
    */
   @deprecated
-  def publishService(port: Int, serviceBean: Any): Unit = {
+  def publishService(port: Int, serviceBean: AnyRef): Unit = {
     val server = buildWithPort(port).publishServices(Seq(serviceBean)).build
     server.start()
     TimeUnit.SECONDS.sleep(1000)
@@ -40,7 +42,7 @@ object DlsRpcInvoke {
    * @param serviceBeans
    */
   @deprecated
-  def publishServices(port: Int, serviceBeans: Seq[Any]): Unit = {
+  def publishServices(port: Int, serviceBeans: Seq[AnyRef]): Unit = {
     val server = buildWithPort(port).publishServices(serviceBeans).build
     server.start()
     TimeUnit.SECONDS.sleep(1000)
@@ -92,22 +94,34 @@ object DlsRpcInvoke {
    *
    * @param port
    * @param serviceBean
-   * @tparam T
    * @return
    */
-  def getServerBuilder[T](port: Int, serviceBean: Any): ServerBuilder = {
+  def getServerBuilder(port: Int, serviceBean: AnyRef): ServerBuilder = {
     buildWithPort(port).publishServices(Seq(serviceBean))
   }
 
   /**
    * 发布多个服务（暴露）
    *
+   * Scala API
+   *
    * @param port WEB端口
    * @param serviceBeans
-   * @tparam T
    * @return
    */
-  def getServerBuilder[T](port: Int, serviceBeans: Seq[Any]): ServerBuilder = {
+  def getServerBuilder(port: Int, serviceBeans: Seq[AnyRef]): ServerBuilder = {
     buildWithPort(port).publishServices(serviceBeans)
   }
+
+  /**
+   * Java api
+   *
+   * @param port
+   * @param serverBeans 即时List可以被自动转换为Seq 但是消息处理时的类型会出问题，所以这里手动转换
+   * @return
+   */
+  def getServerBuilder(port: Int, serverBeans: JList[Object]): ServerBuilder = {
+    getServerBuilder(port, jListToSeq[Object](serverBeans))
+  }
+
 }

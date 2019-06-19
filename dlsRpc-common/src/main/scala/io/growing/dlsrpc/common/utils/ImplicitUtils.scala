@@ -61,4 +61,16 @@ object ImplicitUtils {
   implicit def sMapToJMap[A, B](sMap: SMap[A, B]): JMap[A, B] = {
     JavaConverters.mapAsJavaMap(sMap)
   }
+
+
+  /**
+   * 兼容Java API 需要使用Seq[Any]，不能使用List<Object>
+   *
+   * @param list
+   * @tparam A
+   * @return
+   */
+  implicit def jListToSeq[A](list: JList[A]): Seq[A] = {
+    JavaConverters.asScalaIteratorConverter(list.iterator).asScala.toSeq
+  }
 }
