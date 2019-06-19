@@ -5,6 +5,8 @@ import java.util.{List => JList}
 /**
  * 获取接口的实现类
  *
+ * 本类不稳定，可能被废弃
+ *
  * @author 梦境迷离
  * @version 1.0, 2019-06-18
  */

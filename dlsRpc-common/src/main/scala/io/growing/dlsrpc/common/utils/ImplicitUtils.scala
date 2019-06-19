@@ -6,7 +6,7 @@ import scala.collection.{JavaConverters, Map => SMap}
 
 /**
  * @author 梦境迷离
- * @version 1.0, 2019-06-08
+ * @version 1.1, 2019-06-08
  */
 object ImplicitUtils {
 

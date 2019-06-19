@@ -15,7 +15,7 @@ import net.sf.cglib.reflect.FastClass
  * 服务端消息处理实现
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-05
+ * @version 1.2, 2019-06-05
  */
 @Singleton
 class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: ServerChannel) extends ServerMessageHandler with LazyLogging {

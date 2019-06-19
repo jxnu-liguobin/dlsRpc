@@ -1,6 +1,8 @@
 package io.growing.dlsrpc.core.server
 
-import io.growing.dlsrpc.common.utils.IsCondition
+import java.util.{List => JList}
+
+import io.growing.dlsrpc.common.utils.{ImplicitUtils, IsCondition}
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 
@@ -8,7 +10,7 @@ import io.growing.dlsrpc.core.utils.ServiceLoadUtil
  * 服务端建造器
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-05
+ * @version 1.2, 2019-06-05
  */
 class ServerBuilder private() {
 
@@ -30,7 +32,6 @@ class ServerBuilder private() {
     this
   }
 
-  //todo
   def publishServices(serviceBeans: Seq[AnyRef]): ServerBuilder = {
     if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
       this.serviceBeans = this.serviceBeans ++ serviceBeans
@@ -38,6 +39,17 @@ class ServerBuilder private() {
       this.serviceBeans = serviceBeans
     }
     this
+  }
+
+  /**
+   * 兼容 Java (自动转换可能丢失类型)
+   *
+   * @param serviceBeans
+   * @return
+   */
+  def publishServices(serviceBeans: JList[Object]): ServerBuilder = {
+    val sbs = ImplicitUtils.jListToSeq[Object](serviceBeans)
+    publishServices(sbs)
   }
 
   //这里主要是设置端口并发布服务，之所以需要改为注入是为了后面拓展发布多服务
