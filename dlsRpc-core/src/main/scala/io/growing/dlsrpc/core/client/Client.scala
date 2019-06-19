@@ -65,16 +65,8 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
     this.asInstanceOf[Builder]
   }
 
-
   //链接到默认服务中心，获得绑定的实际服务地址
   def linkToCenter: Builder = {
-//    var classs: String = null
-//    //是接口就获取子类，不是接口就直接使用类名
-//    if (clientClass.isInterface) {
-//      classs = SubClassUtils.getSubClassName(clientClass)
-//    } else {
-//      classs = clientClass.getSimpleName
-//    }
     //服务发现
     val serviceAddress: ServiceAddress = rpc.obtainServiceAddress(clientClass.getSimpleName)
     IsCondition.conditionException(serviceAddress == null, "can't find any service address")
@@ -120,7 +112,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
     override def intercept(o: scala.AnyRef, method: Method, objects: Array[AnyRef], methodProxy: MethodProxy): AnyRef = {
       val request: RpcRequest = new RpcRequest
       request.setRequestId(atomicLong.incrementAndGet)
-      request.setClassName(o.getClass.getSimpleName)
+      request.setClassName(clientClass.getSimpleName) //这里类名还是用客户端传进来的，不然调用不好匹配
       request.setMethodName(method.getName)
       request.setParameterTypes(method.getParameterTypes)
       request.setParameters(objects)
