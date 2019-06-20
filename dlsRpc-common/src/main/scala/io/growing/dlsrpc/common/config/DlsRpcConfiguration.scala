@@ -36,6 +36,7 @@ object DlsRpcConfiguration {
   final val WEB_SERVER_PORT: Int = Try(config.getInt("dlsrpc.server.port")).getOrElse(Constants.WEB_SERVER_PORT)
   final val WEB_SERVER_IP: String = Try(config.getString("dlsrpc.server.ip")).getOrElse(Constants.WEB_SERVER_IP)
   final val DEFAULT_WEIGHT: Int = Try(config.getInt("dlsrpc.server.balancer-weight")).getOrElse(Constants.DEFAULT_WEIGHT)
+  final val CONSUL_INTERVAL: String = Try(config.getString("dlsrpc.consul.interval")).getOrElse(Constants.CONSUL_INTERVAL)
 
   private final lazy val default: JList[String] = new util.ArrayList[String]()
   default.add(DEFAULT_DISCOVER_ADDRESS)
@@ -44,6 +45,8 @@ object DlsRpcConfiguration {
 
   //默认配置，外界不可访问
   private object Constants {
+
+    final val CONSUL_INTERVAL = "1s"
 
     final val DEFAULT_WEIGHT = 5
 

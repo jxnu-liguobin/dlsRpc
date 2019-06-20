@@ -2,6 +2,7 @@ package io.growing.dlsrpc.consul.discovery
 
 import java.util.{ArrayList => JArrayList, List => JList}
 
+import com.ecwid.consul.v1.health.HealthServicesRequest
 import com.ecwid.consul.v1.health.model.HealthService
 import com.ecwid.consul.v1.{QueryParams, Response}
 import com.google.common.collect.Maps
@@ -32,10 +33,13 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
   override def discover(serviceName: String): ServiceAddress = {
     IsCondition.conditionException(serviceName == null, "service name can't be null")
     if (!loadBalancerMap.containsKey(serviceName)) {
-      //TODO 优化过期接口，为了测试设置为false，因为本地没有使用HTTP，无法提供健康检查接口，或者把注册的检查端口改为8500（滑稽）
-      val healthServices: JList[HealthService] = consulClient.getHealthServices(serviceName,
-        true, QueryParams.DEFAULT).getValue
-      loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[ServiceAddress]](healthServices, BalancerType.WEIGHT))
+      //TODO因为本地没有使用HTTP，无法提供健康检查接口，或者把注册的检查端口改为8500（滑稽）
+      val request: HealthServicesRequest = HealthServicesRequest.newBuilder()
+        .setPassing(true)
+        .setQueryParams(QueryParams.DEFAULT)
+        .build()
+      val healthyServices: JList[HealthService] = consulClient.getHealthServices(serviceName, request).getValue
+      loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[ServiceAddress]](healthyServices, BalancerType.WEIGHT))
       // 监测 consul
       longPolling(serviceName)
     }

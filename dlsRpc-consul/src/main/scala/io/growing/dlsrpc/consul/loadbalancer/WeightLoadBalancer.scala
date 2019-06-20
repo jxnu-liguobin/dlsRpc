@@ -80,7 +80,7 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadba
   }
 
   override def next(remoteIp: String): T = {
-    IsCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip and set error in dlsRpc.conf")
+    IsCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip because param error in dlsRpc.conf")
     val serverMap: JMap[WeightServiceAddress, Int] = serviceIps
     val it: util.Iterator[WeightServiceAddress] = serverMap.keySet().iterator()
     val serverList = new JArrayList[WeightServiceAddress]
@@ -98,7 +98,15 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadba
   }
 }
 
-object WeightLoadBalancer extends App {
+//单独测试这个负载均衡时增加 extends App，到运行TestConsulService测试consul服务发现和注册时必须去掉，否则defaultWeightServiceAddress不会被初始化
+//因为val 在main启动的时候初始化，而你又继承了App，却没有启动，所以代码不会被执行。
+//我发现一个有趣的问题刚好和JVM类加载那章的变量初始化顺序相同。写个半生对象，object中初始化配置 final val s = lambda，测试时我把object extends App 了，
+//这样测试这个object是OK的，结果我去测试其他object extends App 并调用这个object，初始化会被执行但是值是原始值，
+//Int就是0这种，这符合深入java JVM中说的final先被初始化为类型初始值，这时final虽然被初始化但是值是无效。
+//scala中原因是object的val只会在main方法运行时被初始化（叫赋值初始化），而你extends了App但是不用，
+//那么其他代码调用这个object时该代码也仅仅被初始化并不会被赋值初始化，拿到值都是0 ，null 0,0这种，
+//最后解决就是去掉被依赖对象的extends App 即时这个只是测试时用到的main方法但是最后跑整体代码时这个是必须要去掉，
+object WeightLoadBalancer {
 
   //默认权值
   private val weight = 5
