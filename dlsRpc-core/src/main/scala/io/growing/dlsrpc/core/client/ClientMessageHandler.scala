@@ -13,7 +13,6 @@ import io.growing.dlsrpc.common.metadata.RpcRequest
 @ImplementedBy(classOf[ClientMessageHandlerImpl])
 trait ClientMessageHandler {
 
-
   /**
    * 接收消息处理
    *

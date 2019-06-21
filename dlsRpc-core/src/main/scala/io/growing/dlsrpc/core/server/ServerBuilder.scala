@@ -15,16 +15,16 @@ import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 class ServerBuilder private() {
 
   //注入服务端
-  private[this] lazy val server: Server = ServiceLoadUtil.getProvider(classOf[Server])
+  private[this] final lazy val server: Server = ServiceLoadUtil.getProvider(classOf[Server])
   //传输协议，目前没使用
   @volatile
-  private[this] var protocol: Protocol = _
+  private[this] final var protocol: Protocol = _
   //服务端口
   @volatile
-  private[this] var port: Int = _
+  private[this] final var port: Int = _
   //需要发布rpc的服务
   @volatile
-  private[this] var serviceBeans: Seq[AnyRef] = _
+  private[this] final var serviceBeans: Seq[AnyRef] = _
 
   //允许覆盖初始化传进来的值
   def bindPort(port: Int): ServerBuilder = {

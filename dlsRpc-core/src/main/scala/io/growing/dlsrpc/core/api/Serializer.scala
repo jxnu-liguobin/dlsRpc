@@ -17,7 +17,6 @@ trait Serializer {
    */
   def serializer[T](obj: T): Array[Byte]
 
-
   /**
    * 反序列化
    *

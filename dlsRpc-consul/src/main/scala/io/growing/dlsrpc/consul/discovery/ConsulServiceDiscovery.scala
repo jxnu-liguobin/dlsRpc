@@ -66,7 +66,6 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
     }).start()
   }
 
-
   /**
    *
    * @param healthServices 可用服务列表

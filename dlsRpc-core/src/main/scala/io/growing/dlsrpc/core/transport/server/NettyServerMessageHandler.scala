@@ -24,7 +24,7 @@ class NettyServerMessageHandler(executor: Executor)
   final lazy val messageHandler: ServerMessageHandler = ServiceLoadUtil.getProvider(classOf[ServerMessageHandler])
 
   @volatile
-  private[this] var outboundChannel: Channel = _
+  private[this] final var outboundChannel: Channel = _
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
     outboundChannel = ctx.channel

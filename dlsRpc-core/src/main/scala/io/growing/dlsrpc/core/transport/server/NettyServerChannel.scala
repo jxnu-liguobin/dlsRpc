@@ -29,7 +29,7 @@ class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitia
   private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
 
   @volatile
-  private[this] var channel: Channel = _
+  private[this] final var channel: Channel = _
 
   override def openServerChannel(port: Int, executor: Executor, protocol: Protocol, messageHandler: ServerMessageHandler): Unit = {
     //异步通知，这里打开的时候需要先设置执行线程

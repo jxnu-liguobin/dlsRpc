@@ -7,9 +7,8 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
-import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.metadata.{RpcRequest, ServiceAddress}
-import io.growing.dlsrpc.common.utils.{IsCondition, SubClassUtils, SuperClassUtils}
+import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.rpc.RPCDiscoveryService
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
@@ -24,21 +23,21 @@ import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
 class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extends LazyLogging {
 
   //获得客户端通道
-  private[this] lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
+  private[this] final lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
   //服务发现
-  private[this] lazy val rpc: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])
+  private[this] final lazy val rpc: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])
   //传输协议
   @volatile
-  private[this] var protocol: Protocol = _
+  private[this] final var protocol: Protocol = _
   //HTT2
   //  private[this] lazy val protocol: Protocol = ServiceLoadUtil.getProvider(classOf[Protocol])
   //服务端地址
   @volatile
-  private[this] var socketAddress: SocketAddress = _
+  private[this] final var socketAddress: SocketAddress = _
   //线程安全的自增请求id
-  private[this] lazy val atomicLong: AtomicLong = new AtomicLong(REQUEST_START_VALUE)
+  private[this] final lazy val atomicLong: AtomicLong = new AtomicLong(REQUEST_START_VALUE)
   //消息处理器
-  private[this] lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
+  private[this] final lazy val messageHandler: ClientMessageHandler = ServiceLoadUtil.getProvider(classOf[ClientMessageHandler])
   //调用服务的实现的接口（JDK代理，必须要有实现接口）
   //  @volatile
   //  private[this] var clientClass: Class[T] = _

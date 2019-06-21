@@ -10,7 +10,6 @@ import scala.collection.{JavaConverters, Map => SMap}
  */
 object ImplicitUtils {
 
-
   /**
    * 将 Java 对象的迭代器转化为 Scala 的迭代器，不然无法使用Scala的for推断
    *
@@ -36,7 +35,6 @@ object ImplicitUtils {
     JavaConverters.asScalaBuffer[A](jList).toSet
   }
 
-
   /**
    * Java Map 转换为 Scala Map 以使用函数式操作
    *
@@ -49,7 +47,6 @@ object ImplicitUtils {
     JavaConverters.mapAsScalaMap(cMap)
   }
 
-
   /**
    * Scala Map 转换为 Java Map
    *
@@ -61,7 +58,6 @@ object ImplicitUtils {
   implicit def sMapToJMap[A, B](sMap: SMap[A, B]): JMap[A, B] = {
     JavaConverters.mapAsJavaMap(sMap)
   }
-
 
   /**
    * 兼容Java API 需要使用Seq[Any]，不能使用List<Object>

@@ -14,8 +14,14 @@ import javax.inject.Inject
 class RPCDiscoveryService extends LazyLogging {
 
   @Inject
-  private[this] var serviceDiscovery: ServiceDiscovery = _
+  private[this] final var serviceDiscovery: ServiceDiscovery = _
 
+  /**
+   * 根据服务名获取服务实际地址
+   *
+   * @param serviceName 服务名，被实例化Bean的名称
+   * @return
+   */
   def obtainServiceAddress(serviceName: String): ServiceAddress = {
     serviceDiscovery.discover(serviceName)
   }

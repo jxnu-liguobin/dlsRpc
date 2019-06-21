@@ -10,8 +10,8 @@ object ProxyType extends Enumeration {
 
   type ProxyType = Value //声明枚举对外暴露的变量类型
 
-  val CGLIB = Value(-1)
+  val CGLIB = Value(0)
 
-  val JDK = Value(99)
+  val JDK = Value(1)
 
 }

@@ -22,10 +22,10 @@ class NettyClientChannel @Inject()(clientChannelInitializer: ClientChannelInitia
   private[this] lazy final val workerGroup: EventLoopGroup = new NioEventLoopGroup
 
   @volatile
-  private[this] var channel: Channel = _
+  private[this] final var channel: Channel = _
 
   @volatile
-  private[this] var protocol: Protocol = _
+  private[this] final var protocol: Protocol = _
 
   override def open(messageHandler: ClientMessageHandler, socketAddress: SocketAddress, protocol: Protocol): Unit = {
     this.protocol = protocol

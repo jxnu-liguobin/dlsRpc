@@ -8,8 +8,7 @@ lazy val commonSettings = Seq(
   Dependencies.commons
 )
 
-//根项目配置，benchmark与本项目无直接依赖关系，所以导入benchmark时需要手动关联dlsRpc
-//benchmark现在需要使用package打包，以jar包的形式依赖dlsRpc
+//publishM2发布到本地maven仓库，在使用pom坐标引入
 lazy val root = Project(id = "dlsRpc", base = file("."))
   .settings(commonSettings).aggregate(consuls, core, commons)
 
@@ -33,6 +32,3 @@ javaOptions in run += "-Xmx1G"
 
 //发布到本地maven仓库的时候，允许覆盖jar。
 //发布到仓库后本地maven才能引入，而不再需要加入lib文件
-publishM2Configuration := publishM2Configuration.value.withOverwrite(true)
-publishConfiguration := publishConfiguration.value.withOverwrite(true)
-publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)

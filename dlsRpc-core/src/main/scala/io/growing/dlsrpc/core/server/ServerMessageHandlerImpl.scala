@@ -22,7 +22,7 @@ class ServerMessageHandlerImpl @Inject()(serializer: Serializer, channel: Server
 
   //需要处理的服务，实际使用反射调用这里只需要class文件名，不需要bean
   @volatile
-  private[this] var serviceBeans: Seq[AnyRef] = _
+  private[this] final var serviceBeans: Seq[AnyRef] = _
 
   //手动选择bean
   def setProcessBeans(bean: Seq[AnyRef]) = {

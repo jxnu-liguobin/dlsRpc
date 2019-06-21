@@ -28,14 +28,14 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
 
   //传输协议，未使用
   @volatile
-  private[this] var protocol: Protocol = _
+  private[this] final var protocol: Protocol = _
   //服务绑定的端口
   @volatile
-  private[this] var port: Int = _
+  private[this] final var port: Int = _
   //需要发布rpc的服务，一条channel可以发布多个服务，但是这里目前采用这种方案，一条channel对应一个服务
   //注册和发现服务写好后会改成多个
   @volatile
-  private[this] var serviceBeans: Seq[AnyRef] = _
+  private[this] final var serviceBeans: Seq[AnyRef] = _
   //服务端任务执行器，使用缓存线程池
   private[this] final lazy val executor: Executor = ExecutorBuilder.executorBuild("dlsRpc-thread-executor-%d", daemon = true)
 

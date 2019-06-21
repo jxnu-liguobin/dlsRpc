@@ -16,11 +16,9 @@ object Dependencies {
     val log4j_api = "11.0"
     val cglib = "3.2.10"
     val config = "1.3.4"
-    //    val jmh = "1.9.1"
   }
 
   object Compiles {
-
 
     lazy val config: ModuleID = "com.typesafe" % "config" % Versions.config
 
@@ -31,11 +29,7 @@ object Dependencies {
     lazy val guava: ModuleID = "com.google.guava" % "guava" % Versions.guava
 
     lazy val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
-    //sbt中jmh太难用了，各种问题，试了三个插件都跑步起来
-    //    lazy val jmh: Seq[ModuleID] = Seq(
-    //      "org.openjdk.jmh" % "jmh-core" % Versions.jmh,
-    //      "org.openjdk.jmh" % "jmh-generator-annprocess" % Versions.jmh
-    //    )
+
     lazy val log4j2: Seq[ModuleID] = Seq(
       "org.apache.logging.log4j" %% "log4j-api-scala" % Versions.log4j_api,
       "org.apache.logging.log4j" % "log4j-api" % Versions.log4j,

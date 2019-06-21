@@ -9,4 +9,5 @@ package io.growing.dlsrpc.core.api
 trait SendMessage {
 
   def send(msg: Array[Byte]): Unit
+
 }

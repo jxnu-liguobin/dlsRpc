@@ -20,7 +20,7 @@ class RPCRegisterService extends LazyLogging {
 
   //这里不能使用ServiceLoadUtil 可能是循环依赖，具体暂时不清楚
   @Inject
-  private[this] var serviceRegistry: ServiceRegistry = _
+  private[this] final var serviceRegistry: ServiceRegistry = _
 
   /**
    * 获取所有需要注册的服务类名

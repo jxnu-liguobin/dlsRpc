@@ -21,7 +21,7 @@ class ServerChannelInitializer
   extends ChannelInitializer[SocketChannel] with LazyLogging {
 
   @volatile
-  private[this] var executor: Executor = _
+  private[this] final var executor: Executor = _
 
   def setExecutor(executor: Executor): ServerChannelInitializer = {
     this.executor = executor

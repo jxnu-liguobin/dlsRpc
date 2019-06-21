@@ -15,7 +15,7 @@ import io.growing.dlsrpc.common.exception.RPCException
  */
 class SchemaCache {
 
-  private[this] val cache: Cache[Class[_], Schema[_]] = CacheBuilder.newBuilder.maximumSize(1024).expireAfterWrite(1,
+  private[this] final lazy val cache: Cache[Class[_], Schema[_]] = CacheBuilder.newBuilder.maximumSize(1024).expireAfterWrite(1,
     TimeUnit.HOURS).build[Class[_], Schema[_]]
 
   private[this] def get(cls: Class[_], cache: Cache[Class[_], Schema[_]]) = {
