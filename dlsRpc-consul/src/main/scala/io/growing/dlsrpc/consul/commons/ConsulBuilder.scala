@@ -50,9 +50,9 @@ object ConsulBuilder {
   }
 
   /**
-   * /统一封装并返回
+   * 统一封装并返回
    *
-   * @param consulAddress
+   * @param consulAddress 只支持权值+Hash Ip
    * @return
    */
   def checkAndBuild(consulAddress: ServiceAddress): ConsulClient = {

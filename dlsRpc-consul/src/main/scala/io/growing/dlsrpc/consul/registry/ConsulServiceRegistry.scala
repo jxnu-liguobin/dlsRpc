@@ -42,7 +42,7 @@ class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegist
     serviceName + "-" + CONSUL_ADDRESS_IP + ":" + CONSUL_ADDRESS_PORT
   }
 
-  //手动根据id清除，id需要转码
+  //手动根据id清除，id需要转码 TODO 传入服务地址，存在则剔除并返回成功，不存在返回空或失败
   //PUT http://127.0.0.1:8500/v1/agent/service/deregister/Hello-127.0.0.1
   def deregister(serviceId: String) = {
     consulClient.agentServiceDeregister(serviceId)

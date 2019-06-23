@@ -21,7 +21,7 @@ import scala.util.Try
  * 使用consul的服务发现
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-08
+ * @version 1.2, 2019-06-08
  */
 class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDiscovery with LazyLogging {
 
@@ -29,15 +29,18 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
 
   private[this] final val loadBalancerMap = Maps.newConcurrentMap[String, Loadbalancer[ServiceAddress]]()
 
+  private[this] final val wait_time = 3000
+
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {
     IsCondition.conditionException(serviceName == null, "service name can't be null")
     if (!loadBalancerMap.containsKey(serviceName)) {
       //TODO因为本地没有使用HTTP，无法提供健康检查接口，或者把注册的检查端口改为8500（滑稽）
-      val request: HealthServicesRequest = HealthServicesRequest.newBuilder()
-        .setPassing(true)
-        .setQueryParams(QueryParams.DEFAULT)
-        .build()
+      val request: HealthServicesRequest = HealthServicesRequest.
+        newBuilder().
+        setPassing(true).
+        setQueryParams(QueryParams.DEFAULT).
+        build
       val healthyServices: JList[HealthService] = consulClient.getHealthServices(serviceName, request).getValue
       loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[ServiceAddress]](healthyServices, BalancerType.WEIGHT))
       // 监测 consul
@@ -55,8 +58,14 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
     new Thread(() => {
       var consulIndex: Long = -1
       do {
-        val param = QueryParams.Builder.builder().setIndex(consulIndex).build()
-        val healthyServices: Response[JList[HealthService]] = consulClient.getHealthServices(serviceName, true, param)
+        //超时时间3秒
+        val param: QueryParams = new QueryParams(wait_time, consulIndex)
+        val request: HealthServicesRequest = HealthServicesRequest.
+          newBuilder().
+          setPassing(true).
+          setQueryParams(param).
+          build
+        val healthyServices: Response[JList[HealthService]] = consulClient.getHealthServices(serviceName, request)
         consulIndex = healthyServices.getConsulIndex
         logger.debug("Consul index for {} is {}", serviceName, consulIndex)
         val healthServices = healthyServices.getValue
@@ -76,7 +85,6 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
   private[this] def buildLoadBalancer[L <: Loadbalancer[_]](healthServices: JList[HealthService],
                                                             balancerType: BalancerType): L = {
     val address = new JArrayList[ServiceAddress]()
-
     balancerType match {
       case BalancerType.RANDOM => {
         for (service <- healthServices.iterator()) {

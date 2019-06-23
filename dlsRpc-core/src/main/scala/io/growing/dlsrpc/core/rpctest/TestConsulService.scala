@@ -20,6 +20,7 @@ object TestConsulService extends App {
   //  register.registerService("Hello1", NormalServiceAddress("127.0.0.1", 8500))
   register.registerService("Hello2", new WeightServiceAddress("127.0.0.1", 8500))
   //巨坑，port无效，必须设置address的加port，而加了port后address又会报错，主要是tcp属性就已经包含port，并且覆盖前面设置的address port
-  //  println(discover.obtainServiceAddress("Hello1"))
-  println(discover.obtainServiceAddress("Hello2"))
+  // println(discover.obtainServiceAddress("Hello1"))
+  println("Hello2 = " + discover.obtainServiceAddress("Hello2"))
+  //8500只是健康监测，实际端口是9998 在配置文件中。默认服务自己提供健康接口
 }
