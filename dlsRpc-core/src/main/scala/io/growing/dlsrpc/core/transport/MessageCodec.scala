@@ -2,7 +2,7 @@ package io.growing.dlsrpc.core.transport
 
 import java.util.{List => JList}
 
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec

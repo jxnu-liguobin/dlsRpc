@@ -15,7 +15,7 @@ import scala.util.Try
  * @author 梦境迷离
  * @version 1.0, 2019-06-13
  */
-object DlsRpcConfiguration {
+object Configuration {
   //去掉 extends App 不然拿不到值
 
   //TODO 路径处理

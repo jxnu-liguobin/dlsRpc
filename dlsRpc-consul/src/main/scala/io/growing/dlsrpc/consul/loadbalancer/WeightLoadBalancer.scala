@@ -6,7 +6,7 @@ import java.util.{ArrayList => JArrayList, List => JList, Map => JMap}
 
 import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.WeightServiceAddress
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.common.utils.IsCondition

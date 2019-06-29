@@ -5,7 +5,7 @@ import java.util.concurrent.{Callable, ExecutionException, TimeUnit}
 import com.dyuproject.protostuff.Schema
 import com.dyuproject.protostuff.runtime.RuntimeSchema
 import com.google.common.cache.{Cache, CacheBuilder}
-import io.growing.dlsrpc.common.exception.RPCException
+import io.growing.dlsrpc.common.exception.RpcException
 
 /**
  * Schema缓存
@@ -27,7 +27,7 @@ class SchemaCache {
     }
     catch {
       case e: ExecutionException =>
-        throw new RPCException("Get Schema fail : {}", e)
+        throw new RpcException("Get Schema fail : {}", e)
     }
   }
 

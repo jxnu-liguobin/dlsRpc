@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.utils
+package io.growing.dlsrpc.common.utils
 
 import com.typesafe.scalalogging.LazyLogging
 

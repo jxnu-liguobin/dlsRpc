@@ -12,7 +12,7 @@ import io.growing.dlsrpc.core.modules.ProviderModule
  */
 object ServiceLoadUtil {
 
-  private[this] lazy val inject = Guice.createInjector(new ProviderModule)
+  private[this] final lazy val inject = Guice.createInjector(new ProviderModule)
 
   def getProvider[T](`type`: Class[T]): T = {
     val instance = inject.getInstance(`type`)

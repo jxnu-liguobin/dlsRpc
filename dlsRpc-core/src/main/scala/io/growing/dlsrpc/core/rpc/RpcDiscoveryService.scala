@@ -11,7 +11,7 @@ import javax.inject.Inject
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-class RPCDiscoveryService extends LazyLogging {
+class RpcDiscoveryService extends LazyLogging {
 
   @Inject
   private[this] final var serviceDiscovery: ServiceDiscovery = _

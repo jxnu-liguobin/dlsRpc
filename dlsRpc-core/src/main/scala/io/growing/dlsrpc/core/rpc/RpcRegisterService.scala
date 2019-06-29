@@ -3,7 +3,7 @@ package io.growing.dlsrpc.core.rpc
 import java.util.{List => JList}
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
 import io.growing.dlsrpc.common.utils.ClassUtil
 import io.growing.dlsrpc.common.utils.ImplicitUtils.jIteratorToSIterator
@@ -16,7 +16,7 @@ import javax.inject.Inject
  * @author 梦境迷离
  * @version 1.0, 2019-06-09
  */
-class RPCRegisterService extends LazyLogging {
+class RpcRegisterService extends LazyLogging {
 
   //这里不能使用ServiceLoadUtil 可能是循环依赖，具体暂时不清楚
   @Inject

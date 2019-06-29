@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.utils
+package io.growing.dlsrpc.core
 
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
@@ -18,7 +18,7 @@ import io.growing.dlsrpc.core.server.ServerBuilder._
  * @author 梦境迷离
  * @version 1.2, 2019-06-07
  */
-object DlsRpcInvoke {
+object DlsRpc {
 
   /**
    * 直接发布服务

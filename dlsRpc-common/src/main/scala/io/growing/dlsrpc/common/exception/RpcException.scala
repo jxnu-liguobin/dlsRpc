@@ -8,7 +8,7 @@ package io.growing.dlsrpc.common.exception
  * @author 梦境迷离
  * @version 1.0, 2019-06-04
  */
-case class RPCException(msg: String) extends RuntimeException(msg) {
+case class RpcException(msg: String) extends RuntimeException(msg) {
 
   var throwable: Throwable = _
 

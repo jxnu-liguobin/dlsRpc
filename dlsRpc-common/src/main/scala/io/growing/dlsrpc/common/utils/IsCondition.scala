@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.common.utils
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.exception.RPCException
+import io.growing.dlsrpc.common.exception.RpcException
 
 /**
  * 通用判断和输出日志并尽量消除if
@@ -33,14 +33,14 @@ object IsCondition extends LazyLogging {
    * @param msg   异常说明
    * @param cause 异常原因 默认空
    */
-  @throws[RPCException]
-  def conditionException(condition: => Boolean, msg: String = "exception info", cause: Throwable = RPCException("default rpc exception")) = {
+  @throws[RpcException]
+  def conditionException(condition: => Boolean, msg: String = "exception info", cause: Throwable = RpcException("default rpc exception")) = {
     if (condition) {
       if (cause != null) {
         logger.error(cause.getMessage)
-        throw new RPCException(s"Not satisfying the conditions because : {$msg}", cause)
+        throw new RpcException(s"Not satisfying the conditions because : {$msg}", cause)
       }
-      throw RPCException(s"Not satisfying the conditions because : {$msg}")
+      throw RpcException(s"Not satisfying the conditions because : {$msg}")
     }
   }
 }

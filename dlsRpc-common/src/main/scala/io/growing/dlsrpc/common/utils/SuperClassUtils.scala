@@ -1,6 +1,6 @@
 package io.growing.dlsrpc.common.utils
 
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.enums.ProxyType
 import io.growing.dlsrpc.common.enums.ProxyType.ProxyType
 import io.growing.dlsrpc.common.exception.ProxyException

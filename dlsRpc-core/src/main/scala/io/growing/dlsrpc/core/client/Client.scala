@@ -6,11 +6,11 @@ import java.net.{InetSocketAddress, SocketAddress}
 import java.util.concurrent.atomic.AtomicLong
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.{RpcRequest, ServiceAddress}
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.Protocol
-import io.growing.dlsrpc.core.rpc.RPCDiscoveryService
+import io.growing.dlsrpc.core.rpc.RpcDiscoveryService
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
 
@@ -25,7 +25,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
   //获得客户端通道
   private[this] final lazy val clientChannel: ClientChannel = ServiceLoadUtil.getProvider(classOf[ClientChannel])
   //服务发现
-  private[this] final lazy val rpc: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])
+  private[this] final lazy val rpc: RpcDiscoveryService = ServiceLoadUtil.getProvider(classOf[RpcDiscoveryService])
   //传输协议
   @volatile
   private[this] final var protocol: Protocol = _

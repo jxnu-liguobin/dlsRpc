@@ -4,8 +4,8 @@ import java.util.concurrent.ConcurrentMap
 
 import com.ecwid.consul.v1.{ConsulClient, ConsulRawClient}
 import com.google.common.collect.Maps
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
-import io.growing.dlsrpc.common.exception.RPCException
+import io.growing.dlsrpc.common.config.Configuration._
+import io.growing.dlsrpc.common.exception.RpcException
 import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress}
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
@@ -65,7 +65,7 @@ object ConsulBuilder {
       }
       case _ => {
         //TODO
-        throw RPCException("no matching type")
+        throw RpcException("no matching type")
       }
     }
   }

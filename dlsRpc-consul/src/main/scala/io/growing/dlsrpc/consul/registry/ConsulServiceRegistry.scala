@@ -4,7 +4,7 @@ import java.util.{ArrayList => JArrayList}
 
 import com.ecwid.consul.v1.agent.model.NewService
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
 

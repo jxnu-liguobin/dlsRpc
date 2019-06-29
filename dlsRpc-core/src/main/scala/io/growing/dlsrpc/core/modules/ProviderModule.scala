@@ -1,14 +1,14 @@
 package io.growing.dlsrpc.core.modules
 
 import com.google.inject.AbstractModule
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration._
+import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.NormalServiceAddress
 import io.growing.dlsrpc.consul.discovery.{ConsulServiceDiscovery, ServiceDiscovery}
 import io.growing.dlsrpc.consul.registry.{ConsulServiceRegistry, ServiceRegistry}
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
 import io.growing.dlsrpc.core.client.ClientChannel
 import io.growing.dlsrpc.core.protocol.Http2Protocol
-import io.growing.dlsrpc.core.rpc.{RPCDiscoveryService, RPCRegisterService}
+import io.growing.dlsrpc.core.rpc.{RpcDiscoveryService, RpcRegisterService}
 import io.growing.dlsrpc.core.serialize.ProtostuffSerializer
 import io.growing.dlsrpc.core.server.ServerChannel
 import io.growing.dlsrpc.core.transport.client.NettyClientChannel
@@ -40,8 +40,8 @@ class ProviderModule extends AbstractModule {
     bind(classOf[ServiceDiscovery]).toInstance(new ConsulServiceDiscovery(
       NormalServiceAddress(CONSUL_ADDRESS_IP, CONSUL_ADDRESS_PORT)))
     //RPC对外服务注册
-    bind(classOf[RPCRegisterService]).asEagerSingleton()
+    bind(classOf[RpcRegisterService]).asEagerSingleton()
     //RPC对外服务发现
-    bind(classOf[RPCDiscoveryService]).asEagerSingleton()
+    bind(classOf[RpcDiscoveryService]).asEagerSingleton()
   }
 }

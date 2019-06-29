@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.core.rpctest
 
 import io.growing.dlsrpc.common.metadata.WeightServiceAddress
-import io.growing.dlsrpc.core.rpc.{RPCDiscoveryService, RPCRegisterService}
+import io.growing.dlsrpc.core.rpc.{RpcDiscoveryService, RpcRegisterService}
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 
 /**
@@ -12,8 +12,8 @@ import io.growing.dlsrpc.core.utils.ServiceLoadUtil
  */
 object TestConsulService extends App {
 
-  private lazy val register: RPCRegisterService = ServiceLoadUtil.getProvider(classOf[RPCRegisterService])
-  private lazy val discover: RPCDiscoveryService = ServiceLoadUtil.getProvider(classOf[RPCDiscoveryService])
+  private lazy val register: RpcRegisterService = ServiceLoadUtil.getProvider(classOf[RpcRegisterService])
+  private lazy val discover: RpcDiscoveryService = ServiceLoadUtil.getProvider(classOf[RpcDiscoveryService])
 
   //单例对象有两个类名，一个是原始类，[TestGuiceModule$, TestGuiceModule] , 这里给consul的8500端口发健康检查 假装一直存活（滑稽）
   //注册到consul的服务需要自己提供一个含有/health接口的controller，作为健康检查

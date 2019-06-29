@@ -61,7 +61,7 @@ public class ServerBuilderTest {
     public static void main(String[] args) {
         List<Object> tmpList1 = new ArrayList<>();
         tmpList1.add(new HelloWorld());
-        ServerBuilder server = DlsRpcInvoke.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT(), tmpList1);
+        ServerBuilder server = DlsRpc.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT(), tmpList1);
         server.build().start();
     }
 }
@@ -80,7 +80,7 @@ public class HelloWorld {
 ```java
 //start client
 //no super interface
-HelloWorld hello = DlsRpcInvoke.getClientBuilder(HelloWorld.class).build();
+HelloWorld hello = DlsRpc.getClientBuilder(HelloWorld.class).build();
 ```
 
 Note

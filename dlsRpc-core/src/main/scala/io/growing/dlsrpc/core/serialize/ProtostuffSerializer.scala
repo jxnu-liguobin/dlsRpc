@@ -3,7 +3,7 @@ package io.growing.dlsrpc.core.serialize
 import com.dyuproject.protostuff.runtime.RuntimeSchema.getSchema
 import com.dyuproject.protostuff.{LinkedBuffer, ProtostuffIOUtil, Schema}
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.exception.RPCException
+import io.growing.dlsrpc.common.exception.RpcException
 import io.growing.dlsrpc.core.api.Serializer
 
 /**
@@ -22,7 +22,7 @@ class ProtostuffSerializer extends Serializer with LazyLogging {
     } catch {
       case e: Exception =>
         logger.warn("Protostuff serializer fail  obj : {}  because : {}", obj, e)
-        throw new RPCException("Protostuff serializer fail : {}", e)
+        throw new RpcException("Protostuff serializer fail : {}", e)
     } finally buffer.clear
   }
 
@@ -35,7 +35,7 @@ class ProtostuffSerializer extends Serializer with LazyLogging {
     } catch {
       case e: Exception =>
         logger.warn("Protostuff deserializer fail  data : {} because : {}", data, e)
-        throw new RPCException("Protostuff deserializer fail : {}", e)
+        throw new RpcException("Protostuff deserializer fail : {}", e)
     }
   }
 }

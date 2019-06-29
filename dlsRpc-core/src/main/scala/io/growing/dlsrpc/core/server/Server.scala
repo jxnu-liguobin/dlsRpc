@@ -4,11 +4,11 @@ import java.util.concurrent.Executor
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.config.DlsRpcConfiguration
+import io.growing.dlsrpc.common.config.Configuration
 import io.growing.dlsrpc.common.metadata.NormalServiceAddress
 import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
-import io.growing.dlsrpc.core.rpc.RPCRegisterService
+import io.growing.dlsrpc.core.rpc.RpcRegisterService
 import io.growing.dlsrpc.core.utils.ExecutorBuilder
 import javax.inject.Inject
 
@@ -24,7 +24,7 @@ import javax.inject.Inject
  */
 @Singleton
 class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, messageHandler: ServerMessageHandler
-                       , rpc: RPCRegisterService) extends LazyLogging {
+                       , rpc: RpcRegisterService) extends LazyLogging {
 
   //传输协议，未使用
   @volatile
@@ -61,7 +61,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     serverChannel.openServerChannel(port, executor, protocol, messageHandler)
     logger.info("Server start port : {}", port)
     //默认将可见的所有类注册到本地的consul并暴露127.0.0.1:8080
-    rpc.initRegisterService(NormalServiceAddress(DlsRpcConfiguration.WEB_SERVER_IP, port))
+    rpc.initRegisterService(NormalServiceAddress(Configuration.WEB_SERVER_IP, port))
   }
 
   //关闭时强制GC

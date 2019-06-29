@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.core.client
 
 import io.growing.dlsrpc.common.enums.ProxyType
-import io.growing.dlsrpc.common.exception.{ProxyException, RPCException}
+import io.growing.dlsrpc.common.exception.{ProxyException, RpcException}
 import io.growing.dlsrpc.common.utils.SuperClassUtils
 
 /**
@@ -30,7 +30,7 @@ class ClientBuilder[T] private(clientClass: Class[T]) extends Client[ClientBuild
         throw new ProxyException("class cast fail", e)
       }
       case ex: Exception => {
-        throw new RPCException("Other error", ex)
+        throw new RpcException("Other error", ex)
       }
     }
   }
