@@ -40,15 +40,20 @@ Technology
 * Guice
 * Consul
 * Cglib
+* Typesafe Config
 
 Test & Use
 ---
 
-- git clone ```git@github.com:jxnu-liguobin/dlsRpc.git```
+- git clone  ```git@github.com:jxnu-liguobin/dlsRpc.git```
 - sbt compile
 - import use IDEA
-- refresh maven module named benchmark 
-- run sbt task: publishM2
+- run sbt task: publishM2 
+
+        
+        Default jar files storage repository is "C:/userName/.m2/repository/io/growing/dlsrpc-*_2.12/1.0.13/*.jar"
+        If your maven local repository  is different from this, you need to move all the jar files to your own repository.
+- refresh maven module named benchmark
 
 Examples
 ---
@@ -83,13 +88,6 @@ public class HelloWorld {
 HelloWorld hello = DlsRpc.getClientBuilder(HelloWorld.class).build();
 ```
 
-Note
----
-
-```
-set maven home,like /.m2/repository where benchmark module can be find
-```
-
 Benchmark
 ---
 
@@ -110,7 +108,7 @@ Benchmark
 | dlsRpc.JmhClient.JmhClient | Sampling time |  571301 | 1.309 ± 0.005 | | ms/op |
 | dlsRpc.JmhClient.JmhClient | Single shot invocation time |   |  2567.914 |   | ms/op |
 
-[@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java) [@Original Java Edition](https://github.com/yeyincai/flashRPC)
+[@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java) [@Reference Java Edition](https://github.com/yeyincai/flashRPC)
 
-[@NioEventLoopGroup](https://www.jianshu.com/p/2e3ae43dc4cb) [@consul-api](https://github.com/Ecwid/consul-api) [@EnableEurekaClient源码分析](https://www.cnblogs.com/zhangjianbin/p/6616866.html)
+[@NioEventLoopGroup](https://www.jianshu.com/p/2e3ae43dc4cb) [@consul-api](https://github.com/Ecwid/consul-api) [@EnableEurekaClient Source Analysis](https://www.cnblogs.com/zhangjianbin/p/6616866.html)
 
