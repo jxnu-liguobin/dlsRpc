@@ -39,12 +39,12 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
   //服务端任务执行器，使用缓存线程池
   private[this] final lazy val executor: Executor = ExecutorBuilder.executorBuild("dlsRpc-thread-executor-%d", daemon = true)
 
-  protected[server] def setPort(port: Int): Server = {
+  private[server] def setPort(port: Int): Server = {
     this.port = port
     this
   }
 
-  def setBeans(serviceBeans: Seq[AnyRef]): Server = {
+  private[server] def setBeans(serviceBeans: Seq[AnyRef]): Server = {
     if (this.serviceBeans != null && this.serviceBeans.nonEmpty) {
       this.serviceBeans = this.serviceBeans ++ serviceBeans
     } else {
@@ -65,7 +65,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
   }
 
   //关闭时强制GC
-  protected[server] def shutdown(): Unit = {
+  private[server] def shutdown(): Unit = {
     try serverChannel.shutdown()
     finally System.gc()
   }

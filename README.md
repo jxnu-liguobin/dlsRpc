@@ -63,12 +63,13 @@ Examples
 - server 
 
 ```java
+//you need start a consul
 //start server
 public class ServerBuilderTest {
     public static void main(String[] args) {
         List<Object> tmpList1 = new ArrayList<>();
         tmpList1.add(new HelloWorld());
-        ServerBuilder server = DlsRpc.getServerBuilder(DlsRpcConfiguration.WEB_SERVER_PORT(), tmpList1);
+        ServerBuilder server = DlsRpc.getServerBuilder(9000, tmpList1);
         server.build().start();
     }
 }
