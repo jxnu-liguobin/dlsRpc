@@ -4,7 +4,8 @@ High performance RPC framework based on HTTP/2 Protocol, Consul, Guice, Netty Tr
 
 If you want to join this project, please contact me by email.（想加入本项目的请邮件联系我）
 
-  
+    You'd better know what technologys Java Scala SBT RPC are
+
 * Java 8
 * Scala 2.12.7
 
@@ -48,11 +49,12 @@ Test & Use
 - git clone  ```git@github.com:jxnu-liguobin/dlsRpc.git```
 - sbt compile
 - import use IDEA
-- run sbt task: publishM2 
+- run sbt task in sbt shell: publishM2 
 
         
         Default jar files storage repository is "C:/userName/.m2/repository/io/growing/dlsrpc-*_2.12/1.0.13/*.jar"
         If your maven local repository  is different from this, you need to move all the jar files to your own repository.
+        
 - refresh maven module named benchmark
 
 Examples
