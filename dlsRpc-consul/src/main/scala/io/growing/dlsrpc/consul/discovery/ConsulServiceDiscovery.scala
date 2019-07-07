@@ -10,8 +10,8 @@ import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.enums.BalancerType
 import io.growing.dlsrpc.common.enums.BalancerType.BalancerType
 import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress, WeightServiceAddress}
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
-import io.growing.dlsrpc.common.utils.IsCondition
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
 import io.growing.dlsrpc.consul.loadbalancer.{Loadbalancer, RandomLoadBalancer, WeightLoadBalancer}
 
@@ -33,7 +33,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
 
   //传进来的是service的类名
   override def discover(serviceName: String): ServiceAddress = {
-    IsCondition.conditionException(serviceName == null, "service name can't be null")
+    CheckCondition.conditionException(serviceName == null, "service name can't be null")
     if (!loadBalancerMap.containsKey(serviceName)) {
       //TODO因为本地没有使用HTTP，无法提供健康检查接口，或者把注册的检查端口改为8500（滑稽）
       val request: HealthServicesRequest = HealthServicesRequest.
@@ -49,7 +49,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
     //返回真实服务的地址（ip:port）可能是null
     //val sd = loadBalancerMap.get(serviceName).next("127.0.0.1") //加权后hash 请求ip
     val sd = loadBalancerMap.get(serviceName).next
-    IsCondition.conditionException(sd.getPort < 0, "port can't less  0")
+    CheckCondition.conditionException(sd.getPort < 0, "port can't less  0")
     logger.info("Real address is {}", sd)
     sd
   }

@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.rpctest;
+package io.growing.dlsrpc.test;
 
 import com.google.inject.Singleton;
 

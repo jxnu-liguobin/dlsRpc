@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.core.utils
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.netty.channel.{Channel, ChannelFuture}
 
 /**
@@ -12,7 +12,7 @@ object ChannelWriteMessageUtil extends LazyLogging {
 
   def sendMsg(outboundChannel: Channel, obj: Any): Unit = {
     outboundChannel.writeAndFlush(obj).addListener((future: ChannelFuture) => {
-      if (!IsCondition.conditionWarn(!future.isSuccess,
+      if (!CheckCondition.conditionWarn(!future.isSuccess,
         s"OutboundChannel : {$outboundChannel}, sendMsg : {$obj} because {${future.cause}"))
         outboundChannel.read
     })

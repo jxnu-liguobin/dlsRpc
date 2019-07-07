@@ -8,8 +8,8 @@ import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.WeightServiceAddress
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
-import io.growing.dlsrpc.common.utils.IsCondition
 
 /**
  * 加权随机法+加权Hash
@@ -61,7 +61,7 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadba
   }
 
   override def next: T = {
-    IsCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip and set error in dlsRpc.conf")
+    CheckCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip and set error in dlsRpc.conf")
     //给它设置相等的权值
     val serverMap: JMap[WeightServiceAddress, Int] = serviceIps
     //獲取ip列表list
@@ -80,7 +80,7 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadba
   }
 
   override def next(remoteIp: String): T = {
-    IsCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip because param error in dlsRpc.conf")
+    CheckCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip because param error in dlsRpc.conf")
     val serverMap: JMap[WeightServiceAddress, Int] = serviceIps
     val it: util.Iterator[WeightServiceAddress] = serverMap.keySet().iterator()
     val serverList = new JArrayList[WeightServiceAddress]
@@ -120,7 +120,7 @@ object WeightLoadBalancer {
   //默认的服务列表，从配置文件读取，表示启用的服务列表，隐式去重
   private final lazy val defaultWeightServiceAddress: JMap[WeightServiceAddress, Int] = Maps.newConcurrentMap()
   SERVICE_IP_LIST.forEach(x => defaultWeightServiceAddress.put(new WeightServiceAddress(x, port, high_weight), high_weight))
-  SERVICE_IP_LIST.forEach(x => IsCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
+  SERVICE_IP_LIST.forEach(x => CheckCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
 
   //Test data
   //  val s = new util.ArrayList[WeightServiceAddress]()

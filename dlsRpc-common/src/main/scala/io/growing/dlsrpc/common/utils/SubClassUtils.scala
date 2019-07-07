@@ -10,7 +10,8 @@ import java.util.{List => JList}
  * @author 梦境迷离
  * @version 1.0, 2019-06-18
  */
-object SubClassUtils extends App {
+@deprecated
+object SubClassUtils {
 
   /**
    * 获取接口的实现类的类名
@@ -21,9 +22,9 @@ object SubClassUtils extends App {
    */
   def getSubClassName[T](clazz: Class[T]): String = {
     val ret: JList[Class[_]] = ClassUtil.getSubClassByInterface(clazz)
-    IsCondition.conditionException(ret == null, "this interface don't have any subClass")
+    CheckCondition.conditionException(ret == null, "this interface don't have any subClass")
     //TODO 多类通过显示指定类名
-    IsCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
+    CheckCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
     ret.get(0).getSimpleName
   }
 
@@ -36,9 +37,9 @@ object SubClassUtils extends App {
    */
   def getSubClass[T](clazz: Class[T]) = {
     val ret: JList[Class[_]] = ClassUtil.getSubClassByInterface(clazz)
-    IsCondition.conditionException(ret == null || ret.size() == 0, "this interface don't have any subClass")
+    CheckCondition.conditionException(ret == null || ret.size() == 0, "this interface don't have any subClass")
     //TODO 多类通过显示指定类名
-    IsCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
+    CheckCondition.conditionException(ret.size() > 1, "this interface have multiple implementation classes")
     ret.get(0)
   }
 }

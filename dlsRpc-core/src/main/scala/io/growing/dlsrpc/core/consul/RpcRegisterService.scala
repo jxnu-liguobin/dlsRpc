@@ -1,12 +1,14 @@
-package io.growing.dlsrpc.core.rpc
+package io.growing.dlsrpc.core.consul
 
 import java.util.{List => JList}
 
 import com.typesafe.scalalogging.LazyLogging
+import io.growing.dlsrpc.common.config.Configuration
 import io.growing.dlsrpc.common.config.Configuration._
+import io.growing.dlsrpc.common.exception.RpcException
 import io.growing.dlsrpc.common.metadata.ServiceAddress
-import io.growing.dlsrpc.common.utils.ClassUtil
 import io.growing.dlsrpc.common.utils.ImplicitUtils.jIteratorToSIterator
+import io.growing.dlsrpc.common.utils.{CheckCondition, ClassUtil}
 import io.growing.dlsrpc.consul.registry.{RPCService, ServiceRegistry}
 import javax.inject.Inject
 
@@ -14,7 +16,7 @@ import javax.inject.Inject
  * RPC服务注册，由其它包使用
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-09
+ * @version 1.1, 2019-06-09
  */
 class RpcRegisterService extends LazyLogging {
 
@@ -32,22 +34,34 @@ class RpcRegisterService extends LazyLogging {
   /**
    * 服务初始化时根据类名注册服务到consul
    *
+   * 未开启consul时，服务内部初始化时只需要打印出警告信息
+   *
    * @param serviceAddress 注册地址
    */
   def initRegisterService(serviceAddress: ServiceAddress): Unit = {
-    for (serviceName <- getServiceNames.iterator()) {
-      serviceRegistry.register(serviceName, serviceAddress)
+    if (Configuration.CONSUL_ENABLE) {
+      for (serviceName <- getServiceNames.iterator()) {
+        serviceRegistry.register(serviceName, serviceAddress)
+      }
+    } else {
+      CheckCondition.conditionWarn(!Configuration.CONSUL_ENABLE, "you have not enable the consul")
     }
   }
 
   /**
    * 启动后单个注册
    *
-   * @param serviceName
+   * 尝试在未开启consul时调用注册接口应当抛出异常
+   *
+   * @param serviceName 服务注册的名称 如果注解用在接口，则使用接口名， 如果用在类中则使用类名
    * @param serviceAddress
    */
   def registerService(serviceName: String, serviceAddress: ServiceAddress) = {
-    serviceRegistry.register(serviceName, serviceAddress)
+    if (Configuration.CONSUL_ENABLE) {
+      serviceRegistry.register(serviceName, serviceAddress)
+    } else {
+      throw RpcException("Unable to register because you have not enable the consul")
+    }
   }
 
 }

@@ -7,7 +7,7 @@ import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.{RpcRequest, RpcResponse}
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.Serializer
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: Client
   override def receiveProcessor(request: Array[Byte]): Unit = {
     //反序列化收到的消息
     val rpcResponse = serializer.deserializer(request, classOf[RpcResponse])
-    IsCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
+    CheckCondition.conditionWarn(rpcResponse == null || rpcResponse.getRequestId < 1,
       s"ReceiveAndProcessor not found data getRequestId : {${rpcResponse.getRequestId}}") match {
       case false => {
         try {
@@ -67,14 +67,14 @@ class ClientMessageHandlerImpl @Inject()(serializer: Serializer, channel: Client
       //发送消息
       channel.sendMessage(requestMsg)
       //取出返回信息 30S超时时间
-      response = queue.poll(TIME_AWAIT, TimeUnit.MILLISECONDS)
+      response = queue.poll(TIME_WAIT, TimeUnit.MILLISECONDS)
     } catch {
       case e: Exception => {
         logger.error("Client send message fail {} ", e.getMessage)
       }
     }
-    IsCondition.conditionException(response == null, "Request wait response time await")
-    IsCondition.conditionException(response.getError != null, cause = response.getError)
+    CheckCondition.conditionException(response == null, "Request wait response time await")
+    CheckCondition.conditionException(response.getError != null, cause = response.getError)
     response.getResult
   }
 }

@@ -7,8 +7,8 @@ import io.growing.dlsrpc.consul.discovery.{ConsulServiceDiscovery, ServiceDiscov
 import io.growing.dlsrpc.consul.registry.{ConsulServiceRegistry, ServiceRegistry}
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
 import io.growing.dlsrpc.core.client.ClientChannel
+import io.growing.dlsrpc.core.consul.{RpcDiscoveryService, RpcRegisterService}
 import io.growing.dlsrpc.core.protocol.Http2Protocol
-import io.growing.dlsrpc.core.rpc.{RpcDiscoveryService, RpcRegisterService}
 import io.growing.dlsrpc.core.serialize.ProtostuffSerializer
 import io.growing.dlsrpc.core.server.ServerChannel
 import io.growing.dlsrpc.core.transport.client.NettyClientChannel

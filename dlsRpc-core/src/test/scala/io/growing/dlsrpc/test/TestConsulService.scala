@@ -1,7 +1,7 @@
-package io.growing.dlsrpc.core.rpctest
+package io.growing.dlsrpc.test
 
 import io.growing.dlsrpc.common.metadata.WeightServiceAddress
-import io.growing.dlsrpc.core.rpc.{RpcDiscoveryService, RpcRegisterService}
+import io.growing.dlsrpc.core.consul.{RpcDiscoveryService, RpcRegisterService}
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 
 /**

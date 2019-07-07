@@ -2,7 +2,7 @@ package io.growing.dlsrpc.core.server
 
 import java.util.{List => JList}
 
-import io.growing.dlsrpc.common.utils.{ImplicitUtils, IsCondition}
+import io.growing.dlsrpc.common.utils.{CheckCondition, ImplicitUtils}
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 
@@ -55,7 +55,7 @@ class ServerBuilder private() {
   //这里主要是设置端口并发布服务，之所以需要改为注入是为了后面拓展发布多服务
   //build后不能再修改端口
   def build: Server = {
-    IsCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
+    CheckCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
     server.setBeans(serviceBeans)
     server.setPort(port)
     server

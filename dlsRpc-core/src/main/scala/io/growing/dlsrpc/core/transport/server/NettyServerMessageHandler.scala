@@ -3,7 +3,7 @@ package io.growing.dlsrpc.core.transport.server
 import java.util.concurrent.Executor
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.SendMessage
 import io.growing.dlsrpc.core.server.ServerMessageHandler
 import io.growing.dlsrpc.core.utils.{ChannelWriteMessageUtil, ServiceLoadUtil}
@@ -36,7 +36,7 @@ class NettyServerMessageHandler(executor: Executor)
   override def channelRead(ctx: ChannelHandlerContext, msg: Any): Unit = {
     logger.debug("Service read msg : {} ", msg)
     //接收客户端发送的数据
-    if (IsCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching")) {
+    if (CheckCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching")) {
       ReferenceCountUtil.release(msg)
       return
     }

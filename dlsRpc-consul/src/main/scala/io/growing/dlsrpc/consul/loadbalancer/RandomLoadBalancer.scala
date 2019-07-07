@@ -3,7 +3,7 @@ package io.growing.dlsrpc.consul.loadbalancer
 import java.util.concurrent.ThreadLocalRandom
 import java.util.{List => JList}
 
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 
 /**
  * 负载均衡
@@ -20,7 +20,7 @@ class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer[T] 
    * @return
    */
   def next: T = {
-    IsCondition.conditionException(serviceAddresses.size() == 0, "can't find any serviceAddresses")
+    CheckCondition.conditionException(serviceAddresses.size() == 0, "can't find any serviceAddresses")
     serviceAddresses.get(ThreadLocalRandom.current.nextInt(serviceAddresses.size))
   }
 }

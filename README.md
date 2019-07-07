@@ -27,6 +27,8 @@ Already Implemented functions
 - Multi-module project base on SBT
 - Pressure measurement base on JMH
 - Configuration injection base on typesafe Config
+- Services can be configured and configuration file can be configured
+  
 
 
 - loading  

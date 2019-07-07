@@ -9,7 +9,7 @@ import io.growing.dlsrpc.common.exception.RpcException
  * @author 梦境迷离
  * @version 1.0, 2019-06-07
  */
-object IsCondition extends LazyLogging {
+object CheckCondition extends LazyLogging {
 
   /**
    * 满足判断条件就打印出警告

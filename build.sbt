@@ -3,7 +3,7 @@ import Dependencies.Versions
 //工程通用配置
 lazy val commonSettings = Seq(
   organization := "io.growing",
-  version := "1.0.13",
+  version := "1.1.0",
   scalaVersion := Versions.scala212,
   Dependencies.commons
 )

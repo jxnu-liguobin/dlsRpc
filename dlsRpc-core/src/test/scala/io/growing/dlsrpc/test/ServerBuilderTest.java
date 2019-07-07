@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.core.rpctest;
+package io.growing.dlsrpc.test;
 
 
 import io.growing.dlsrpc.common.config.Configuration;
@@ -24,9 +24,8 @@ public class ServerBuilderTest {
         tmpList1.add(new HelloWorld());
         tmpList1.add(new HelloImpl());
         tmpList1.add(new WorldImpl());
-        //默认从consul获得的服务地址是8080,配置 dlsrpc.server.address.default = "127.0.0.1:8080"
-        //也就是客户端获取服务实际地址后会向127.0.0.1:8081发起请求
-        //服务启动端口也是8081，Server start port : 8081 如果启动马上结束一般是端口被占用
+        //服务端如果启动马上结束一般是端口被占用
+        //不开启consul，则使用默认地址localhost:8080 ，此端口与8080需要相同。否则需要开启consul，并配置dlsrpc.server.port、dlsrpc.server.ip
         ServerBuilder server = DlsRpc.getServerBuilder(Configuration.WEB_SERVER_PORT(), tmpList1);
         server.build().start();
     }

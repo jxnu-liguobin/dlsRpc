@@ -7,7 +7,7 @@ import com.google.common.collect.Maps
 import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.exception.RpcException
 import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress}
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
 
 /**
@@ -26,8 +26,8 @@ object ConsulBuilder {
    */
   @deprecated
   def buildDiscover(consulAddress: ServiceAddress): (ConsulClient, ConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]) = {
-    IsCondition.conditionException(!consulAddress.toString.matches(PATTERN), "not an valid format like ip:port")
-    IsCondition.conditionException(consulAddress.getPort < 0, "port can't less  0")
+    CheckCondition.conditionException(!consulAddress.toString.matches(PATTERN), "not an valid format like ip:port")
+    CheckCondition.conditionException(consulAddress.getPort < 0, "port can't less  0")
     val rawClient = new ConsulRawClient(consulAddress.getIp, consulAddress.getPort)
     val consulClient = new ConsulClient(rawClient)
     val loadBalancerMap = Maps.newConcurrentMap[String, RandomLoadBalancer[ServiceAddress]]
@@ -42,8 +42,8 @@ object ConsulBuilder {
    */
   @deprecated
   def buildRegistry(consulAddress: ServiceAddress): ConsulClient = {
-    IsCondition.conditionException(!consulAddress.toString.matches(PATTERN), "not an valid format like ip:port")
-    IsCondition.conditionException(consulAddress.getPort < 0, "port can't less  0")
+    CheckCondition.conditionException(!consulAddress.toString.matches(PATTERN), "not an valid format like ip:port")
+    CheckCondition.conditionException(consulAddress.getPort < 0, "port can't less  0")
     val rawClient = new ConsulRawClient(consulAddress.getIp, consulAddress.getPort)
     val consulClient = new ConsulClient(rawClient)
     consulClient
@@ -58,8 +58,8 @@ object ConsulBuilder {
   def checkAndBuild(consulAddress: ServiceAddress): ConsulClient = {
     consulAddress match {
       case s: NormalServiceAddress => {
-        IsCondition.conditionException(!s.toString.matches(PATTERN), "not an valid format like ip:port")
-        IsCondition.conditionException(s.getPort < 0, "port can't less  0")
+        CheckCondition.conditionException(!s.toString.matches(PATTERN), "not an valid format like ip:port")
+        CheckCondition.conditionException(s.getPort < 0, "port can't less  0")
         lazy val rawClient = new ConsulRawClient(s.getIp, s.getPort)
         new ConsulClient(rawClient)
       }

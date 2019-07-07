@@ -4,7 +4,7 @@ import java.util.concurrent.Executor
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.transport.MessageCodec
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
@@ -29,7 +29,7 @@ class ServerChannelInitializer
   }
 
   override def initChannel(c: SocketChannel): Unit = {
-    IsCondition.conditionException(c == null, "SocketChannel can't be null")
+    CheckCondition.conditionException(c == null, "SocketChannel can't be null")
     c.pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
     c.pipeline.addLast("messageCodec", new MessageCodec)
     c.pipeline.addLast("server-message-handler", new NettyServerMessageHandler(executor))

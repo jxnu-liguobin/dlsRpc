@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.core.transport.client
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.client.ClientMessageHandler
 import io.netty.buffer.Unpooled
 import io.netty.channel.{Channel, ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter}
@@ -29,7 +29,7 @@ class NettyClientMessageHandler @Inject()(messageHandler: ClientMessageHandler)
 
   override def channelRead(ctx: ChannelHandlerContext, msg: Any): Unit = {
     logger.debug("Client read  msg : {}", msg)
-    IsCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching") match {
+    CheckCondition.conditionWarn(!msg.isInstanceOf[Array[Byte]], "failure of type matching") match {
       case true => {
         //TODO
       }

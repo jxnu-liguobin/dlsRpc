@@ -2,7 +2,7 @@ package io.growing.dlsrpc.core.transport.client
 
 import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.transport.MessageCodec
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
@@ -21,7 +21,7 @@ class ClientChannelInitializer @Inject()(nettyClientMessageHandler: NettyClientM
 
   @throws[Exception]
   override protected def initChannel(ch: SocketChannel): Unit = {
-    IsCondition.conditionException(ch == null, "ClientChannel can't be null")
+    CheckCondition.conditionException(ch == null, "ClientChannel can't be null")
     ch.pipeline.addLast("log", new LoggingHandler(LogLevel.INFO))
     ch.pipeline.addLast("messageCodec", new MessageCodec)
     ch.pipeline.addLast("clientMessageHandlerImpl", nettyClientMessageHandler) //使用注入bean

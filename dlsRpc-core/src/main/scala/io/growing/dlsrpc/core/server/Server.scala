@@ -6,9 +6,9 @@ import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration
 import io.growing.dlsrpc.common.metadata.NormalServiceAddress
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.{Protocol, Serializer}
-import io.growing.dlsrpc.core.rpc.RpcRegisterService
+import io.growing.dlsrpc.core.consul.RpcRegisterService
 import io.growing.dlsrpc.core.utils.ExecutorBuilder
 import javax.inject.Inject
 
@@ -55,7 +55,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
 
   //对于通道错误不予捕获，任务服务没有进行下去的必要
   def start(): Unit = {
-    IsCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
+    CheckCondition.conditionException(serviceBeans == null || !port.isValidInt || port < 0, "params error")
     //注入进的消息处理器并不知发布哪个服务
     messageHandler.setProcessBeans(serviceBeans)
     serverChannel.openServerChannel(port, executor, protocol, messageHandler)

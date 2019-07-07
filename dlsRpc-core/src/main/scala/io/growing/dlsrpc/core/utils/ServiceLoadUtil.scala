@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.core.utils
 
 import com.google.inject.Guice
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.modules.ProviderModule
 
 /**
@@ -16,7 +16,7 @@ object ServiceLoadUtil {
 
   def getProvider[T](`type`: Class[T]): T = {
     val instance = inject.getInstance(`type`)
-    IsCondition.conditionException(instance == null, `type`.getSimpleName + " not be found")
+    CheckCondition.conditionException(instance == null, `type`.getSimpleName + " not be found")
     instance
   }
 }

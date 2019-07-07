@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.{RpcRequest, ServiceAddress}
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.Protocol
-import io.growing.dlsrpc.core.rpc.RpcDiscoveryService
+import io.growing.dlsrpc.core.consul.RpcDiscoveryService
 import io.growing.dlsrpc.core.utils.ServiceLoadUtil
 import net.sf.cglib.proxy.{Enhancer, MethodInterceptor, MethodProxy}
 
@@ -56,8 +56,8 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
   }
 
   def linkToAddress(host: String, port: Int): Builder = {
-    IsCondition.conditionException(host == null, "host can't be empty")
-    IsCondition.conditionException(port < 1, "port can't less than 1")
+    CheckCondition.conditionException(host == null, "host can't be empty")
+    CheckCondition.conditionException(port < 1, "port can't less than 1")
     //服务发现
 
     this.socketAddress = InetSocketAddress.createUnresolved(host, port)
@@ -68,7 +68,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
   def linkToCenter: Builder = {
     //服务发现
     val serviceAddress: ServiceAddress = rpc.obtainServiceAddress(clientClass.getSimpleName)
-    IsCondition.conditionException(serviceAddress == null, "can't find any service address")
+    CheckCondition.conditionException(serviceAddress == null, "can't find any service address")
     this.socketAddress = InetSocketAddress.createUnresolved(serviceAddress.getIp, serviceAddress.getPort)
     this.asInstanceOf[Builder]
   }
@@ -83,7 +83,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
   //创建动态代理并发送请求，获取服务端的结果。
   @throws[Exception]
   private[client] def proxy[T]: T = {
-    IsCondition.conditionException(clientClass == null, "param error")
+    CheckCondition.conditionException(clientClass == null, "param error")
     val clientInvocationHandler: InvocationHandler = (proxy, method, args) => {
       //执行方法时被调用
       def invoke(proxy: Any, method: Method, args: Array[_ <: Any]) = {
@@ -122,7 +122,7 @@ class Client[Builder <: Client[_, _], T] protected(clientClass: Class[T]) extend
   //cglib代理构造代理对象
   @throws[Exception]
   private[client] def cglibProxy[T]: T = {
-    IsCondition.conditionException(clientClass == null, "param error")
+    CheckCondition.conditionException(clientClass == null, "param error")
     val daoProxy = new ClientCglibProxy
     val enhancer = new Enhancer
     enhancer.setCallback(daoProxy)

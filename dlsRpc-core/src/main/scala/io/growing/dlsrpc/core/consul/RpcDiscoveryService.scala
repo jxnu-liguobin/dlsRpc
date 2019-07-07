@@ -1,7 +1,8 @@
-package io.growing.dlsrpc.core.rpc
+package io.growing.dlsrpc.core.consul
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.metadata.ServiceAddress
+import io.growing.dlsrpc.common.config.Configuration
+import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress}
 import io.growing.dlsrpc.consul.discovery.ServiceDiscovery
 import javax.inject.Inject
 
@@ -23,6 +24,11 @@ class RpcDiscoveryService extends LazyLogging {
    * @return
    */
   def obtainServiceAddress(serviceName: String): ServiceAddress = {
-    serviceDiscovery.discover(serviceName)
+    if (Configuration.CONSUL_ENABLE) {
+      serviceDiscovery.discover(serviceName)
+    } else {
+      //没有开启consul只能使用默认的本机，即未有集群
+      new NormalServiceAddress(Configuration.DEFAULT_DISCOVER_ADDRESS)
+    }
   }
 }

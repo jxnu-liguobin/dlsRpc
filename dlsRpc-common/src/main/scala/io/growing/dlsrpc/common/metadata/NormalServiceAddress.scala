@@ -13,4 +13,13 @@ case class NormalServiceAddress(ip: String, port: Int) extends ServiceAddress(ip
   override def getPort: Int = port
 
   override def toString: String = s"$ip:$port"
+
+  /**
+   * 直接将tcp参数映射为可用的服务端调用地址
+   *
+   * @param tcp localhost:8080
+   */
+  def this(tcp: String) = {
+    this(tcp.split(":")(0), tcp.split(":")(1).toInt)
+  }
 }

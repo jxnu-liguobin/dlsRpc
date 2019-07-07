@@ -3,7 +3,7 @@ package io.growing.dlsrpc.core.transport.server
 import java.util.concurrent.Executor
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.server.{ServerChannel, ServerMessageHandler}
 import io.netty.channel.nio.NioEventLoopGroup
@@ -37,7 +37,7 @@ class NettyServerChannel @Inject()(serverChannelInitializer: ServerChannelInitia
   }
 
   override def shutdown(): Unit = {
-    if (IsCondition.conditionWarn(channel == null || !channel.isOpen)) return
+    if (CheckCondition.conditionWarn(channel == null || !channel.isOpen)) return
     try {
       channel.close()
     } catch {

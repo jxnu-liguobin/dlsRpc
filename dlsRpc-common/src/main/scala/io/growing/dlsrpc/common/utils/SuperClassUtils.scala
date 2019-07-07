@@ -36,7 +36,7 @@ object SuperClassUtils {
    * @tparam B
    * @return
    */
-  def CheckSuperInterfaces[S, B](clazz: Class[S], interface: Class[B]): Class[_] = {
+  def checkSuperInterfaces[S, B](clazz: Class[S], interface: Class[B]): Class[_] = {
     val names = clazz.getInterfaces
     if (names.contains(interface)) {
       clazz
@@ -85,7 +85,7 @@ object SuperClassUtils {
     //不是接口，有实现接口，使用jdk；是接口使用jdk
     if (clazz.isInterface || !clazz.isInterface && (getVaildSuperInterface[T](clazz) != null && getVaildSuperInterface[T](clazz).nonEmpty)) {
       if (!clazz.isInterface) {
-        if (CGLIB_PROXY && TO_CGLIB_PROXY) {
+        if (CGLIB_PROXY && FORCE_CGLIB_PROXY) {
           return ProxyType.CGLIB
         }
       } else {

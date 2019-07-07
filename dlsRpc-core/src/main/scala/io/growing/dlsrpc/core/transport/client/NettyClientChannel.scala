@@ -3,7 +3,7 @@ package io.growing.dlsrpc.core.transport.client
 import java.net.SocketAddress
 
 import com.typesafe.scalalogging.LazyLogging
-import io.growing.dlsrpc.common.utils.IsCondition
+import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.core.api.Protocol
 import io.growing.dlsrpc.core.client.{ClientChannel, ClientMessageHandler}
 import io.growing.dlsrpc.core.utils.ChannelWriteMessageUtil
@@ -37,7 +37,7 @@ class NettyClientChannel @Inject()(clientChannelInitializer: ClientChannelInitia
   }
 
   override def shutdown(): Unit = {
-    if (IsCondition.conditionWarn(channel == null || !channel.isOpen, "channel is already closed")) return
+    if (CheckCondition.conditionWarn(channel == null || !channel.isOpen, "channel is already closed")) return
     try {
       channel.close
     } catch {
