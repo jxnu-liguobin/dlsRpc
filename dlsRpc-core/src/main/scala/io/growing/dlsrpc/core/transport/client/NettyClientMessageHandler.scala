@@ -46,7 +46,7 @@ class NettyClientMessageHandler @Inject()(messageHandler: ClientMessageHandler)
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
-    logger.warn("MessageHandler happen exception : {}", cause)
+    logger.warn("MessageHandler happen exception : {}", cause.getMessage)
     if (outboundChannel.isActive) outboundChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE)
   }
 }

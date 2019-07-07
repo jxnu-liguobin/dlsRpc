@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
  * 服务端建造器
  *
  * @author 梦境迷离
- * @version 1.2, 2019-06-05
+ * @version 1.3, 2019-06-05
  */
 object ServerChannelBuilder extends LazyLogging {
 
@@ -23,7 +23,7 @@ object ServerChannelBuilder extends LazyLogging {
       option(ChannelOption.SO_KEEPALIVE, Boolean.box(true)). //需要封装true，不然推断出错，接收参数是Option，会被推断为Option[Any]
       bind(port).await()
 
-    NettyListenerUtils.addClosedListener(channelFuture, bossGroup, workerGroup)
+    NettyListenerUtils.addClosedListener(channelFuture, bossGroup, workerGroup, isClient = false)
 
     channelFuture.channel()
   }
