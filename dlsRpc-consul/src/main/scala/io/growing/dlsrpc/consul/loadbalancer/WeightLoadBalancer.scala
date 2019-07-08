@@ -20,7 +20,7 @@ import io.growing.dlsrpc.common.utils.ImplicitUtils._
  * @version 1.0, 2019-06-14
  * @param weightServiceAddresses 所有存活的服务
  */
-class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends Loadbalancer[T]
+class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBalancer[T]
   with LazyLogging {
 
   import WeightLoadBalancer._

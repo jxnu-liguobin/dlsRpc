@@ -6,7 +6,7 @@ package io.growing.dlsrpc.consul.loadbalancer
  * @author 梦境迷离
  * @version 1.0, 2019-06-08
  */
-trait Loadbalancer[T] {
+trait LoadBalancer[T] {
 
   /**
    * 权值 + 默认权值

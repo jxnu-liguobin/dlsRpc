@@ -12,7 +12,7 @@ import io.growing.dlsrpc.common.utils.CheckCondition
  * @version 1.0, 2019-06-08
  * @param serviceAddresses 所有存活的服务
  */
-class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends Loadbalancer[T] {
+class RandomLoadBalancer[T](serviceAddresses: JList[T]) extends LoadBalancer[T] {
 
   /**
    * 服务的地址

@@ -13,7 +13,7 @@ trait ServiceDiscovery {
   /**
    * 服务发现
    *
-   * @param serviceName class name
+   * @param serviceName 含有@RPCService注解的类或接口的简单名称
    * @return
    */
   def discover(serviceName: String): ServiceAddress

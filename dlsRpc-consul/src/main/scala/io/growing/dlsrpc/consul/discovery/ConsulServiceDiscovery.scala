@@ -13,7 +13,7 @@ import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress, 
 import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
-import io.growing.dlsrpc.consul.loadbalancer.{Loadbalancer, RandomLoadBalancer, WeightLoadBalancer}
+import io.growing.dlsrpc.consul.loadbalancer.{LoadBalancer, RandomLoadBalancer, WeightLoadBalancer}
 
 import scala.util.Try
 
@@ -27,7 +27,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
 
   private[this] final lazy val consulClient = ConsulBuilder.checkAndBuild(consulAddress)
 
-  private[this] final val loadBalancerMap = Maps.newConcurrentMap[String, Loadbalancer[ServiceAddress]]()
+  private[this] final val loadBalancerMap = Maps.newConcurrentMap[String, LoadBalancer[ServiceAddress]]()
 
   private[this] final val wait_time = 3000
 
@@ -42,7 +42,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         setQueryParams(QueryParams.DEFAULT).
         build
       val healthyServices: JList[HealthService] = consulClient.getHealthServices(serviceName, request).getValue
-      loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[ServiceAddress]](healthyServices, BalancerType.WEIGHT))
+      loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[ServiceAddress]](healthyServices, BalancerType.WEIGHT))
       // 监测 consul
       longPolling(serviceName)
     }
@@ -82,7 +82,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
    * @tparam L 预期类型
    * @return 实际类型
    */
-  private[this] def buildLoadBalancer[L <: Loadbalancer[_]](healthServices: JList[HealthService],
+  private[this] def buildLoadBalancer[L <: LoadBalancer[_]](healthServices: JList[HealthService],
                                                             balancerType: BalancerType): L = {
     val address = new JArrayList[ServiceAddress]()
     balancerType match {
