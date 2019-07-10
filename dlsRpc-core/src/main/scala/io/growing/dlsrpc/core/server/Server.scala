@@ -59,7 +59,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
     //注入进的消息处理器并不知发布哪个服务
     messageHandler.setProcessBeans(serviceBeans)
     serverChannel.openServerChannel(port, executor, protocol, messageHandler)
-    logger.info("Server start port : {}", port)
+    logger.info("Server start port is : {}", port)
     //默认将可见的所有类注册到本地的consul并暴露127.0.0.1:8080
     rpc.initRegisterService(NormalServiceAddress(Configuration.WEB_SERVER_IP, port))
   }

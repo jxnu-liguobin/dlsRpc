@@ -15,8 +15,6 @@ import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.consul.commons.ConsulBuilder
 import io.growing.dlsrpc.consul.loadbalancer.{LoadBalancer, RandomLoadBalancer, WeightLoadBalancer}
 
-import scala.util.Try
-
 /**
  * 使用consul的服务发现
  *
@@ -42,7 +40,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         setQueryParams(QueryParams.DEFAULT).
         build
       val healthyServices: JList[HealthService] = consulClient.getHealthServices(serviceName, request).getValue
-      loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[ServiceAddress]](healthyServices, BalancerType.WEIGHT))
+      loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[WeightServiceAddress]](healthyServices, BalancerType.WEIGHT))
       // 监测 consul
       longPolling(serviceName)
     }
@@ -70,7 +68,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         logger.debug("Consul index for {} is {}", serviceName, consulIndex)
         val healthServices = healthyServices.getValue
         logger.debug("Service addresses of {} is {}", serviceName, healthServices)
-        loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[ServiceAddress]](healthServices, BalancerType.WEIGHT))
+        loadBalancerMap.put(serviceName, buildLoadBalancer[RandomLoadBalancer[NormalServiceAddress]](healthServices, BalancerType.WEIGHT))
       } while (true)
     }).start()
   }
@@ -79,7 +77,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
    *
    * @param healthServices 可用服务列表
    * @param balancerType   启用的负载均衡类型
-   * @tparam L 预期类型
+   * @tparam L 预期类型 协变
    * @return 实际类型
    */
   private[this] def buildLoadBalancer[L <: LoadBalancer[_]](healthServices: JList[HealthService],
@@ -90,13 +88,14 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         for (service <- healthServices.iterator()) {
           address.add(NormalServiceAddress(service.getService.getAddress, service.getService.getPort))
         }
-        Try(new RandomLoadBalancer(address).asInstanceOf[L]).get
+        new RandomLoadBalancer(address).asInstanceOf[L]
       }
       case BalancerType.WEIGHT => {
         for (service <- healthServices.iterator()) {
           address.add(new WeightServiceAddress(service.getService.getAddress, service.getService.getPort))
         }
-        Try(new WeightLoadBalancer(address).asInstanceOf[L]).get
+        //父转子
+        new WeightLoadBalancer(address.asInstanceOf[JArrayList[WeightServiceAddress]]).asInstanceOf[L]
       }
     }
   }

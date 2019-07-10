@@ -23,6 +23,8 @@ object ServerChannelBuilder extends LazyLogging {
       option(ChannelOption.SO_KEEPALIVE, Boolean.box(true)). //需要封装true，不然推断出错，接收参数是Option，会被推断为Option[Any]
       bind(port).await()
 
+    logger.info("Start bind port : {}", port)
+
     NettyListenerUtils.addClosedListener(channelFuture, bossGroup, workerGroup, isClient = false)
 
     channelFuture.channel()

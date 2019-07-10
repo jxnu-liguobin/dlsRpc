@@ -20,7 +20,7 @@ import io.growing.dlsrpc.common.utils.ImplicitUtils._
  * @version 1.1, 2019-06-14
  * @param weightServiceAddresses 所有存活的服务
  */
-class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBalancer[T]
+class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JList[T]) extends LoadBalancer[T]
   with LazyLogging {
 
   import WeightLoadBalancer._
@@ -47,19 +47,21 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBa
     val serverMap: WAMapType = serviceIps
     //獲取ip列表list
     val it: util.Iterator[WeightServiceAddress] = serverMap.keySet().iterator()
-    val serverList = new JArrayList[WeightServiceAddress]
+    val serverList = new JArrayList[T]
     while (it.hasNext) {
       val server = it.next()
       val weight = serverMap.get(server)
       for (_ <- 0 until weight) {
-        serverList.add(server)
+        //父转子
+        serverList.add(server.asInstanceOf[T])
       }
     }
     val pos = ThreadLocalRandom.current.nextInt(serverList.size())
-    serverList.get(pos).asInstanceOf[T]
+    serverList.get(pos)
   }
 
   override def ++(addMaps: JMap[_ <: ServiceAddress, Int]): LoadBalancer[T] = {
+    //TODO 可能失败
     this.serviceIps = mergeMap(this.serviceIps, addMaps.asInstanceOf[WAMapType])
     this
   }
@@ -67,8 +69,8 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBa
   override def next(remoteIp: String): T = {
     CheckCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip because param error in dlsRpc.conf")
     val serverMap: WAMapType = serviceIps
-    val it: util.Iterator[WeightServiceAddress] = serverMap.keySet().iterator()
-    val serverList = new JArrayList[WeightServiceAddress]
+    val it: util.Iterator[T] = serverMap.keySet().iterator().asInstanceOf[util.Iterator[T]]
+    val serverList = new JArrayList[T]
     while (it.hasNext) {
       val server = it.next()
       val weight = serverMap.get(server)
@@ -79,7 +81,7 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBa
     val hashCode = remoteIp.hashCode
     val serverListSize = serverList.size
     val pos = hashCode % serverListSize
-    serverList.get(pos).asInstanceOf[T]
+    serverList.get(pos)
   }
 
   /**
@@ -93,8 +95,7 @@ class WeightLoadBalancer[T](val weightServiceAddresses: JList[T]) extends LoadBa
     //对传进来的进行放入map中，并对默认配置进行合并
     val ms: WAMapType = Maps.newConcurrentMap()
     for (service <- weightServiceAddresses.iterator()) {
-      val s: WeightServiceAddress = service.asInstanceOf[WeightServiceAddress]
-      ms.put(s, s.getWeight)
+      ms.put(service, service.getWeight)
     }
     //以传入的存活的服务为准，若配置文件中也配置了，则会增加该服务的权值。注意 Key 需要实现 hashcode equals
     //服务存活但是没有配置，会有低优先级的默认值

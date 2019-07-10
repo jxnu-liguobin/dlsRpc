@@ -11,7 +11,7 @@ import io.growing.dlsrpc.common.metadata.ServiceAddress
  * @author 梦境迷离
  * @version 1.1, 2019-06-08
  */
-trait LoadBalancer[T] {
+trait LoadBalancer[+T] {
 
   /**
    * 权值 + 默认权值
