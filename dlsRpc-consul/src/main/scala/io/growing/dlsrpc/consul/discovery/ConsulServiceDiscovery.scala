@@ -74,10 +74,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
     if (!loadBalancerMap.containsKey(serviceName)) {
       //TODO因为本地没有使用HTTP，无法提供健康检查接口，或者把注册的检查端口改为8500（滑稽）
       val request: HealthServicesRequest = HealthServicesRequest.
-        newBuilder().
-        setPassing(true).
-        setQueryParams(QueryParams.DEFAULT).
-        build
+        newBuilder().setPassing(true).setQueryParams(QueryParams.DEFAULT).build
       val healthyServices: JList[HealthService] = consulClient.getHealthServices(serviceName, request).getValue
       loadBalancerMap.put(serviceName, buildLoadBalancer[WeightLoadBalancer[WeightServiceAddress]](healthyServices, BalancerType.WEIGHT))
       // 监测 consul
@@ -99,10 +96,7 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
         //超时时间3秒
         val param: QueryParams = new QueryParams(wait_time, consulIndex)
         val request: HealthServicesRequest = HealthServicesRequest.
-          newBuilder().
-          setPassing(true).
-          setQueryParams(param).
-          build
+          newBuilder().setPassing(true).setQueryParams(param).build
         val healthyServices: Response[JList[HealthService]] = consulClient.getHealthServices(serviceName, request)
         consulIndex = healthyServices.getConsulIndex
         logger.debug("Consul index for {} is {}", serviceName, consulIndex)
