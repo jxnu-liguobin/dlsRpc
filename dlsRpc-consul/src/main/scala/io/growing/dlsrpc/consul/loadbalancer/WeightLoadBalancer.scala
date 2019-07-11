@@ -60,13 +60,7 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
     serverList.get(pos)
   }
 
-  /**
-   * 提供在轮询时更新[server,weight]的接口
-   *
-   * @param addMaps
-   * @return
-   */
-  def ++(addMaps: WAMapType): LoadBalancer[T] = {
+  override def ++(addMaps: WAMapType): LoadBalancer[T] = {
     this.serviceIps = mergeMap(this.serviceIps, addMaps)
     this
   }
@@ -110,7 +104,7 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
   }
 
   /**
-   * 合并Map
+   * 合并Map的权值
    *
    * @param default 默认值
    * @param target  目标增长值
@@ -131,7 +125,7 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
 //scala中原因是object的val只会在main方法运行时被初始化（叫赋值初始化），而你extends了App但是不用，
 //那么其他代码调用这个object时该代码也仅仅被初始化并不会被赋值初始化，拿到值都是0 ，null 0,0这种，
 //最后解决就是去掉被依赖对象的extends App 即时这个只是测试时用到的main方法但是最后跑整体代码时这个是必须要去掉，
-object WeightLoadBalancer extends App {
+object WeightLoadBalancer {
 
   //后续泛型尽可能使用父类传递，返回子类。
   //里氏替换原则：任何基类可以出现的地方，子类一定可以出现。

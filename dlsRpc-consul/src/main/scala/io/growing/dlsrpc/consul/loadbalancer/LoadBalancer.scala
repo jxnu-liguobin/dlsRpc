@@ -1,8 +1,6 @@
 package io.growing.dlsrpc.consul.loadbalancer
 
-import java.util.{Map => JMap}
-
-import io.growing.dlsrpc.common.metadata.ServiceAddress
+import io.growing.dlsrpc.consul.loadbalancer.WeightLoadBalancer.WAMapType
 
 
 /**
@@ -33,6 +31,14 @@ trait LoadBalancer[+T] {
    *
    * @return
    */
-  def getServiceAddressMap: JMap[_ <: ServiceAddress, Int] = ???
+  def getServiceAddressMap: WAMapType = ???
+
+  /**
+   * 提供合并[server,weight]的权值
+   *
+   * @param addMaps
+   * @return
+   */
+  def ++(addMaps: WAMapType): LoadBalancer[T] = ???
 
 }
