@@ -127,9 +127,9 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
 //最后解决就是去掉被依赖对象的extends App 即时这个只是测试时用到的main方法但是最后跑整体代码时这个是必须要去掉，
 object WeightLoadBalancer {
 
-  //后续泛型尽可能使用父类传递，需要时转换为子类。
-  //注意，不能将子类转换为父类，里氏替换原则：任何基类可以出现的地方，子类一定可以出现。
-  //也就是子类是可以替代父类，反之不行（可能丢失属性）
+  //后续泛型尽可能使用父类传递，返回子类。
+  //里氏替换原则：任何基类可以出现的地方，子类一定可以出现。
+  //也就是子类是可以替代父类，反之不行。子类可自动提示类型至父类，父类需要强转至子类。
   type WAMapType = JMap[WeightServiceAddress, Int]
 
   //默认权值
