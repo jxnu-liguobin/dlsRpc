@@ -29,14 +29,6 @@ trait LoadBalancer[+T] {
   def next(remoteIp: String): T = ???
 
   /**
-   * 提供在轮询时更新[server,weight]的接口
-   *
-   * @param addMaps
-   * @return
-   */
-  def ++(addMaps: JMap[_ <: ServiceAddress, Int]): LoadBalancer[T] = ???
-
-  /**
    * 获取实时的某负载均衡实例含有的所有[server,weight]
    *
    * @return

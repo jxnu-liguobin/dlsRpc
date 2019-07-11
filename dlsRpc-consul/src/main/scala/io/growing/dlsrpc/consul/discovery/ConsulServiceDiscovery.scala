@@ -81,21 +81,20 @@ class ConsulServiceDiscovery(consulAddress: ServiceAddress) extends ServiceDisco
    * @return 实际类型
    */
   private[this] def buildLoadBalancer[L <: LoadBalancer[_]](healthServices: JList[HealthService],
-                                                            balancerType: BalancerType): L = {
-    val address = new JArrayList[ServiceAddress]()
+                                                            balancerType: BalancerType): LoadBalancer[ServiceAddress] = {
+    val address: JList[ServiceAddress] = new JArrayList[ServiceAddress]()
     balancerType match {
       case BalancerType.RANDOM => {
         for (service <- healthServices.iterator()) {
           address.add(NormalServiceAddress(service.getService.getAddress, service.getService.getPort))
         }
-        new RandomLoadBalancer(address).asInstanceOf[L]
+        new RandomLoadBalancer(address)
       }
       case BalancerType.WEIGHT => {
         for (service <- healthServices.iterator()) {
           address.add(new WeightServiceAddress(service.getService.getAddress, service.getService.getPort))
         }
-        //父转子
-        new WeightLoadBalancer(address.asInstanceOf[JArrayList[WeightServiceAddress]]).asInstanceOf[L]
+        new WeightLoadBalancer[WeightServiceAddress](address.asInstanceOf[JList[WeightServiceAddress]])
       }
     }
   }

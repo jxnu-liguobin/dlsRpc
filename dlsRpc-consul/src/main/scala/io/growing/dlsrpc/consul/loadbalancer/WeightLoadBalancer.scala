@@ -7,7 +7,7 @@ import java.util.{ArrayList => JArrayList, List => JList, Map => JMap}
 import com.google.common.collect.Maps
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration._
-import io.growing.dlsrpc.common.metadata.{ServiceAddress, WeightServiceAddress}
+import io.growing.dlsrpc.common.metadata.WeightServiceAddress
 import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 
@@ -52,7 +52,7 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
       val server = it.next()
       val weight = serverMap.get(server)
       for (_ <- 0 until weight) {
-        //父转子
+        //TODO 父转子
         serverList.add(server.asInstanceOf[T])
       }
     }
@@ -60,15 +60,21 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
     serverList.get(pos)
   }
 
-  override def ++(addMaps: JMap[_ <: ServiceAddress, Int]): LoadBalancer[T] = {
-    //TODO 可能失败
-    this.serviceIps = mergeMap(this.serviceIps, addMaps.asInstanceOf[WAMapType])
+  /**
+   * 提供在轮询时更新[server,weight]的接口
+   *
+   * @param addMaps
+   * @return
+   */
+  def ++(addMaps: WAMapType): LoadBalancer[T] = {
+    this.serviceIps = mergeMap(this.serviceIps, addMaps)
     this
   }
 
   override def next(remoteIp: String): T = {
     CheckCondition.conditionException(SERVICE_IP_LIST.size() == 0, "can't use default ip because param error in dlsRpc.conf")
     val serverMap: WAMapType = serviceIps
+    //TODO 父转子
     val it: util.Iterator[T] = serverMap.keySet().iterator().asInstanceOf[util.Iterator[T]]
     val serverList = new JArrayList[T]
     while (it.hasNext) {
@@ -125,7 +131,7 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
 //scala中原因是object的val只会在main方法运行时被初始化（叫赋值初始化），而你extends了App但是不用，
 //那么其他代码调用这个object时该代码也仅仅被初始化并不会被赋值初始化，拿到值都是0 ，null 0,0这种，
 //最后解决就是去掉被依赖对象的extends App 即时这个只是测试时用到的main方法但是最后跑整体代码时这个是必须要去掉，
-object WeightLoadBalancer {
+object WeightLoadBalancer extends App {
 
   //后续泛型尽可能使用父类传递，返回子类。
   //里氏替换原则：任何基类可以出现的地方，子类一定可以出现。
@@ -147,16 +153,16 @@ object WeightLoadBalancer {
   SERVICE_IP_LIST.forEach(x => CheckCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
 
   //  Test data
-  //  val s = new util.ArrayList[WeightServiceAddress]()
-  //  val s2 = new util.ArrayList[WeightServiceAddress]()
-  //  s.add(new WeightServiceAddress("127.0.0.1", port, 2))
-  //  s.add(new WeightServiceAddress("127.0.1.2", port, 1))
-  //  s.add(new WeightServiceAddress("127.0.1.3", port, 1))
-  //  s.add(new WeightServiceAddress("127.1.1.4", port, 1))
-  //  s2.add(new WeightServiceAddress("192.168.1.1", port, 1))
-  //  val wl = new WeightLoadBalancer(s)
-  //  val wl2 = new WeightLoadBalancer(s2)
-  //  val ret = wl2 ++ wl.getServiceAddressMap
-  //  println(ret.getServiceAddressMap.size())
-  //  println(ret.next)
+  val s = new util.ArrayList[WeightServiceAddress]()
+  val s2 = new util.ArrayList[WeightServiceAddress]()
+  s.add(new WeightServiceAddress("127.0.0.1", port, 2))
+  s.add(new WeightServiceAddress("127.0.1.2", port, 1))
+  s.add(new WeightServiceAddress("127.0.1.3", port, 1))
+  s.add(new WeightServiceAddress("127.1.1.4", port, 1))
+  s2.add(new WeightServiceAddress("192.168.1.1", port, 1))
+  val wl = new WeightLoadBalancer(s)
+  val wl2 = new WeightLoadBalancer(s2)
+  val ret = wl2 ++ wl.getServiceAddressMap
+  println(ret.getServiceAddressMap.size())
+  println(ret.next)
 }
