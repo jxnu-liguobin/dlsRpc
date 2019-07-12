@@ -147,16 +147,16 @@ object WeightLoadBalancer {
   SERVICE_IP_LIST.forEach(x => CheckCondition.conditionException(!x.toString.matches(IP_PATTERN), "not an valid format like ip"))
 
   //  Test data
-  val s = new util.ArrayList[WeightServiceAddress]()
-  val s2 = new util.ArrayList[WeightServiceAddress]()
-  s.add(new WeightServiceAddress("127.0.0.1", port, 2))
-  s.add(new WeightServiceAddress("127.0.1.2", port, 1))
-  s.add(new WeightServiceAddress("127.0.1.3", port, 1))
-  s.add(new WeightServiceAddress("127.1.1.4", port, 1))
-  s2.add(new WeightServiceAddress("192.168.1.1", port, 1))
-  val wl = new WeightLoadBalancer(s)
-  val wl2 = new WeightLoadBalancer(s2)
-  val ret = wl2 ++ wl.getServiceAddressMap
-  println(ret.getServiceAddressMap.size())
-  println(ret.next)
+  //  val s = new util.ArrayList[WeightServiceAddress]()
+  //  val s2 = new util.ArrayList[WeightServiceAddress]()
+  //  s.add(new WeightServiceAddress("127.0.0.1", port, 2))
+  //  s.add(new WeightServiceAddress("127.0.1.2", port, 1))
+  //  s.add(new WeightServiceAddress("127.0.1.3", port, 1))
+  //  s.add(new WeightServiceAddress("127.1.1.4", port, 1))
+  //  s2.add(new WeightServiceAddress("192.168.1.1", port, 1))
+  //  val wl = new WeightLoadBalancer(s)
+  //  val wl2 = new WeightLoadBalancer(s2)
+  //  val ret = wl2 ++ wl.getServiceAddressMap
+  //  println(ret.getServiceAddressMap.size())
+  //  println(ret.next)
 }
