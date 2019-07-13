@@ -3,7 +3,6 @@ package io.growing.dlsrpc.consul.registry
 import java.util.{ArrayList => JArrayList}
 
 import com.ecwid.consul.v1.agent.model.NewService
-import com.google.inject.Singleton
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.config.Configuration._
 import io.growing.dlsrpc.common.metadata.ServiceAddress
@@ -14,13 +13,11 @@ import io.growing.dlsrpc.consul.commons.ConsulBuilder
  * 使用consul的服务注册
  *
  * @author 梦境迷离
- * @version 1.0, 2019-06-08
- * @param consulAddress ip:port
+ * @version 1.1, 2019-06-08
  */
-@Singleton
-class ConsulServiceRegistry(consulAddress: ServiceAddress) extends ServiceRegistry with LazyLogging {
+class ConsulServiceRegistry extends ServiceRegistry with LazyLogging {
 
-  private[this] final lazy val consulClient = ConsulBuilder.checkAndBuild(consulAddress)
+  private[this] final lazy val consulClient = ConsulBuilder.checkAndBuild
 
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     CheckCondition.conditionException(serviceAddress.getPort < 0, "port can't less  0")

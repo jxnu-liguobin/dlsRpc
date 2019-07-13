@@ -36,9 +36,9 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
     serviceIps = defaultWeightServiceAddress
     logger.info("Number of incoming empty, using the default configuration list {}", serviceIps.size())
   } else {
-    logger.info("Number of incoming is {}", weightServiceAddresses.size())
+    logger.debug("Number of incoming is {}", weightServiceAddresses.size())
     serviceIps = convertToMap(weightServiceAddresses)
-    logger.info("Number of merged is {}", serviceIps.size())
+    logger.debug("Number of merged is {}", serviceIps.size())
   }
 
   override def next: T = {
@@ -60,8 +60,19 @@ class WeightLoadBalancer[+T <: WeightServiceAddress](weightServiceAddresses: JLi
     serverList.get(pos)
   }
 
-  override def ++(addMaps: WAMapType): LoadBalancer[T] = {
+  override def mergeWeight(addMaps: WAMapType): LoadBalancer[T] = {
     this.serviceIps = mergeMap(this.serviceIps, addMaps)
+    this
+  }
+
+  /**
+   * 初始化后serviceIps保存了[service,ip]
+   *
+   * @param addMaps
+   * @return
+   */
+  override def mergeMaps(addMaps: WAMapType): LoadBalancer[T] = {
+    this.serviceIps ++ addMaps
     this
   }
 

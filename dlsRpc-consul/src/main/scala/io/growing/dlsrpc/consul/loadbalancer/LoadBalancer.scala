@@ -39,6 +39,15 @@ trait LoadBalancer[+T] {
    * @param addMaps
    * @return
    */
-  def ++(addMaps: WAMapType): LoadBalancer[T] = ???
+  def mergeWeight(addMaps: WAMapType): LoadBalancer[T] = ???
+
+  /**
+   * 给当前LoadBalancer增加Maps
+   *
+   * @param addMaps
+   * @return
+   */
+  def mergeMaps(addMaps: WAMapType): LoadBalancer[T] = ???
+
 
 }

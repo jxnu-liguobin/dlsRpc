@@ -32,8 +32,7 @@ class Server @Inject()(serializer: Serializer, serverChannel: ServerChannel, mes
   //服务绑定的端口
   @volatile
   private[this] final var port: Int = _
-  //需要发布rpc的服务，一条channel可以发布多个服务，但是这里目前采用这种方案，一条channel对应一个服务
-  //注册和发现服务写好后会改成多个
+  //需要发布rpc的服务，一条channel可以发布多个服务
   @volatile
   private[this] final var serviceBeans: Seq[AnyRef] = _
   //服务端任务执行器，使用缓存线程池

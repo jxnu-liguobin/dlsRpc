@@ -28,7 +28,9 @@ Already Implemented functions
 - Pressure measurement base on JMH
 - Configuration injection base on typesafe Config
 - Services can be configured and configuration file can be configured
+- Client Configuration Caching and Timely Refresh
   
+
 
 
 - loading  
