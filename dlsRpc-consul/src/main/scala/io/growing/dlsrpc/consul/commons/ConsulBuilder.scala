@@ -15,6 +15,7 @@ import io.growing.dlsrpc.common.metadata.{NormalServiceAddress, ServiceAddress, 
 import io.growing.dlsrpc.common.utils.CheckCondition
 import io.growing.dlsrpc.common.utils.ImplicitUtils._
 import io.growing.dlsrpc.consul.loadbalancer.{LoadBalancer, RandomLoadBalancer, WeightLoadBalancer}
+import io.growing.dlsrpc.consul.task.{AllScheduledRefresh, SingleScheduledRefresh}
 
 /**
  * 封装构造逻辑
