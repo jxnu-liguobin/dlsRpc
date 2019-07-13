@@ -46,6 +46,7 @@ Technology
 * Consul
 * Cglib
 * Typesafe Config
+* Guava Cache
 
 Test & Use
 ---
