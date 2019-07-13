@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.consul.commons
+package io.growing.dlsrpc.consul.task
 
 /**
  * 定时刷新任务

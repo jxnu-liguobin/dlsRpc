@@ -1,4 +1,4 @@
-package io.growing.dlsrpc.consul.commons
+package io.growing.dlsrpc.consul.task
 
 import java.util.{List => JList}
 
@@ -8,6 +8,7 @@ import com.ecwid.consul.v1.{ConsulClient, QueryParams, Response}
 import com.typesafe.scalalogging.LazyLogging
 import io.growing.dlsrpc.common.enums.BalancerType
 import io.growing.dlsrpc.common.metadata.NormalServiceAddress
+import io.growing.dlsrpc.consul.commons.ConsulBuilder
 import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
 
 /**
