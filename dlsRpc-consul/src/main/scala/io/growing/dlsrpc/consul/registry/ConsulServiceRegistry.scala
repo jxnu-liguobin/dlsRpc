@@ -13,7 +13,7 @@ import io.growing.dlsrpc.consul.commons.ConsulBuilder
  * 使用consul的服务注册
  *
  * @author 梦境迷离
- * @version 1.1, 2019-06-08
+ * @version 1.2, 2019-06-08
  */
 class ConsulServiceRegistry extends ServiceRegistry with LazyLogging {
 
@@ -22,7 +22,7 @@ class ConsulServiceRegistry extends ServiceRegistry with LazyLogging {
   override def register(serviceName: String, serviceAddress: ServiceAddress): Unit = {
     CheckCondition.conditionException(serviceAddress.getPort < 0, "port can't less  0")
     val newService = new NewService
-    newService.setId(generateNewIdForService(serviceName))
+    newService.setId(generateNewIdForService(serviceName, serviceAddress))
     newService.setName(serviceName)
     newService.setTags(new JArrayList)
     newService.setAddress(serviceAddress.getIp)
@@ -38,12 +38,19 @@ class ConsulServiceRegistry extends ServiceRegistry with LazyLogging {
 
   }
 
-  //暂时使用这种做服务id名
-  private[this] def generateNewIdForService(serviceName: String): String = {
-    serviceName + "-" + CONSUL_ADDRESS_IP + ":" + CONSUL_ADDRESS_PORT
+  /**
+   * 自定义服务ID，解析服务被覆盖
+   *
+   * @param serviceName    服务名
+   * @param serviceAddress 服务地址
+   * @return serviceNames-ip:port
+   */
+  private[this] def generateNewIdForService(serviceName: String, serviceAddress: ServiceAddress): String = {
+    serviceName + "-" + serviceAddress.toString
   }
 
-  //手动根据id清除，id需要转码 TODO 传入服务地址，存在则剔除并返回成功，不存在返回空或失败
+
+  //手动根据id清除，id需要转码
   //PUT http://127.0.0.1:8500/v1/agent/service/deregister/Hello-127.0.0.1
   def deregister(serviceId: String) = {
     consulClient.agentServiceDeregister(serviceId)

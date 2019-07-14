@@ -12,10 +12,12 @@ import io.growing.dlsrpc.consul.commons.ConsulBuilder
 import io.growing.dlsrpc.consul.loadbalancer.RandomLoadBalancer
 
 /**
- * 初始化刷新所有
+ * 初始化刷新，定时检查并更新服务
+ *
+ * TODO 轮询检查服务地址是否失效
  *
  * @author 梦境迷离
- * @version 1.0, 2019-07-13
+ * @version 1.1, 2019-07-13
  */
 class AllScheduledRefresh(consulClient: ConsulClient) extends Runnable with ScheduledRefresh with LazyLogging {
   override def run(): Unit = {
@@ -33,6 +35,11 @@ class AllScheduledRefresh(consulClient: ConsulClient) extends Runnable with Sche
           logger.debug(s"Service addresses of {$serviceName} is {$healthServices}")
           //把查询到的服务构建成LoadBalancer对象
           val serviceLoadBalancer = ConsulBuilder.buildLoadBalancer[RandomLoadBalancer[NormalServiceAddress]](healthServices, BalancerType.WEIGHT)
+          val size = serviceLoadBalancer match {
+            case Some(sb) => sb.getServiceAddressMap.size()
+            case None => 0
+          }
+          logger.info(s"Current service : {$serviceName} has {$size} instances")
           ConsulBuilder.loadBalancerMapContext.put(serviceName, serviceLoadBalancer)
         }
       }
