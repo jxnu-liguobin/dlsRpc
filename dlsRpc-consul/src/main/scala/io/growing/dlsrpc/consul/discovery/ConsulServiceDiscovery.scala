@@ -32,7 +32,6 @@ class ConsulServiceDiscovery extends ServiceDiscovery with LazyLogging {
   private final val cache_initial_capacity = 50
 
   //TODO 启动server时也会初始化一次。 因为服务端和客户端使用了同一个注入模块
-  //这个有问题，客户端和服务端都依赖了ClassUtil
   private final lazy val initLoadBalancerMap = () => {
     try {
       val servers = consulClient.getAgentServices.getValue
@@ -44,7 +43,7 @@ class ConsulServiceDiscovery extends ServiceDiscovery with LazyLogging {
           //使用当前地址构造出一个Maps
           weightServiceAddressMap.put(new WeightServiceAddress(service.getAddress, service.getPort), Configuration.DEFAULT_WEIGHT)
           //合并maps
-          val res: LoadBalancer[ServiceAddress] = currentLoadBalancer.getOrElse(throw RpcException("Not found loadBalancer")) mergeMaps weightServiceAddressMap
+          val res: LoadBalancer[ServiceAddress] = currentLoadBalancer.getOrElse(throw RpcException("not found loadBalancer")) mergeMaps weightServiceAddressMap
           ConsulBuilder.loadBalancerMapContext.put(service.getService, Option(res))
         } else {
           val weightServiceAddress = new JArrayList[WeightServiceAddress]()
@@ -53,7 +52,7 @@ class ConsulServiceDiscovery extends ServiceDiscovery with LazyLogging {
           ConsulBuilder.loadBalancerMapContext.put(service.getService, Option(res))
         }
       }
-      logger.info(s"Init LoadBalancerMap successfully,size : {${ConsulBuilder.loadBalancerMapContext.size()}}")
+      logger.info(s"Init LoadBalancerMap successfully, size : {${ConsulBuilder.loadBalancerMapContext.size()}}")
     } catch {
       case e: Exception =>
         logger.error(s"Init LoadBalancerMap failed, cause by : ${e.getCause}")
@@ -68,7 +67,7 @@ class ConsulServiceDiscovery extends ServiceDiscovery with LazyLogging {
   private val serviceCache: LoadingCache[String, Option[LoadBalancer[ServiceAddress]]] = CacheBuilder.newBuilder()
     .refreshAfterWrite(cache_refresh_time, TimeUnit.SECONDS).maximumSize(cache_maximum_size).initialCapacity(cache_initial_capacity)
     .removalListener((removalNotification: RemovalNotification[String, Option[LoadBalancer[ServiceAddress]]]) => {
-      logger.info(s"${removalNotification.getKey}:${removalNotification.getValue},remove cause by:${removalNotification.getCause}")
+      logger.info(s"${removalNotification.getKey}:${removalNotification.getValue}, remove cause by:${removalNotification.getCause}")
     }).build(new CacheLoader[String, Option[LoadBalancer[ServiceAddress]]] {
     override def load(keyServiceName: String): Option[LoadBalancer[ServiceAddress]] = {
       try {
