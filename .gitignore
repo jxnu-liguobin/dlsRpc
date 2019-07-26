@@ -6,3 +6,7 @@
 /.factorypath
 lib_managed/
 .idea/
+/dlsRpc-core/target/
+/dlsRpc-consul/target/
+/dlsRpc-common/target/
+/project/target/
