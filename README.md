@@ -99,6 +99,7 @@ HelloWorld hello = DlsRpc.getClientBuilder(HelloWorld.class).build();
 
 Benchmark
 ---
+since v1.1.1
 
 - Condition 
 

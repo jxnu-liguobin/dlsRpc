@@ -1,9 +1,9 @@
 package io.growing.dlsrpc.test;
 
 
-import io.growing.dlsrpc.common.config.Configuration;
-import io.growing.dlsrpc.core.DlsRpc;
-import io.growing.dlsrpc.core.server.ServerBuilder;
+import io.github.dlsrpc.common.config.Configuration;
+import io.github.dlsrpc.core.DlsRpc;
+import io.github.dlsrpc.core.server.ServerBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package io.growing.dlsrpc.test;
 
-import io.growing.dlsrpc.consul.registry.RPCService;
+import io.github.dlsrpc.consul.registry.RPCService;
 
 /**
  * 服务实现

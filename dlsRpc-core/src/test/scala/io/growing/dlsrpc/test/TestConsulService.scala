@@ -1,8 +1,8 @@
 package io.growing.dlsrpc.test
 
-import io.growing.dlsrpc.common.metadata.WeightServiceAddress
-import io.growing.dlsrpc.core.consul.{RpcDiscoveryService, RpcRegisterService}
-import io.growing.dlsrpc.core.utils.ServiceLoadUtil
+import io.github.dlsrpc.common.metadata.WeightServiceAddress
+import io.github.dlsrpc.core.consul.{RpcDiscoveryService, RpcRegisterService}
+import io.github.dlsrpc.core.utils.ServiceLoadUtil
 
 /**
  * 测试注入和获取服务名

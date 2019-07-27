@@ -1,7 +1,7 @@
 package io.growing.dlsrpc.test;
 
 
-import io.growing.dlsrpc.core.DlsRpc;
+import io.github.dlsrpc.core.DlsRpc;
 
 
 /**
