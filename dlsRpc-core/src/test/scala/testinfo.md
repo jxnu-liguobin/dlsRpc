@@ -28,7 +28,7 @@ dlsrpc.consul.registry.package-service = "io.growing.dlsrpc.test"
 dlsrpc.server.address.default = "127.0.0.1:8080"
 ```
 
-下面 是 benchmark 模块的一个可用的 dlsRPC.conf 配置文件，直接放到自己项目的 resources 下面即可
+下面 是 benchmark 模块的一个可用的 dlsRPC.conf 完整配置文件，直接放到自己项目的 resources 下面即可
 
 ```
 //这是默认的
@@ -88,3 +88,30 @@ dlsrpc.proxy.mode.cglib-proxy = true
 //是否强制
 dlsrpc.proxy.mode.force-cglib-proxy = false
 ```
+
+Benchmark
+---
+
+until v1.0.13
+
+- Condition 
+
+| Title | Value |
+| --- | --- |
+| CPU | i5 7300HQ |
+| Memory | 12G DDR4(2400MHz) |
+| Threads | 35 |
+
+- Details
+
+| Benchmark | Mode | Cnt | Score | Error | Units |
+| --- | --- | --- | --- | --- | --- |
+| dlsRpc.JmhClient.JmhClient | Throughput |  20 | 25.144 ± 1.576 |  | ops/ms |
+| dlsRpc.JmhClient.JmhClient | Average time |  20 | 1.339 ± 0.029 |  | ms/op |
+| dlsRpc.JmhClient.JmhClient | Sampling time |  571301 | 1.309 ± 0.005 | | ms/op |
+| dlsRpc.JmhClient.JmhClient | Single shot invocation time |   |  2567.914 |   | ms/op |
+
+[@NettyRPC](http://www.cnblogs.com/jietang/p/5675171.html) [@grpc](https://github.com/grpc/grpc-java) [@Reference Java Edition](https://github.com/yeyincai/flashRPC)
+
+[@NioEventLoopGroup](https://www.jianshu.com/p/2e3ae43dc4cb) [@consul-api](https://github.com/Ecwid/consul-api) [@EnableEurekaClient Source Analysis](https://www.cnblogs.com/zhangjianbin/p/6616866.html)
+

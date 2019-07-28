@@ -3,7 +3,7 @@ import Dependencies.Versions
 //工程通用配置
 lazy val commonSettings = Seq(
   organization := "io.github.jxnu-liguobin",
-  version := "1.1.2",
+  version := "1.1.1-SNAPSHOT",
   scalaVersion := Versions.scala212,
   Dependencies.commons,
 ) ++ publishSettings
