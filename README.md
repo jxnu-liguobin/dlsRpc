@@ -31,11 +31,6 @@ Already Implemented functions
 - Client Configuration Caching and Timely Refresh
  - loading  
  
-Component
----
-
-![main component](./dls-benchmark/src/main/resources/dlsRPC.png)
-
 Technology
 ---
 
