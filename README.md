@@ -49,9 +49,9 @@ How to use
 
 1.libraryDependencies in build.sbt
 ```sbt
-    io.github.jxnu-liguobin % dlsrpc-common_2.12 % 1.1.1
-    io.github.jxnu-liguobin % dlsrpc-consul_2.12 % 1.1.1
-    io.github.jxnu-liguobin % dlsrpc-core_2.12 % 1.1.1
+    io.github.jxnu-liguobin % dlsrpc-common_2.12 % 1.1.1-SNAPSHOT
+    io.github.jxnu-liguobin % dlsrpc-consul_2.12 % 1.1.1-SNAPSHOT
+    io.github.jxnu-liguobin % dlsrpc-core_2.12 % 1.1.1-SNAPSHOT
 ```
 2.start consul in default port 
 
