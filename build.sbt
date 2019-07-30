@@ -3,7 +3,7 @@ import Dependencies.Versions
 //工程通用配置
 lazy val commonSettings = Seq(
   organization := "io.github.jxnu-liguobin",
-  version := "1.1.1-SNAPSHOT",
+  version := "1.1.1",
   scalaVersion := Versions.scala212,
   Dependencies.commons,
 ) ++ publishSettings
@@ -46,6 +46,9 @@ lazy val publishSettings = Seq(
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
   sonatypeProfileName := organization.value,
+  publishConfiguration := publishConfiguration.value.withOverwrite(true),
+  publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),
+
   credentials += Credentials(
     "Sonatype Nexus Repository Manager",
     "oss.sonatype.org",
